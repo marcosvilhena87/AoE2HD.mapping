@@ -69,3 +69,25 @@ ctest --test-dir build -C Release --output-on-failure
 ```
 
 O CSV é sobrescrito a cada execução. Não leia resultados durante troca/criação de partida.
+
+## SnapshotDiff: teste controlado de criação de aldeão
+
+O executável `aoe2hd_snapshot_diff.exe` é separado do probe e usa somente `ReadProcessMemory`. Abre o processo uma única vez, valida `World` e jogador local em cada captura, verifica a estabilidade dos limites do vetor de jogadores e recusa a comparação se o processo, `World` ou jogador local mudar.
+
+```powershell
+git pull --ff-only origin main
+cmake -S . -B build-clean -G "Visual Studio 18 2026" -A Win32
+cmake --build build-clean --config Release
+ctest --test-dir build-clean -C Release --output-on-failure
+.\build-clean\Release\aoe2hd_snapshot_diff.exe
+```
+
+Procedimento: entre numa partida estável, pressione **Enter** para capturar A, crie exatamente **um aldeão**, aguarde a conclusão de sua produção e pressione **Enter** para capturar B. Evite selecionar/trocar de partida ou executar outras ações durante o teste. Os relatórios são salvos no diretório atual e **sobrescritos** na próxima execução:
+
+- `aoe2hd_snapshot_before.csv`: todas as entradas legíveis da captura A;
+- `aoe2hd_snapshot_after.csv`: mesmas informações para B;
+- `aoe2hd_snapshot_diff.csv`: `source,offset,stride,kind,index,before,after`. `kind` indica `added`, `removed`, `changed`, `buffer_relocated`, `collection_new` ou `collection_missing_after`.
+
+Uma linha `added` significa novo **índice no vetor**, não necessariamente novo objeto. A análise também pode encontrar mudanças por eventos independentes da criação do aldeão. Interpretações concorrentes de stride são mantidas separadas; os dados continuam **hipóteses**, jamais enumerações confirmadas. A captura não é atomicamente sincronizada com o motor do jogo, e estruturas internas podem mudar enquanto são lidas.
+
+Para repetir com segurança, copie/renomeie os CSVs de cada experimento antes de começar outro.
