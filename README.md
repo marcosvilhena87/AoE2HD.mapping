@@ -561,3 +561,19 @@ ctest --test-dir build-clean -C Release --output-on-failure
 \`\`\`
 
 CSVs: \`aoe2hd_production_queue_pointer_v3.csv\` (ponteiro/contagem em cada fase e legibilidade), \`aoe2hd_production_queue_pointer_words_v3.csv\` (conteúdo completo dos 512 bytes legíveis por fase) e \`aoe2hd_production_queue_pointer_deltas_v3.csv\` (campos modificados em transições comparáveis, além de uma linha de invalidação quando necessário). A confirmação da fila continua visual, e não uma verificação independente. O conteúdo de 512 bytes pode não conter a estrutura completa; ponteiros internos ainda não são percorridos.
+
+## ProductionQueueStructureDiscovery v4 — tipo e quantidade da fila
+
+Experimento independente **somente leitura**, comparando *execuções separadas* com tipos diferentes de construções produtoras (ex.: Centro Urbano, Quartel, Estábulo). Não pressupõe que o layout do Centro Urbano seja válido para outras construções: apenas registra os campos candidatos \`Building+0x214\`, \`+0x218\`, \`+0x21C\` e os 512 bytes apontados por \`+0x214\` quando a leitura é válida. O primeiro DWORD do destino é interpretado **experimentalmente** como duas metades (\`low16\`, possível ID do tipo; \`high16\`, possível quantidade). Essa interpretação não é garantida.
+
+\`\`\`powershell
+git pull --ff-only origin main
+cmake -S . -B build-clean -G "Visual Studio 18 2026" -A Win32
+cmake --build build-clean --config Release
+ctest --test-dir build-clean -C Release --output-on-failure
+.\build-clean\Release\aoe2hd_production_queue_structure_discovery_v4.exe
+\`\`\`
+
+Antes de iniciar, selecione *uma* construção produtora com fila vazia, confirme o tipo informado e **mantenha-a selecionada**. Capture as sete etapas: vazia, adicionar 1, adicionar 2 do mesmo tipo, adicionar 3 do mesmo tipo, cancelar 1, concluir 1, concluir 2. Informe o tamanho realmente observado e uma etiqueta para o tipo produzido. Repita a ferramenta em outra partida/construção (por exemplo, Quartel produzindo Milícia), e **renomeie/mova os CSVs entre execuções** para não sobrescrevê-los. Arquivos: \`aoe2hd_production_queue_types_v4.csv\` e \`aoe2hd_production_queue_type_changes_v4.csv\`.
+
+A verificação das contagens continua sendo **visual**, não automática; \`independent_verified=0\`. Endereços absolutos variam entre execuções; diferenças do ponteiro invalidam comparações entre seus conteúdos. Não há identificação validada das entradas da fila nem enumeração de unidades existentes. Campos de outros edifícios podem ter semântica totalmente diferente; não classifique ponteiros ou contadores somente por semelhança numérica.
