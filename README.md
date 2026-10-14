@@ -591,3 +591,19 @@ ctest --test-dir build-clean -C Release --output-on-failure
 \`\`\`
 
 Relatórios: \`aoe2hd_production_queue_mixed_stages_v5.csv\`, \`aoe2hd_production_queue_mixed_words_v5.csv\` e \`aoe2hd_production_queue_mixed_deltas_v5.csv\`. A comparação ignora alterações de conteúdo entre endereços distintos e marca transições não comparáveis. \`root_count_matches\` e \`entry_count_matches_comparable\` são correspondências de diferenças quantitativas, não prova do tipo ou formato interno. Para descobrir a organização da fila mista, compare os campos por fase e por tipo solicitado. **Eventos e tipos continuam dependentes da observação do operador**, sem verificação independente da produção. Esta versão ainda não varre ponteiros de segundo nível nem enumera unidades existentes no mapa.
+
+## ProductionQueueStructureDiscovery v6 — reconstrução de entradas e agrupamento
+
+Executável separado, apenas leitura. Selecione um **Quartel com fila inicialmente vazia** e mantenha a seleção. A v6 segue \`Building+0x214\` em cada fase e lê 512 bytes quando possível; interpreta os primeiros 32 DWORDs como possíveis registros de 4 bytes contendo \`type_id low16\` e \`quantity high16\`. Compara as ordens visualmente confirmadas com possíveis alinhamentos de início no buffer, em dois modelos: **uma entrada por ordem** e **uma entrada por sequência consecutiva do mesmo tipo**, que pode ter quantidade maior que um. Correspondências são **candidatas**: não comprovam quais slots estão ativos.
+
+O protocolo possui oito fases: vazia; Milícia; Milícia/Lanceiro; Milícia/Lanceiro/Lanceiro; Milícia/Lanceiro/Lanceiro/Milícia; cancelar última Milícia (quando possível); concluir primeira Milícia; concluir primeiro Lanceiro. O programa sempre solicita a fila **efetivamente observada**, usando \`M\` para Milícia e \`S\` para Lanceiro; por exemplo \`M|S|S|M\`; use \`empty\` quando vazia. Se o jogo não permitir a ação exata, informe o estado real e não confirme dados não observados. Também registra \`Building+0x218\` e \`+0x21C\` para confrontar metadados.
+
+\`\`\`powershell
+git pull --ff-only origin main
+cmake -S . -B build-clean -G "Visual Studio 18 2026" -A Win32
+cmake --build build-clean --config Release
+ctest --test-dir build-clean -C Release --output-on-failure
+.\build-clean\Release\aoe2hd_production_queue_structure_discovery_v6.exe
+\`\`\`
+
+Arquivos: \`aoe2hd_production_queue_entries_v6.csv\` (slots decodificados), \`aoe2hd_production_queue_alignment_v6.csv\` (possíveis alinhamentos e modelos) e \`aoe2hd_production_queue_metadata_v6.csv\` (ponteiro e contadores por fase). Endereços absolutos não são portáveis entre partidas. Os eventos são relatados pelo operador, sem prova automática da ação; buffers com dados antigos podem gerar falsos positivos. Esta versão não enumera unidades já criadas no mapa.
