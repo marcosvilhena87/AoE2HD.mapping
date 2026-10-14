@@ -249,3 +249,17 @@ ctest --test-dir build-clean -C Release --output-on-failure
 ```
 
 Selecione um aldeão antes de executar e um segundo, diferente, quando solicitado. Saídas: `aoe2hd_entity_graph_edges_v2.csv` e `aoe2hd_entity_graph_summary_v2.csv`. A coluna `selection_edge` distingue arestas originadas nos slots conhecidos, enquanto `selection_matches` e `nonselection_matches` resumem correspondências. Um match não relacionado a esses dois offsets ainda pode ser referência auxiliar de seleção, não uma coleção confirmada. Caminhos são hipóteses e a exploração pode não encontrar índices, tabelas hash ou outros mecanismos não representados por DWORDs alinhados.
+
+## EntityGraphDiscovery v3 — evidência estrutural e busca reversa
+
+A v3 preserva a v2 e adiciona testes de legibilidade nos destinos das arestas, além de uma varredura reversa **somente leitura**, limitada a 64 MiB, em regiões que contêm as âncoras ou os destinos observados no grafo. Os slots `LocalPlayer+0x15C/+0x160` são classificados explicitamente. A varredura reversa procura correspondências exatas a endereços candidatos, sem afirmar que correspondem a uma lista de unidades.
+
+```powershell
+git pull --ff-only origin main
+cmake -S . -B build-clean -G "Visual Studio 18 2026" -A Win32
+cmake --build build-clean --config Release
+ctest --test-dir build-clean -C Release --output-on-failure
+.\build-clean\Release\aoe2hd_entity_graph_discovery_v3.exe
+```
+
+Selecione um aldeão, execute o programa, selecione outro aldeão da mesma partida e pressione Enter. CSVs: `aoe2hd_entity_graph_edges_v3.csv`, `aoe2hd_entity_graph_summary_v3.csv` e `aoe2hd_entity_graph_reverse_v3.csv`. O resumo informa destinos legíveis, arestas ilegíveis, referências reversas e bytes examinados. Atenção: destino legível não equivale a objeto válido, referências reversas podem ser caches de seleção e 64 MiB não garantem cobertura completa. Não há confirmação de coleção ou enumeração de aldeões sem seleção.
