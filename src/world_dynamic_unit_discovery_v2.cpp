@@ -176,7 +176,7 @@ int main(){
  constexpr uint32_t length=0x800;
  struct Sample {Root root;std::vector<uint8_t> phases[5];};
  std::vector<Sample> samples;
- for(const auto& root:roots) samples.push_back({root,{}});
+ for(const auto& root:roots){Sample sample;sample.root=root;samples.push_back(std::move(sample));}
  auto capture=[&](int phase){
   if(!selectionStable())return false;
   for(auto& s:samples){
