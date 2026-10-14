@@ -267,7 +267,7 @@ int main(int argc,char** argv){
      <<c.failures<<','<<(c.attempted==c.size?"attempted_full":"partial")<<"\n";
  std::ofstream delta("aoe2hd_unit_array_delta_v2.csv",std::ios::trunc);
  if(!delta){std::cerr<<"Delta CSV open failed\n";return 5;}
- delta<<"candidate,slot,before_pointer,after_pointer,before_meta,after_meta,before_id,after_id,before_hp,after_hp,before_plausible,after_plausible,changed,status\n";
+ delta<<"slot,before_pointer,after_pointer,before_meta,after_meta,before_id,after_id,before_hp,after_hp,before_plausible,after_plausible,changed,status\n";
  uint32_t newIds=0,changedCount=0;
  for(const auto& item:before){
   const uint32_t slot=item.first;
@@ -278,7 +278,7 @@ int main(int argc,char** argv){
     (old.plausible&&entry.plausible&&old.hp!=entry.hp);
   changedCount+=changed;
   if(entry.plausible&&entry.id!=a.id&&entry.id!=b.id)++newIds;
-  delta<<slot<<','<<slot<<','<<old.value<<','<<entry.value<<','
+  delta<<slot<<','<<old.value<<','<<entry.value<<','
        <<old.meta<<','<<entry.meta<<','<<old.id<<','<<entry.id<<','
        <<old.hp<<','<<entry.hp<<','<<old.plausible<<','
        <<entry.plausible<<','<<changed<<",hypothesis\n";
