@@ -345,3 +345,19 @@ ctest --test-dir build-clean -C Release --output-on-failure
 Relatórios: \`aoe2hd_unit_array_candidates_v3.csv\` e \`aoe2hd_unit_array_root_refs_v3.csv\` para pares, \`aoe2hd_unit_array_delta_v3.csv\` para amostras before/after dos slots vistos antes da criação, \`aoe2hd_unit_array_rescan_v3.csv\` para referências A/B localizadas independentemente em cada fase, e \`aoe2hd_unit_array_coverage_v3.csv\` / \`aoe2hd_unit_array_coverage_after_v3.csv\` para regiões visitadas, parciais e **não visitadas**.
 
 A v3 ainda não descobre automaticamente a identidade/ponteiro do terceiro aldeão, nem prova que uma entrada extra resulta da criação. Em \`pairs=0\`, os relatórios de pares podem ficar vazios, mas o delta das amostras de âncora única e o CSV da segunda varredura podem fornecer evidências adicionais. Os testes da plataforma Windows precisam ser executados localmente.
+
+## UnitArrayCandidateValidator v4 — persistência entre seleções A–B–A
+
+Nova ferramenta independente e **somente leitura**. Faz três buscas com o **mesmo orçamento** e na mesma ordem de regiões: A selecionado, B selecionado e novamente A selecionado. Em cada fase procura referências de 4 bytes aos objetos-âncora, cruza endereços e distingue referências que acompanham a seleção de referências que permaneceram apontando para A ou B. Procura distância de exatamente 8 bytes entre referências estáveis a A e B, sem afirmar que isso prova um array. Também exporta referências sem classificação.
+
+\`\`\`powershell
+git pull --ff-only origin main
+cmake -S . -B build-clean -G "Visual Studio 18 2026" -A Win32
+cmake --build build-clean --config Release
+ctest --test-dir build-clean -C Release --output-on-failure
+.\build-clean\Release\aoe2hd_unit_array_candidate_validator_v4.exe --max-mib 128
+\`\`\`
+
+Antes de iniciar selecione A; após a primeira varredura, selecione B e pressione Enter; após a segunda, selecione A e pressione Enter novamente. Saídas: \`aoe2hd_unit_array_references_v4.csv\`, \`aoe2hd_unit_array_pairs_v4.csv\` e \`aoe2hd_unit_array_summary_v4.csv\`.
+
+**Limitações:** o programa compara valores encontrados por varredura, não snapshots simultâneos. Ausência de correspondência em determinada fase é codificada como zero no relatório, e **não significa** que o endereço armazenava zero. A ordem de regiões é fixa para a sessão; endereços fora do orçamento não são examinados. Em particular, \`stable_B\` significa que uma referência permaneceu em B nas fases B e retorno a A, não que tenha sido observada na primeira fase. Continua sendo uma hipótese, não uma enumeração de unidades.
