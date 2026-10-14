@@ -219,3 +219,19 @@ ctest --test-dir build-clean -C Release --output-on-failure
 ```
 
 Selecione primeiro um aldeao, execute e, quando solicitado, selecione um segundo aldeao distinto **na mesma partida**, pressionando Enter para iniciar a descoberta. Resultado: `aoe2hd_unit_identity_candidates_v2.csv`, com identidade candidata, origem, root, offset, buffer, stride, indice, offset interno e vizinhos. O campo `with_both_ids` no terminal significa apenas que ambos os numeros apareceram em um buffer candidato. **Nao** prova que seja lista de unidades ativas, que seja indexada por ID, nem que um ID resolva o ponteiro correto. Um CSV vazio tambem nao prova ausencia de colecao: a busca cobre apenas vetores candidatos de dois roots e nao percorre arvores, hash maps ou outros indices. Arquivo sobrescrito por novas execucoes.
+
+## EntityGraphDiscovery v1 — caminhos estruturais limitados
+
+Novo executavel `aoe2hd_entity_graph_discovery.exe`, somente leitura. Identifique visualmente dois aldeoes da mesma partida: selecione o primeiro e inicie; selecione o segundo quando solicitado e pressione Enter.
+
+```powershell
+git pull --ff-only origin main
+cmake -S . -B build-clean -G "Visual Studio 18 2026" -A Win32
+cmake --build build-clean --config Release
+ctest --test-dir build-clean -C Release --output-on-failure
+.\build-clean\Release\aoe2hd_entity_graph_discovery.exe
+```
+
+O algoritmo parte de `World` e `LocalPlayer`, examina ate 256 bytes por no, acompanha campos de 32 bits alinhados com valores plausiveis de ponteiro ate **dois saltos** e deduplica nos por endereco. Limites: ate 512 nos e 8192 arestas, nenhuma leitura de escrita. Nao usa os objetos conhecidos como raizes, pois isso criaria evidencias artificiais. Os IDs candidatos dos dois aldeoes sao conferidos antes da exportacao.
+
+Gera `aoe2hd_entity_graph_edges.csv` (origem, offset, destino, profundidade, correspondencia com cada ancora) e `aoe2hd_entity_graph_summary.csv` (quantidade de nos/arestas, correspondencias, falhas e indicador `capped`). Interpretacao: `is_first=1` ou `is_second=1` identifica uma coincidencia de ponteiro num caminho percorrido, **nao** uma colecao de unidades confirmada. Limites de profundidade/bytes/no e filtros podem impedir encontrar caminhos reais. Se `capped=1`, o resultado e incompleto. CSVs sobrescritos a cada execucao.
