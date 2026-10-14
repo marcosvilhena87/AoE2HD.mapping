@@ -205,3 +205,17 @@ ctest --test-dir build-clean -C Release --output-on-failure
 ```
 
 Arquivo: `aoe2hd_unit_collections_v1.csv` com offsets do root, endereco do buffer, stride, contagem, indices e contadores de coincidencias diretas/indiretas por ancora, alem de `both`. `both=1` e apenas uma hipotese de colecao que contem evidencias de duas unidades. `both=0` NAO demonstra ausencia de unidade no jogo: a busca e restrita aos roots, ao tamanho dos buffers e a um salto indireto. Proximo experimento recomendado: repetir em mais de uma partida e verificar se a estrutura sobrevive a mudancas de selecao. Arquivo sobrescrito a cada execucao.
+
+## UnitCollectionDiscovery v2 — procura orientada por ID
+
+Executavel independente (somente leitura). Captura **dois aldeoes selecionados sequencialmente**, preserva seus IDs candidatos (`object+0x08`) e verifica a estabilidade da sessao antes de exportar. Analisa somente triplas `begin/end/capacity` encontradas ate `0x800` bytes de `World` e `LocalPlayer`, com buffer ate 8192 bytes. Examina palavras alinhadas de 32 bits contendo cada ID, sob hipoteses de stride 4, 8, 12, 16, 24, 32 e 64 bytes. Registra posicao por registro e valores vizinhos; as varias hipoteses de stride para o mesmo buffer NAO representam evidencias independentes.
+
+```powershell
+git pull --ff-only origin main
+cmake -S . -B build-clean -G "Visual Studio 18 2026" -A Win32
+cmake --build build-clean --config Release
+ctest --test-dir build-clean -C Release --output-on-failure
+.\build-clean\Release\aoe2hd_unit_collection_discovery_v2.exe
+```
+
+Selecione primeiro um aldeao, execute e, quando solicitado, selecione um segundo aldeao distinto **na mesma partida**, pressionando Enter para iniciar a descoberta. Resultado: `aoe2hd_unit_identity_candidates_v2.csv`, com identidade candidata, origem, root, offset, buffer, stride, indice, offset interno e vizinhos. O campo `with_both_ids` no terminal significa apenas que ambos os numeros apareceram em um buffer candidato. **Nao** prova que seja lista de unidades ativas, que seja indexada por ID, nem que um ID resolva o ponteiro correto. Um CSV vazio tambem nao prova ausencia de colecao: a busca cobre apenas vetores candidatos de dois roots e nao percorre arvores, hash maps ou outros indices. Arquivo sobrescrito por novas execucoes.
