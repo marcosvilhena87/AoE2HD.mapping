@@ -1,4 +1,5 @@
 #include "UnitReferenceDiscovery.h"
+#include "ReferencePersistence.h"
 #include "ProcessRegionScanner.h"
 #include <chrono>
 #include <cstdlib>
@@ -200,11 +201,11 @@ int main(int argc,char** argv){
  for(const auto& hit:hits){
   uint32_t now=0,minus8=0,plus8=0;
   bool ok=rd(h.h,hit.address,&now,4);
-  bool persist=ok&&now==a.object;
+  bool persist=aoe2hd::IsPersistentReference(ok!=FALSE,now,a.object);
   if(persist)++persistent;
   if(hit.address>=8)rd(h.h,hit.address-8,&minus8,4);
   if(hit.address<=UINT32_MAX-8)rd(h.h,hit.address+8,&plus8,4);
-  bool selection=(hit.address==a.local+0x15c||hit.address==a.local+0x160);
+  bool selection=aoe2hd::IsSelectionSlot(hit.address,a.local);
   csv<<id<<','<<a.world<<','<<a.local<<','<<a.object<<','<<a.id<<','
      <<b.object<<','<<b.id<<','<<hit.region<<','<<hit.regionSize<<','
      <<hit.protect<<','<<hit.address<<','<<(hit.address-hit.region)<<','
