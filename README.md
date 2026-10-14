@@ -295,3 +295,23 @@ ctest --test-dir build-clean -C Release --output-on-failure
 ```
 
 Resultados: `aoe2hd_entity_roots_v5.csv` (raízes), `aoe2hd_entity_coverage_v5.csv` (regiões tentadas, bytes efetivos, erros), `aoe2hd_entity_references_v5.csv` (referências A/B, valores após retorno a A) e `aoe2hd_entity_summary_v5.csv`. Regiões não visitadas não têm linhas no CSV de cobertura: use `regions_available` e `regions_examined` para distinguir a cobertura incompleta. `attempted_full` indica apenas que toda a região foi **tentada**, não que seus bytes foram inteiramente legíveis. Resultados de referência permanecem hipóteses.
+
+## UnitArrayCandidateValidator v1
+
+Ferramenta independente, **somente leitura**, voltada à hipótese de uma coleção com entradas de 8 bytes. Selecione o aldeão A, execute o validador, selecione B e pressione Enter. A ferramenta faz busca automática pelos dois endereços na memória legível dentro do orçamento configurado e procura referências distantes exatamente 8 bytes. Examina dez posições próximas de cada candidato com campos ponteiro/metadado, ID candidato do objeto em +0x08 e HP em +0x34. Procura referências diretas à região candidata nos primeiros 0x800 bytes de World, LocalPlayer e jogadores conhecidos.
+
+\`\`\`powershell
+git pull --ff-only origin main
+cmake -S . -B build-clean -G "Visual Studio 18 2026" -A Win32
+cmake --build build-clean --config Release
+ctest --test-dir build-clean -C Release --output-on-failure
+.\build-clean\Release\aoe2hd_unit_array_candidate_validator.exe --max-mib 128
+\`\`\`
+
+Quando solicitado, crie um aldeão **sem selecioná-lo** e pressione Enter para realizar nova leitura dos candidatos existentes. Se não for possível criar uma unidade, pressione Enter sem fazer alterações; isso é controle, não teste de criação. Saídas:
+
+- \`aoe2hd_unit_array_candidates_v1.csv\`: amostras de vizinhança e plausibilidade do objeto;
+- \`aoe2hd_unit_array_root_refs_v1.csv\`: referências diretas ou próximas à base candidata em raízes conhecidas;
+- \`aoe2hd_unit_array_delta_v1.csv\`: instantâneo após o teste.
+
+**Limitações**: o relatório delta registra o estado posterior, e a comparação temporal detalhada pode ser feita pela junção por \`candidate,slot\` com o CSV inicial; não infere automaticamente criação de objeto. Proximidade de 8 bytes, leitura plausível de HP ou IDs distintos não confirma coleção. O orçamento de memória pode deixar regiões sem varredura. Os endereços de uma execução não devem ser reutilizados na próxima.
