@@ -2,6 +2,7 @@
 #include <cstdint>
 #include <map>
 #include <string>
+#include <tuple>
 #include <vector>
 namespace aoe2hd {
 struct Collection {
@@ -15,10 +16,10 @@ struct Change {
 inline std::vector<Change> Compare(const Snapshot& a,const Snapshot& b) {
  std::vector<Change> out;
  if(!a.pid||a.pid!=b.pid||!a.world||a.world!=b.world||a.local!=b.local)return out;
- using Key=std::pair<std::string,uint32_t>;
+ using Key=std::tuple<std::string,uint32_t,uint32_t>;
  std::map<Key,const Collection*> left,right;
- for(const auto& c:a.collections)left[{c.source,c.offset}]=&c;
- for(const auto& c:b.collections)right[{c.source,c.offset}]=&c;
+ for(const auto& c:a.collections)left[{c.source,c.offset,c.stride}]=&c;
+ for(const auto& c:b.collections)right[{c.source,c.offset,c.stride}]=&c;
  std::map<Key,bool> keys;
  for(const auto& p:left)keys[p.first]=true;
  for(const auto& p:right)keys[p.first]=true;
@@ -26,14 +27,14 @@ inline std::vector<Change> Compare(const Snapshot& a,const Snapshot& b) {
   const auto ia=left.find(k.first),ib=right.find(k.first);
   const Collection* x=ia==left.end()?nullptr:ia->second;
   const Collection* y=ib==right.end()?nullptr:ib->second;
-  if(!x||!y){out.push_back({k.first.first,x?"collection_missing_after":"collection_new",k.first.second, y?y->stride:x->stride,0,0,0});continue;}
-  if(x->stride!=y->stride){out.push_back({k.first.first,"stride_changed",k.first.second,y->stride,0,x->stride,y->stride});continue;}
-  if(x->begin!=y->begin)out.push_back({k.first.first,"buffer_relocated",k.first.second,y->stride,0,x->begin,y->begin});
+  if(!x||!y){out.push_back({std::get<0>(k.first),x?"collection_missing_after":"collection_new",std::get<1>(k.first), y?y->stride:x->stride,0,0,0});continue;}
+  if(x->stride!=y->stride){out.push_back({std::get<0>(k.first),"stride_changed",std::get<1>(k.first),y->stride,0,x->stride,y->stride});continue;}
+  if(x->begin!=y->begin)out.push_back({std::get<0>(k.first),"buffer_relocated",std::get<1>(k.first),y->stride,0,x->begin,y->begin});
   const size_t n=x->values.size()>y->values.size()?x->values.size():y->values.size();
   for(size_t i=0;i<n;++i) {
-   if(i>=x->values.size()){out.push_back({k.first.first,"added",k.first.second,y->stride,static_cast<uint32_t>(i),0,y->values[i]});continue;}
-   if(i>=y->values.size()){out.push_back({k.first.first,"removed",k.first.second,y->stride,static_cast<uint32_t>(i),x->values[i],0});continue;}
-   if(x->values[i]!=y->values[i])out.push_back({k.first.first,"changed",k.first.second,y->stride,static_cast<uint32_t>(i),x->values[i],y->values[i]});
+   if(i>=x->values.size()){out.push_back({std::get<0>(k.first),"added",std::get<1>(k.first),y->stride,static_cast<uint32_t>(i),0,y->values[i]});continue;}
+   if(i>=y->values.size()){out.push_back({std::get<0>(k.first),"removed",std::get<1>(k.first),y->stride,static_cast<uint32_t>(i),x->values[i],0});continue;}
+   if(x->values[i]!=y->values[i])out.push_back({std::get<0>(k.first),"changed",std::get<1>(k.first),y->stride,static_cast<uint32_t>(i),x->values[i],y->values[i]});
   }
  }
  return out;
