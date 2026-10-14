@@ -397,3 +397,17 @@ ctest --test-dir build-clean -C Release --output-on-failure
 Arquivos: \`aoe2hd_player_unit_vectors_v2.csv\` (vetores de stride 8), \`aoe2hd_player_unit_entries_v2.csv\` (todos os campos e duas fases), \`aoe2hd_player_unit_roots_v2.csv\` (quantidade de vetores plausíveis e palavras legíveis por raiz) e \`aoe2hd_player_unit_delta_v2.csv\` (alterações nos mesmos slots).
 
 Limitações importantes: somente vetores diretos nas raízes e uma indireção no conteúdo da entrada; não percorre grafos arbitrários ou listas encadeadas. Vetores recém-criados ou realocados depois do snapshot inicial não serão descobertos automaticamente na segunda fase. Uma mudança de ID ou HP pode ser causada por outros eventos do jogo. Os testes de integração Windows devem ser executados localmente.
+
+## PlayerUnitCollectionDiscovery v3 — classificação estrutural
+
+Executável independente, somente leitura. Parte das âncoras A e B obtidas por seleção manual e depois inspeciona \`World+0x88\` como vetor de **ponteiros de 4 bytes**, verificando endereço, vtable, campo candidato a ID em +0x08 e HP candidato em +0x34. O objeto é classificado como âncora conhecida, semelhante por vtable, sem HP típico, plausível desconhecido ou ilegível. Essas classes são evidências comparativas, nunca prova definitiva de tipo. Examina ainda uma indireção a partir dos campos dos jogadores conhecidos, excluindo os slots de seleção do LocalPlayer e os próprios objetos A/B como raízes, para testar possíveis vetores em subobjetos.
+
+\`\`\`powershell
+git pull --ff-only origin main
+cmake -S . -B build-clean -G "Visual Studio 18 2026" -A Win32
+cmake --build build-clean --config Release
+ctest --test-dir build-clean -C Release --output-on-failure
+.\build-clean\Release\aoe2hd_player_unit_collection_discovery_v3.exe
+\`\`\`
+
+Selecione A antes de iniciar; quando solicitado, selecione outro aldeão B e pressione Enter. CSVs: \`aoe2hd_player_objects_v3.csv\` (objetos apontados por World+0x88), \`aoe2hd_player_subobjects_v3.csv\` (vetores encontrados em subobjetos dos jogadores) e \`aoe2hd_player_summary_v3.csv\` (contadores). A v3 não exige criação de terceiro aldeão. A investigação é limitada a janelas de 0x800 bytes dos jogadores, subobjetos examinados em 0x400 bytes, vetores pequenos e uma indireção; não faz descoberta exaustiva. A execução Windows ainda precisa ser validada.
