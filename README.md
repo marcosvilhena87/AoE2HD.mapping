@@ -517,3 +517,19 @@ ctest --test-dir build-clean -C Release --output-on-failure
 \`\`\`
 
 Saídas: \`aoe2hd_world_dynamic_queue_values_v5.csv\`, \`aoe2hd_world_dynamic_queue_deltas_v5.csv\`, \`aoe2hd_world_dynamic_queue_neighborhood_v5.csv\`. \`queue_matches_all\` e \`completion_matches_all\` exigem que as variações dos campos acompanhados reproduzam as contagens informadas em todas as transições confirmadas. Nenhuma correspondência demonstra, por si só, que exista uma coleção de objetos-aldeões no mapa; apenas valida a hipótese de um contador relacionado à fila/conclusão. Não há evento verificado independentemente, e a ferramenta não verifica o conteúdo da fila via estruturas internas.
+
+## ProductionQueueStructureDiscovery v1 — fila do Centro Urbano
+
+Ferramenta independente, **somente leitura**. Ao contrário da exploração dos campos dos jogadores, esta versão parte de **um Centro Urbano selecionado**, validado manualmente pelo operador. Inspeciona 4096 bytes do objeto selecionado e procura ponteiros alinhados em seus campos; acompanha até 256 destinos indiretos distintos que permitam leitura completa de 128 bytes. Descoberta e captura são limitadas para controlar custo e volume de dados, e nenhuma classificação de tipo por vtable é presumida.
+
+\`\`\`powershell
+git pull --ff-only origin main
+cmake -S . -B build-clean -G "Visual Studio 18 2026" -A Win32
+cmake --build build-clean --config Release
+ctest --test-dir build-clean -C Release --output-on-failure
+.\build-clean\Release\aoe2hd_production_queue_structure_discovery.exe
+\`\`\`
+
+**Antes de iniciar, selecione um Centro Urbano com fila vazia**. Confirme \`y\` que a seleção é realmente um Centro Urbano e não a altere em nenhum momento. O programa realiza sete capturas: fila vazia, 1, 2 e 3 aldeões na fila, cancelamento de 1, conclusão de 1 e conclusão de mais 1. A cada etapa informe a quantidade *realmente observada* na fila e as conclusões acumuladas, inclusive se houve conclusão inesperada entre capturas. Um \`queue_delta_matches_all\` verdadeiro significa apenas correlação ao longo dos seis intervalos confirmados, não propriedade comprovada de uma fila. Os três relatórios são \`aoe2hd_production_queue_fields_v1.csv\`, \`aoe2hd_production_queue_paths_v1.csv\` e \`aoe2hd_production_queue_phases_v1.csv\`.
+
+**Limites:** acompanhamento de endereços fixos obtidos na captura inicial; objetos realocados ou novos destinos não são redescobertos depois. O comando não altera a memória do jogo, não descobre automaticamente aldeões no mapa e depende de confirmação visual; \`independent_verified=0\` indica que a ferramenta não confirma eventos diretamente. A seleção e o endereço do Centro Urbano permanecem constantes.
