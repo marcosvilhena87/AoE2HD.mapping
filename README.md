@@ -329,3 +329,19 @@ ctest --test-dir build-clean -C Release --output-on-failure
 \`\`\`
 
 Selecione A inicialmente, depois B quando solicitado; após a primeira leitura, crie um aldeão usando o Centro Urbano sem selecionar a unidade recém-criada, então pressione Enter. Se nenhum par for encontrado, os arquivos de candidatos e delta podem conter apenas cabeçalhos: isso é resultado inconclusivo, não falha do jogo. A busca permanece limitada por bytes e não demonstra cobertura de todo o processo.
+
+## UnitArrayCandidateValidator v3 — descoberta dirigida e duas varreduras
+
+Mantém os executáveis v1/v2. A v3 prioriza regiões legíveis contendo World, LocalPlayer, jogadores conhecidos ou qualquer dos dois objetos-âncora e conserva o restante na fila até esgotar o orçamento. Busca referências exatas aos dois objetos e preserva amostras locais mesmo quando apenas uma âncora foi encontrada. O protocolo é A selecionado → B selecionado → criação de aldeão sem exigir manter B selecionado → segunda varredura. Cada fase tem orçamento de memória próprio.
+
+\`\`\`powershell
+git pull --ff-only origin main
+cmake -S . -B build-clean -G "Visual Studio 18 2026" -A Win32
+cmake --build build-clean --config Release
+ctest --test-dir build-clean -C Release --output-on-failure
+.\build-clean\Release\aoe2hd_unit_array_candidate_validator_v3.exe --max-mib 128
+\`\`\`
+
+Relatórios: \`aoe2hd_unit_array_candidates_v3.csv\` e \`aoe2hd_unit_array_root_refs_v3.csv\` para pares, \`aoe2hd_unit_array_delta_v3.csv\` para amostras before/after dos slots vistos antes da criação, \`aoe2hd_unit_array_rescan_v3.csv\` para referências A/B localizadas independentemente em cada fase, e \`aoe2hd_unit_array_coverage_v3.csv\` / \`aoe2hd_unit_array_coverage_after_v3.csv\` para regiões visitadas, parciais e **não visitadas**.
+
+A v3 ainda não descobre automaticamente a identidade/ponteiro do terceiro aldeão, nem prova que uma entrada extra resulta da criação. Em \`pairs=0\`, os relatórios de pares podem ficar vazios, mas o delta das amostras de âncora única e o CSV da segunda varredura podem fornecer evidências adicionais. Os testes da plataforma Windows precisam ser executados localmente.
