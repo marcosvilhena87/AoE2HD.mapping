@@ -15,6 +15,7 @@
 #include "WorldDynamicDiffV1.h"
 #include "WorldDynamicRepeatedV2.h"
 #include "WorldDynamicCounterV3.h"
+#include "WorldDynamicStagesV4.h"
 #include "DualAnchorDiscovery.h"
 #include <map>
 #include "ReferencePersistence.h"
@@ -228,12 +229,12 @@ int main(){
    uint32_t v[6]{};
    for(size_t k=0;k<captures.size();++k)
     v[k]=aoe2hd::ReadWordEvent(captures[k].roots[ri],offset);
-   bool d[5]{};
-   for(int k=0;k<5;++k)d[k]=(v[k]!=v[k+1]);
+   auto diff=aoe2hd::ClassifyStageDiffV4(v);
+   const auto& d=diff.changed;
    if(!(d[0]||d[1]||d[2]||d[3]||d[4]))continue;
    ++changed;
-   bool q=!d[0]&&d[1]&&!d[2]&&!d[3]&&!d[4];
-   bool c=!d[0]&&!d[1]&&!d[2]&&d[3]&&!d[4];
+   bool q=diff.queueOnly;
+   bool c=diff.completionOnly;
    queueOnly+=q;completeOnly+=c;
    fields<<roots[ri].address<<','<<roots[ri].kind<<','<<offset;
    for(auto value:v)fields<<','<<value;
