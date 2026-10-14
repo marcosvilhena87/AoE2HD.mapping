@@ -1,17 +1,31 @@
 # AoE2HDControl
 
-Reconstrucao do zero do leitor de memoria do **Age of Empires II HD**, alvo **AoK HD.exe 5.8.INT (PE32/x86)**.
+Projeto de engenharia reversa e reconstrução de uma **API de controle para Age of Empires II HD (AoK HD.exe 5.8.INT, x86)**.
 
-Este projeto NAO copia o codigo da versao historica [AoE2HDControl.v0](https://github.com/marcosvilhena87/AoE2HDControl.v0). Reaproveita exclusivamente os enderecos/offsets previamente investigados. Nenhum offset da Definitive Edition e assumido valido.
+O **AoE2Control para Definitive Edition** é usado **apenas como referência conceitual** para definir funcionalidades e alvos semânticos. **Offsets, layouts e estruturas da Definitive Edition não são considerados válidos no HD.** Toda estrutura usada aqui deve ser investigada e validada especificamente na versão HD.
 
-## Escopo da primeira versao
+Esta é uma **reimplementação do zero**. O repositório histórico [AoE2HDControl.v0](https://github.com/marcosvilhena87/AoE2HDControl.v0) preserva descobertas de engenharia reversa, endereços, offsets e experimentos anteriores; não é necessário transportar sua arquitetura nem aceitar hipóteses antigas sem validação.
 
-- Localiza o processo e a base do modulo `AoK HD.exe`;
-- Le World, jogadores e recursos economicos em modo somente leitura;
-- Valida vtables, limites do vetor e referencias de retorno;
-- Exibe diagnostico, sem armazenar ponteiros para outras partidas.
+## Objetivo de longo prazo
 
-**Nao enumera unidades ainda.** Esse sera o proximo marco, apos nova verificacao experimental das estruturas de colecao.
+Construir gradualmente uma API para observar o estado do jogo e, em fases posteriores, avaliar mecanismos de controle. Prioridades:
+
+1. Leitura confiável de `World`, jogadores e recursos;
+2. Enumeração das unidades de cada jogador **sem necessidade de seleção**;
+3. Identificação de aldeões, tipos, posições, saúde e estados;
+4. Telemetria de economia, produção e demais eventos;
+5. Investigação posterior de comandos de controle, somente com fundamentos específicos do HD.
+
+## Estado atual — primeira implementação
+
+- Localiza o processo e a base do módulo `AoK HD.exe`;
+- Lê `World`, jogadores e recursos econômicos em modo somente leitura;
+- Valida vtables, limites do vetor e referências de retorno;
+- Exibe diagnóstico, sem reutilizar ponteiros entre partidas.
+
+**Teste real informado:** base de módulo `0x00B90000`, `World=0x1929E848`, três jogadores (incluindo Gaia), jogador local no índice 1 e leitura de comida, madeira, pedra e ouro. Isso confirma o caminho básico no cenário testado, não todas as configurações do jogo.
+
+**Ainda não implementado:** enumeração automática de unidades, identificação de aldeões e comandos de controle.
 
 ## Compilar no Windows (Visual Studio com C++ e CMake)
 
@@ -23,8 +37,8 @@ cmake --build build --config Release
 
 Se estiver usando Visual Studio 2022, altere o gerador para `Visual Studio 17 2022`.
 
-## Limites
+## Segurança e limites atuais
 
-Somente leitura: utiliza `OpenProcess(PROCESS_VM_READ | PROCESS_QUERY_INFORMATION)` e `ReadProcessMemory`. Nenhuma escrita, injecao ou envio de comandos. O jogo pode nao estar em partida ou a memoria pode mudar entre leituras. Recursos sao marcados como indisponiveis caso os validadores falhem.
+O protótipo usa `OpenProcess(PROCESS_VM_READ | PROCESS_QUERY_INFORMATION)` e `ReadProcessMemory`. Não realiza escrita, injeção nem envio de comandos. Durante mudanças de partida, a memória pode variar; valores são rejeitados quando as validações falham. A prontidão estrutural não prova, por si só, prontidão total de gameplay.
 
-Veja [docs/memory-map.md](docs/memory-map.md) para fontes, layout e limites das evidencias.
+Veja [docs/memory-map.md](docs/memory-map.md) para os endereços reutilizados, a origem das evidências e os limites da validação.
