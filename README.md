@@ -533,3 +533,17 @@ ctest --test-dir build-clean -C Release --output-on-failure
 **Antes de iniciar, selecione um Centro Urbano com fila vazia**. Confirme \`y\` que a seleção é realmente um Centro Urbano e não a altere em nenhum momento. O programa realiza sete capturas: fila vazia, 1, 2 e 3 aldeões na fila, cancelamento de 1, conclusão de 1 e conclusão de mais 1. A cada etapa informe a quantidade *realmente observada* na fila e as conclusões acumuladas, inclusive se houve conclusão inesperada entre capturas. Um \`queue_delta_matches_all\` verdadeiro significa apenas correlação ao longo dos seis intervalos confirmados, não propriedade comprovada de uma fila. Os três relatórios são \`aoe2hd_production_queue_fields_v1.csv\`, \`aoe2hd_production_queue_paths_v1.csv\` e \`aoe2hd_production_queue_phases_v1.csv\`.
 
 **Limites:** acompanhamento de endereços fixos obtidos na captura inicial; objetos realocados ou novos destinos não são redescobertos depois. O comando não altera a memória do jogo, não descobre automaticamente aldeões no mapa e depende de confirmação visual; \`independent_verified=0\` indica que a ferramenta não confirma eventos diretamente. A seleção e o endereço do Centro Urbano permanecem constantes.
+
+## ProductionQueueStructureDiscovery v2 — validação do layout da fila
+
+Ferramenta independente de leitura de memória, preservando a v1. Com um **Centro Urbano selecionado e fila vazia**, confirma-se manualmente a identidade e mantém-se a seleção durante as sete etapas (vazio, +1, +2, +3, cancelar uma ordem, primeira e segunda conclusões). A ferramenta lê **TownCenter+0x21C** como palavra de 32 bits e compara separadamente o `low16` (posição +0x21C) e `high16` (+0x21E) às contagens visualmente informadas. Também fotografa os primeiros **4096 bytes** do objeto e até **256 destinos legíveis de 256 bytes** alcançados por um ponteiro direto no primeiro snapshot. Os candidatos a tripla `begin/end/capacity` são apenas hipóteses estruturais, não registros de fila validados.
+
+```powershell
+git pull --ff-only origin main
+cmake -S . -B build-clean -G "Visual Studio 18 2026" -A Win32
+cmake --build build-clean --config Release
+ctest --test-dir build-clean -C Release --output-on-failure
+.\build-clean\Release\aoe2hd_production_queue_structure_discovery_v2.exe
+```
+
+Arquivos: `aoe2hd_production_queue_layout_fields_v2.csv` (campos que mudam nas sete etapas), `aoe2hd_production_queue_layout_candidates_v2.csv` (triplas candidatas nos snapshots iniciais) e `aoe2hd_production_queue_layout_events_v2.csv` (fila observada, confirmação do operador e metades de 16 bits do contador). A seleção e o ID do Centro Urbano são revalidados durante o procedimento. As contagens observadas **não** são verificadas independentemente: `independent_verified=0`. A ferramenta não descobre destinos alocados após o primeiro snapshot, não acompanha o conteúdo de vetores candidatos em profundidade e não identifica unidades existentes no mapa.
