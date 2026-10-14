@@ -263,3 +263,19 @@ ctest --test-dir build-clean -C Release --output-on-failure
 ```
 
 Selecione um aldeão, execute o programa, selecione outro aldeão da mesma partida e pressione Enter. CSVs: `aoe2hd_entity_graph_edges_v3.csv`, `aoe2hd_entity_graph_summary_v3.csv` e `aoe2hd_entity_graph_reverse_v3.csv`. O resumo informa destinos legíveis, arestas ilegíveis, referências reversas e bytes examinados. Atenção: destino legível não equivale a objeto válido, referências reversas podem ser caches de seleção e 64 MiB não garantem cobertura completa. Não há confirmação de coleção ou enumeração de aldeões sem seleção.
+
+## EntityGraphDiscovery v4 — reverse scan com cotas separadas e persistência A–B–A
+
+Nova ferramenta independente, **somente leitura**, sem alterar v3. Capta aldeão A, pede seleção de aldeão B, percorre regiões legíveis do processo (com regiões de World/LocalPlayer/B priorizadas) procurando exclusivamente os dois endereços de objetos. Aplica limite de resultados **por âncora** para que correspondências repetitivas de B não consumam a cota de A. A busca para por orçamento de bytes ou quando ambas as cotas atingem seu limite.
+
+Após a varredura, solicita que A seja selecionado novamente, valida as identidades candidatas dos dois objetos e relê cada endereço onde havia referência. Registra se o valor permaneceu apontando a A, permaneceu apontando a B, passou a apontar a outro valor ou tornou-se ilegível. Registra também os slots conhecidos `LocalPlayer+0x15C/+0x160`. A persistência sozinha **não** confirma uma lista de unidades.
+
+```powershell
+git pull --ff-only origin main
+cmake -S . -B build-clean -G "Visual Studio 18 2026" -A Win32
+cmake --build build-clean --config Release
+ctest --test-dir build-clean -C Release --output-on-failure
+.\build-clean\Release\aoe2hd_entity_graph_discovery_v4.exe --max-mib 128 --per-anchor 2048
+```
+
+Arquivos: `aoe2hd_entity_graph_reverse_v4.csv` (endereços e persistência A–B–A) e `aoe2hd_entity_graph_summary_v4.csv` (cobertura efetiva, contadores, saturação por âncora). Os limites de bytes são orçamento, não cobertura completa; nem todas as regiões são necessariamente percorridas. Análise reversa é de ponteiros diretos, não busca de indireções ilimitadas. Saídas são sobrescritas em uma nova execução.
