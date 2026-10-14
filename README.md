@@ -547,3 +547,17 @@ ctest --test-dir build-clean -C Release --output-on-failure
 ```
 
 Arquivos: `aoe2hd_production_queue_layout_fields_v2.csv` (campos que mudam nas sete etapas), `aoe2hd_production_queue_layout_candidates_v2.csv` (triplas candidatas nos snapshots iniciais) e `aoe2hd_production_queue_layout_events_v2.csv` (fila observada, confirmação do operador e metades de 16 bits do contador). A seleção e o ID do Centro Urbano são revalidados durante o procedimento. As contagens observadas **não** são verificadas independentemente: `independent_verified=0`. A ferramenta não descobre destinos alocados após o primeiro snapshot, não acompanha o conteúdo de vetores candidatos em profundidade e não identifica unidades existentes no mapa.
+
+## ProductionQueueStructureDiscovery v3 — ponteiro dinâmico TownCenter+0x214
+
+Executável independente e somente leitura. **Selecione diretamente um Centro Urbano com fila vazia antes de iniciar.** A ferramenta obtém a âncora da seleção, solicita confirmação humana de que se trata de Centro Urbano e, em sete etapas (vazio, 1, 2, 3, cancelamento, conclusão 1, conclusão 2), relê os campos \`TownCenter+0x214\`, \`+0x218\` e \`+0x21C\`. Se \`+0x214\` for um ponteiro alinhado legível, captura os primeiros **512 bytes** do endereço atual em cada etapa. Ao contrário das versões anteriores, **segue também ponteiros que só aparecem depois que a fila começa a ser preenchida**. Comparações de palavras só são válidas se ambos os snapshots forem legíveis **e o ponteiro for idêntico**; caso contrário uma linha sinaliza comparação inválida (não ausência de mudanças). Valida continuamente a seleção e a identidade do Centro Urbano.
+
+\`\`\`powershell
+git pull --ff-only origin main
+cmake -S . -B build-clean -G "Visual Studio 18 2026" -A Win32
+cmake --build build-clean --config Release
+ctest --test-dir build-clean -C Release --output-on-failure
+.\build-clean\Release\aoe2hd_production_queue_structure_discovery_v3.exe
+\`\`\`
+
+CSVs: \`aoe2hd_production_queue_pointer_v3.csv\` (ponteiro/contagem em cada fase e legibilidade), \`aoe2hd_production_queue_pointer_words_v3.csv\` (conteúdo completo dos 512 bytes legíveis por fase) e \`aoe2hd_production_queue_pointer_deltas_v3.csv\` (campos modificados em transições comparáveis, além de uma linha de invalidação quando necessário). A confirmação da fila continua visual, e não uma verificação independente. O conteúdo de 512 bytes pode não conter a estrutura completa; ponteiros internos ainda não são percorridos.
