@@ -2,6 +2,9 @@
 #include <tlhelp32.h>
 #include <array>
 #include <cmath>
+#include <algorithm>
+#include <fstream>
+#include <set>
 #include <cstdint>
 #include <iomanip>
 #include <iostream>
@@ -73,7 +76,76 @@ bool moduleBase(uint32_t pid, uint32_t& base) {
 void hexField(const char* label, uint32_t value) {
     std::cout << label << "0x" << std::hex << std::uppercase << value << std::dec << "\n";
 }
-bool probe(HANDLE process, uint32_t base) {
+
+struct VectorCandidate {
+    const char* root;
+    uint32_t offset, begin, end, cap, stride, count;
+    uint32_t sampled, nonzero, distinct, readableTargets;
+};
+void discoverVectors(HANDLE process, uint32_t world, uint32_t local) {
+    std::vector<VectorCandidate> found;
+    const std::array<std::pair<const char*, uint32_t>, 2> roots = {{
+        {"LocalPlayer", local}, {"World", world}
+    }};
+    for (const auto& root : roots) {
+        for (uint32_t offset = 0x10; offset + 12 <= 0x800; offset += 4) {
+            uint32_t words[3]{};
+            uint32_t address = 0;
+            if (!plus(root.second, offset, address) ||
+                !read(process, address, words, sizeof(words))) continue;
+            const uint32_t begin=words[0], end=words[1], cap=words[2];
+            if (begin < 0x10000 || begin % 4 || end <= begin || cap < end ||
+                cap - begin > 8192) continue;
+            for (uint32_t stride : {4u, 8u}) {
+                if ((end-begin)%stride || (cap-begin)%stride) continue;
+                uint32_t count=(end-begin)/stride;
+                if (count == 0 || count > 512) continue;
+                uint32_t sampled=0, nonzero=0, readableTargets=0;
+                std::set<uint32_t> distinct;
+                for (uint32_t i=0; i<std::min(count, 64u); ++i) {
+                    uint32_t value=0;
+                    if (!read32(process, begin, i*stride, value)) continue;
+                    ++sampled;
+                    if (!value) continue;
+                    ++nonzero;
+                    if (value < 0x10000 || value%4) continue;
+                    distinct.insert(value);
+                    uint32_t firstWord=0;
+                    if (read32(process,value,0,firstWord)) ++readableTargets;
+                }
+                if (nonzero < 2 || readableTargets == 0) continue;
+                found.push_back({root.first,offset,begin,end,cap,stride,count,
+                                 sampled,nonzero,static_cast<uint32_t>(distinct.size()),readableTargets});
+            }
+        }
+    }
+    std::sort(found.begin(),found.end(),[](const VectorCandidate& a,const VectorCandidate& b){
+        if(a.readableTargets!=b.readableTargets)return a.readableTargets>b.readableTargets;
+        return a.distinct>b.distinct;
+    });
+    std::ofstream csv("aoe2hd_unit_candidates.csv",std::ios::trunc);
+    if(!csv) {
+        std::cerr << "Nao foi possivel criar CSV de candidatos.\n";
+        return;
+    }
+    csv << "source,offset,begin,end,capacity_end,stride,entries,sampled,nonzero,distinct_targets,readable_targets,status\n";
+    for(const auto& c:found) {
+        csv << c.root << ',' << c.offset << ',' << c.begin << ',' << c.end << ','
+            << c.cap << ',' << c.stride << ',' << c.count << ',' << c.sampled << ','
+            << c.nonzero << ',' << c.distinct << ',' << c.readableTargets << ",hypothesis\n";
+    }
+    std::cout << "Colecoes candidatas: " << found.size()
+              << " (nenhuma classificada como lista de unidades confirmada).\n"
+              << "CSV: aoe2hd_unit_candidates.csv\n";
+    for (size_t i=0; i<std::min(found.size(),size_t{10}); ++i) {
+        const auto& c=found[i];
+        std::cout << c.root << "+0x" << std::hex << c.offset << std::dec
+                  << " stride=" << c.stride << " entries=" << c.count
+                  << " readable=" << c.readableTargets << "\n";
+    }
+}
+
+bool probe(HANDLE process, uint32_t base, bool discover) {
     uint32_t owner = 0, ownerAddress = 0, world = 0, vt = 0;
     if (!plus(base, kOwnerRva, ownerAddress) || !read32(process, ownerAddress, 0, owner))
         { std::cerr << "Nao foi possivel ler Owner.\n"; return false; }
@@ -147,11 +219,16 @@ bool probe(HANDLE process, uint32_t base) {
               << "Madeira: " << resources[1] << "\n"
               << "Pedra: " << resources[2] << "\n"
               << "Ouro: " << resources[3] << "\n";
+    if (discover) discoverVectors(process, world, players[local]);
     return true;
 }
 } // namespace
 
-int main() {
+int main(int argc, char** argv) {
+    if (argc > 2 || (argc == 2 && std::string(argv[1]) != "--discover-units")) {
+        std::cerr << "Uso: aoe2hd_probe [--discover-units]\n"; return 2;
+    }
+    const bool discover = argc == 2;
     const uint32_t pid = findProcess();
     if (!pid) { std::cerr << "AoK HD.exe nao encontrado.\n"; return 1; }
     uint32_t base = 0;
@@ -160,5 +237,5 @@ int main() {
     if (!process.value) { std::cerr << "Sem acesso somente leitura ao processo.\n"; return 1; }
     std::cout << "AoE2HDControl - leitura experimental (5.8.INT)\n";
     hexField("Module base: ", base);
-    return probe(process.value, base) ? 0 : 2;
+    return probe(process.value, base, discover) ? 0 : 2;
 }
