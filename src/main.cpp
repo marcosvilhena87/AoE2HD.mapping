@@ -1,4 +1,5 @@
 #include <windows.h>
+#include "EntityEvidence.h"
 #include <tlhelp32.h>
 #include <array>
 #include <cmath>
@@ -82,7 +83,8 @@ struct VectorCandidate {
     uint32_t offset, begin, end, cap, stride, count;
     uint32_t sampled, nonzero, distinct, readableTargets;
 };
-void discoverVectors(HANDLE process, uint32_t world, uint32_t local) {
+void discoverVectors(HANDLE process, uint32_t world, uint32_t local,
+                     const std::vector<uint32_t>& players, uint32_t localIndex) {
     std::vector<VectorCandidate> found;
     const std::array<std::pair<const char*, uint32_t>, 2> roots = {{
         {"LocalPlayer", local}, {"World", world}
@@ -129,6 +131,32 @@ void discoverVectors(HANDLE process, uint32_t world, uint32_t local) {
         return;
     }
     csv << "source,offset,begin,end,capacity_end,stride,entries,sampled,nonzero,distinct_targets,readable_targets,status\n";
+    std::ofstream detail("aoe2hd_entity_evidence.csv",std::ios::trunc);
+    if (!detail) std::cerr << "Nao foi possivel criar CSV de evidencias.\n";
+    else detail << "source,offset,stride,entries,index,word,value,target,path,readable,signature,candidate_id,candidate_type,candidate_owner,ownership,duplicate,status\n";
+    auto reader=[process](uint32_t addr,void* data,size_t bytes){
+        return read(process,addr,data,bytes);
+    };
+    uint32_t localHits=0, otherHits=0;
+    for(const auto& c:found) {
+        auto evidence=aoe2hd::inspect(reader,c.begin,c.stride,c.count,players,localIndex);
+        for(const auto& e:evidence) {
+            if(!e.readable || !e.candidateId)continue;
+            if(std::string(e.ownership)=="local")++localHits;
+            if(std::string(e.ownership)=="other_player")++otherHits;
+        }
+        if(detail) for(const auto& e:evidence) {
+            detail << c.root << ',' << c.offset << ',' << c.stride << ',' << c.count
+                   << ',' << e.index << ',' << e.word << ',' << e.value << ',' << e.target
+                   << ',' << e.path << ',' << e.readable << ',' << e.signature
+                   << ',' << e.candidateId << ',' << e.candidateType << ','
+                   << e.candidateOwner << ',' << e.ownership << ',' << e.duplicate
+                   << ",hypothesis\n";
+        }
+    }
+    std::cout << "Evidencias de propriedade (inclui sobreposicoes): local=" << localHits
+              << " other=" << otherHits << "\n";
+    if(detail) std::cout << "CSV: aoe2hd_entity_evidence.csv\n";
     for(const auto& c:found) {
         csv << c.root << ',' << c.offset << ',' << c.begin << ',' << c.end << ','
             << c.cap << ',' << c.stride << ',' << c.count << ',' << c.sampled << ','
@@ -219,7 +247,7 @@ bool probe(HANDLE process, uint32_t base, bool discover) {
               << "Madeira: " << resources[1] << "\n"
               << "Pedra: " << resources[2] << "\n"
               << "Ouro: " << resources[3] << "\n";
-    if (discover) discoverVectors(process, world, players[local]);
+    if (discover) discoverVectors(process, world, players[local], players, local);
     return true;
 }
 } // namespace
