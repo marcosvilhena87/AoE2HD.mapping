@@ -411,3 +411,17 @@ ctest --test-dir build-clean -C Release --output-on-failure
 \`\`\`
 
 Selecione A antes de iniciar; quando solicitado, selecione outro aldeão B e pressione Enter. CSVs: \`aoe2hd_player_objects_v3.csv\` (objetos apontados por World+0x88), \`aoe2hd_player_subobjects_v3.csv\` (vetores encontrados em subobjetos dos jogadores) e \`aoe2hd_player_summary_v3.csv\` (contadores). A v3 não exige criação de terceiro aldeão. A investigação é limitada a janelas de 0x800 bytes dos jogadores, subobjetos examinados em 0x400 bytes, vetores pequenos e uma indireção; não faz descoberta exaustiva. A execução Windows ainda precisa ser validada.
+
+## PlayerUnitCollectionDiscovery v4 — subobjetos de Player+0x14
+
+Nova ferramenta independente, somente leitura. Selecionar A, executar, selecionar outro aldeão B e pressionar Enter. A v4 enumera os jogadores conhecidos, segue **somente** o ponteiro Player+0x14 e captura até 0x400 bytes por subobjeto próprio distinto. Registra campos e testa uma hipótese limitada de tabela contígua de ponteiros com contagem adjacente (ordens pointer/count e count/pointer; 2–2048 entradas). Descarta como raiz World e os endereços das duas âncoras. Após a primeira captura, pode selecionar o Centro Urbano e criar um terceiro aldeão sem selecioná-lo; pressione Enter para comparar os mesmos campos, validando diretamente World e as duas identidades.
+
+\`\`\`powershell
+git pull --ff-only origin main
+cmake -S . -B build-clean -G "Visual Studio 18 2026" -A Win32
+cmake --build build-clean --config Release
+ctest --test-dir build-clean -C Release --output-on-failure
+.\build-clean\Release\aoe2hd_player_unit_collection_discovery_v4.exe
+\`\`\`
+
+Arquivos: \`aoe2hd_player_owned_layout_v4.csv\` (campos brutos por jogador), \`aoe2hd_player_owned_evidence_v4.csv\` (hipóteses count/pointer e ocorrências A/B) e \`aoe2hd_player_owned_delta_v4.csv\` (comparação dos campos antes/depois). A ausência de mudanças nos 0x400 bytes monitorados não prova ausência de mutação em outras estruturas; a versão não segue ponteiros de tabelas realocadas nem identifica automaticamente a terceira unidade. As correspondências permanecem hipóteses, não enumeração confirmada.
