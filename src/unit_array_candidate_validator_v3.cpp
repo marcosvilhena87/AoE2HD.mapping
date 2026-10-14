@@ -290,6 +290,9 @@ int main(int argc,char** argv){
  for(const auto& c:coverage)
   cov<<c.base<<','<<c.size<<','<<c.attempted<<','<<c.read<<','
      <<c.failures<<','<<(c.attempted==c.size?"attempted_full":"partial")<<"\n";
+ // Explicitly report regions not reached by the first-phase budget.
+ for(size_t k=coverage.size();k<map.size();++k)
+  cov<<map[k].base<<','<<map[k].size<<",0,0,0,unvisited\n";
  std::ofstream delta("aoe2hd_unit_array_delta_v3.csv",std::ios::trunc);
  if(!delta){std::cerr<<"Delta CSV open failed\n";return 5;}
  delta<<"slot,before_pointer,after_pointer,before_meta,after_meta,before_id,after_id,before_hp,after_hp,before_plausible,after_plausible,changed,status\n";
@@ -328,6 +331,8 @@ int main(int argc,char** argv){
  for(const auto& c:afterCoverage)
   secondCov<<c.base<<','<<c.size<<','<<c.attempted<<','<<c.read<<','
            <<c.failures<<','<<(c.attempted==c.size?"attempted_full":"partial")<<"\n";
+ for(size_t k=afterCoverage.size();k<map.size();++k)
+  secondCov<<map[k].base<<','<<map[k].size<<",0,0,0,unvisited\n";
  const auto afterPairs=aoe2hd::FindEightBytePairs(afterFirst,afterSecond);
  std::ofstream newHits("aoe2hd_unit_array_rescan_v3.csv");
  if(!newHits){std::cerr<<"Rescan CSV failed\n";return 5;}
