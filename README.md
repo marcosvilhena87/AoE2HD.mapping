@@ -441,3 +441,19 @@ ctest --test-dir build-clean -C Release --output-on-failure
 \`\`\`
 
 CSV: \`aoe2hd_player_indirect_delta_v5.csv\` (mudanças por destino), \`aoe2hd_player_indirect_paths_v5.csv\` (origem dos destinos) e \`aoe2hd_player_indirect_summary_v5.csv\` (resumo). A leitura atual exige que os 128 bytes estejam inteiramente legíveis; candidatos parciais ficam fora. Quando o destino se torna ilegível após a ação, \`changed_bytes=0\` significa comparação indisponível, **não** ausência de alteração. O experimento observa somente endereços capturados antes da criação e não descobre automaticamente novas tabelas ou a identidade da unidade criada. Mudanças de conteúdo não constituem comprovação de uma coleção de unidades.
+
+## WorldDynamicUnitDiscovery v1 — diferencial controlado
+
+Executável independente e **somente leitura**. Captura os primeiros **0x800 bytes** de World e dos objetos de jogadores conhecidos em três fases: inicial, controle (tempo decorrido sem criar unidade) e após **criar exatamente um aldeão sem selecioná-lo**. Não usa os slots de seleção para encontrar coleções. A mudança exclusiva da fase de criação é marcada como \`creation_only\`, porém isso não demonstra causalidade: recursos, tempo, animações e outras ações também podem mudar.
+
+\`\`\`powershell
+git pull --ff-only origin main
+cmake -S . -B build-clean -G "Visual Studio 18 2026" -A Win32
+cmake --build build-clean --config Release
+ctest --test-dir build-clean -C Release --output-on-failure
+.\build-clean\Release\aoe2hd_world_dynamic_unit_discovery.exe
+\`\`\`
+
+Comece com um aldeão conhecido selecionado para validar a sessão, e mantenha a partida ativa. Quando solicitado, apenas deixe transcorrer um intervalo sem criar unidades e pressione Enter (controle). Depois, crie um aldeão; é permitido selecionar o Centro Urbano; pressione Enter após a conclusão. Saídas: \`aoe2hd_world_dynamic_fields_v1.csv\`, \`aoe2hd_world_dynamic_roots_v1.csv\` e \`aoe2hd_world_dynamic_summary_v1.csv\`.
+
+**Limitações:** compara janelas estruturais fixas, não heaps arbitrários ou conteúdo de ponteiros. Apenas mudanças alinhadas de 4 bytes são registradas. A conclusão é limitada à janela de cada raiz que permaneceu inteiramente legível nas três fases. A versão ainda não testa uma segunda criação nem comprova contadores de unidade; exige confirmação em múltiplos experimentos. Integração Windows ainda não verificada na sessão de desenvolvimento.
