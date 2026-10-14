@@ -279,3 +279,19 @@ ctest --test-dir build-clean -C Release --output-on-failure
 ```
 
 Arquivos: `aoe2hd_entity_graph_reverse_v4.csv` (endereços e persistência A–B–A) e `aoe2hd_entity_graph_summary_v4.csv` (cobertura efetiva, contadores, saturação por âncora). Os limites de bytes são orçamento, não cobertura completa; nem todas as regiões são necessariamente percorridas. Análise reversa é de ponteiros diretos, não busca de indireções ilimitadas. Saídas são sobrescritas em uma nova execução.
+
+## EntityGraphDiscovery v5 — raízes de jogadores, cobertura e persistência
+
+Versão independente e somente leitura que preserva a v4. O procedimento experimental é **A → B → A**: selecione A antes de iniciar, B após o primeiro prompt, e A novamente depois da varredura. Confere o ID candidato dos dois objetos e estabilidade de World/LocalPlayer.
+
+A v5 extrai ponteiros de jogadores a partir da coleção conhecida `World+0x184/+0x188` (entradas de 8 bytes), registra raízes em CSV e **prioriza as regiões** que contêm essas raízes e as duas âncoras. Isso ainda não é uma travessia completa a partir de cada jogador. A busca de referências é direta, com cotas independentes por âncora, e contabiliza os bytes tentados e os realmente lidos por região. Depois da seleção final, `unchanged_first` e `unchanged_second` significam conteúdo efetivamente preservado no mesmo endereço; `switched_second_to_first` significa referência que passou de B para A. `both_anchors_seen=1` é somente coexistência de referências no intervalo examinado, **não** confirmação de mecanismo de enumeração.
+
+```powershell
+git pull --ff-only origin main
+cmake -S . -B build-clean -G "Visual Studio 18 2026" -A Win32
+cmake --build build-clean --config Release
+ctest --test-dir build-clean -C Release --output-on-failure
+.\build-clean\Release\aoe2hd_entity_graph_discovery_v5.exe --max-mib 128 --per-anchor 2048
+```
+
+Resultados: `aoe2hd_entity_roots_v5.csv` (raízes), `aoe2hd_entity_coverage_v5.csv` (regiões tentadas, bytes efetivos, erros), `aoe2hd_entity_references_v5.csv` (referências A/B, valores após retorno a A) e `aoe2hd_entity_summary_v5.csv`. Regiões não visitadas não têm linhas no CSV de cobertura: use `regions_available` e `regions_examined` para distinguir a cobertura incompleta. `attempted_full` indica apenas que toda a região foi **tentada**, não que seus bytes foram inteiramente legíveis. Resultados de referência permanecem hipóteses.
