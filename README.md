@@ -235,3 +235,17 @@ ctest --test-dir build-clean -C Release --output-on-failure
 O algoritmo parte de `World` e `LocalPlayer`, examina ate 256 bytes por no, acompanha campos de 32 bits alinhados com valores plausiveis de ponteiro ate **dois saltos** e deduplica nos por endereco. Limites: ate 512 nos e 8192 arestas, nenhuma leitura de escrita. Nao usa os objetos conhecidos como raizes, pois isso criaria evidencias artificiais. Os IDs candidatos dos dois aldeoes sao conferidos antes da exportacao.
 
 Gera `aoe2hd_entity_graph_edges.csv` (origem, offset, destino, profundidade, correspondencia com cada ancora) e `aoe2hd_entity_graph_summary.csv` (quantidade de nos/arestas, correspondencias, falhas e indicador `capped`). Interpretacao: `is_first=1` ou `is_second=1` identifica uma coincidencia de ponteiro num caminho percorrido, **nao** uma colecao de unidades confirmada. Limites de profundidade/bytes/no e filtros podem impedir encontrar caminhos reais. Se `capped=1`, o resultado e incompleto. CSVs sobrescritos a cada execucao.
+
+## EntityGraphDiscovery v2 — cobertura adaptativa e seleção explícita
+
+A v2 preserva o executável v1 para comparação. Os roots `World` e `LocalPlayer` recebem janelas de `0x400` bytes (incluindo `LocalPlayer+0x15C/+0x160`); nós desconhecidos recebem `0x100` bytes. No máximo dois saltos, 512 nós e 8192 arestas. Os slots de seleção são classificados como `selection_edge=1` e não servem como expansão de nós, evitando interpretar a seleção como descoberta de armazenamento.
+
+```powershell
+git pull --ff-only origin main
+cmake -S . -B build-clean -G "Visual Studio 18 2026" -A Win32
+cmake --build build-clean --config Release
+ctest --test-dir build-clean -C Release --output-on-failure
+.\build-clean\Release\aoe2hd_entity_graph_discovery_v2.exe
+```
+
+Selecione um aldeão antes de executar e um segundo, diferente, quando solicitado. Saídas: `aoe2hd_entity_graph_edges_v2.csv` e `aoe2hd_entity_graph_summary_v2.csv`. A coluna `selection_edge` distingue arestas originadas nos slots conhecidos, enquanto `selection_matches` e `nonselection_matches` resumem correspondências. Um match não relacionado a esses dois offsets ainda pode ser referência auxiliar de seleção, não uma coleção confirmada. Caminhos são hipóteses e a exploração pode não encontrar índices, tabelas hash ou outros mecanismos não representados por DWORDs alinhados.
