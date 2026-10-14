@@ -170,3 +170,22 @@ Selecione exatamente **um aldeao** antes de iniciar. O programa registra todas a
 Colunas incluem `anchor`, `anchor_id`, `second_anchor`, `second_id`, `region_base`, `address`, `offset_in_region`, `before`, `after`, `selection_slot`, `observed_value_after`, `persisted`, `nearby_minus8`, `nearby_plus8`, `status`. `persisted=1` significa apenas que o endereco ainda continha o ponteiro original depois da troca de selecao. Nao garante que seja uma colecao de unidades. Proximidade de ponteiros similares deve ser confirmada em diversas repeticoes. O arquivo sera sobrescrito na proxima execucao.
 
 Limites: a busca nao cobre necessariamente toda a memoria, nao atravessa varias indirecoes, nao fornece um snapshot atomico e nao testa se um objeto sobrevive a morte/remocao. Os valores de vizinhanca sao evidencias, nao provas de uma estrutura de vetor. O v3 nao atribui tipo de unidade sem confirmacao adicional.
+
+## UnitReferenceDiscovery v4 — dois aldeoes simultaneamente
+
+Esta versao independente procura referencias **simultaneas** a dois objetos conhecidos, sem depender de manter o primeiro aldeao selecionado. O primeiro aldeao e identificado pela selecao; depois voce seleciona um segundo aldeao e confirma com Enter. A ferramenta valida que a identidade candidata do primeiro objeto ainda pode ser lida e realiza uma varredura bounded somente leitura, com regioes de `World`, `LocalPlayer` e objeto selecionado priorizadas.
+
+```powershell
+git pull --ff-only origin main
+cmake -S . -B build-clean -G "Visual Studio 18 2026" -A Win32
+cmake --build build-clean --config Release
+ctest --test-dir build-clean -C Release --output-on-failure
+.\build-clean\Release\aoe2hd_unit_reference_discovery_v4.exe --max-mib 64 --max-seconds 15 --max-hits 2048
+```
+
+Apos selecionar o **primeiro** aldeao, inicie o programa; quando solicitado selecione um **segundo** aldeao diferente e pressione Enter. A v4 procura ambos os ponteiros ao mesmo tempo e gera:
+
+- `aoe2hd_unit_references_v4.csv`: todos os enderecos coincidentes, papel da ancora, indicacao do slot de selecao e dois DWORDs vizinhos;
+- `aoe2hd_unit_reference_pairs_v4.csv`: pares de referencias a aldeoes distintos cuja distancia na memoria e de no maximo 256 bytes, excluindo os slots diretos de selecao.
+
+**Interpretacao cautelosa:** um par proximo pode indicar um array, um cache ou duas estruturas vizinhas nao relacionadas. A distancia nao demonstra parentesco estrutural ou alcancabilidade a partir de World. A validacao dos ponteiros nao prova que os objetos sejam aldeoes; selecione-os visualmente no jogo. O programa nao percorre cadeias indiretas arbitrarias, nao produz enumeracao automatica e pode perder referencias se esgotar o limite de bytes, tempo ou hits. Os CSVs sao sobrescritos na proxima execucao. Esses limites sao de investigacao, nao de cobertura completa do processo.
