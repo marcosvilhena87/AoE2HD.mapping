@@ -471,3 +471,19 @@ ctest --test-dir build-clean -C Release --output-on-failure
 \`\`\`
 
 CSV: \`aoe2hd_world_dynamic_fields_v2.csv\`, \`aoe2hd_world_dynamic_roots_v2.csv\`, \`aoe2hd_world_dynamic_summary_v2.csv\`. Campos \`clean_repeat\` e \`increment_one\` são **hipóteses correlacionais**, não prova de contagem de aldeões. As duas criações também consomem recursos e avançam o tempo. Esta versão não distingue tipos de estruturas além de comparação de words, não examina listas em heaps e não usa leitura de seleção para enumerar unidades. A compilação no Windows deve ser validada no ambiente de execução do jogo.
+
+## WorldDynamicUnitDiscovery v3 — classificação de contador candidato
+
+Executável independente, read-only. Investiga especificamente o campo \`LocalPlayer+0x37C\` (offset 892), cujos 32 bits foram observados em v2 como \`0 → 65536 → 131072\`. A v3 lê separadamente a metade inferior (\`+0x37C\`) e a superior (\`+0x37E\`) como **inteiros não sinalizados de 16 bits**, acompanhando a mesma janela de 64 bytes a partir de \`Player+0x370\` nos jogadores conhecidos. O programa não afirma antecipadamente que o campo conte aldeões.
+
+\`\`\`powershell
+git pull --ff-only origin main
+cmake -S . -B build-clean -G "Visual Studio 18 2026" -A Win32
+cmake --build build-clean --config Release
+ctest --test-dir build-clean -C Release --output-on-failure
+.\build-clean\Release\aoe2hd_world_dynamic_unit_discovery_v3.exe
+\`\`\`
+
+Procedimento: selecione primeiro um aldeão para inicializar a âncora. Quando o programa solicitar, selecione o Centro Urbano, que **deve permanecer selecionado em todas as capturas**. Capture baseline, controle sem alterações voluntárias, criação concluída de um aldeão, segunda criação concluída, evento opcional de uma unidade que não seja aldeão, e evento opcional de uma pesquisa. Para as duas etapas opcionais, informe explicitamente \`y\` se o evento ocorreu ou \`n\` se foi pulado. Caso só tenha um Centro Urbano e não consiga produzir outra unidade sem mudar a seleção, pule o evento (\`n\`); não mude a seleção para completar uma etapa opcional.
+
+Arquivos: \`aoe2hd_world_dynamic_counter_values_v3.csv\` (word32 + halfwords de cada jogador em cada fase), \`aoe2hd_world_dynamic_counter_deltas_v3.csv\` (mudanças por evento, com \`event_completed\`) e \`aoe2hd_world_dynamic_counter_neighborhood_v3.csv\` (janela estrutural de 64 bytes). As capturas não são simultâneas para jogadores diferentes e \`event_completed\` é uma declaração do operador; sem confirmação independente, não comprova causalidade. A leitura exige manter identidades/World e a seleção; o campo ainda pode ser contador de fila, estatística ou outro estado, não população atual nem coleção de unidades.
