@@ -189,3 +189,19 @@ Apos selecionar o **primeiro** aldeao, inicie o programa; quando solicitado sele
 - `aoe2hd_unit_reference_pairs_v4.csv`: pares de referencias a aldeoes distintos cuja distancia na memoria e de no maximo 256 bytes, excluindo os slots diretos de selecao.
 
 **Interpretacao cautelosa:** um par proximo pode indicar um array, um cache ou duas estruturas vizinhas nao relacionadas. A distancia nao demonstra parentesco estrutural ou alcancabilidade a partir de World. A validacao dos ponteiros nao prova que os objetos sejam aldeoes; selecione-os visualmente no jogo. O programa nao percorre cadeias indiretas arbitrarias, nao produz enumeracao automatica e pode perder referencias se esgotar o limite de bytes, tempo ou hits. Os CSVs sao sobrescritos na proxima execucao. Esses limites sao de investigacao, nao de cobertura completa do processo.
+
+## UnitCollectionDiscovery v1 — candidatos a colecoes com duas ancoras
+
+Ferramenta nova, **somente leitura**, separada do UnitReferenceDiscovery. Usa os campos de selecao e identidade experimental da v0 para obter dois aldeoes diferentes da mesma partida. Selecione o primeiro, execute e selecione o segundo quando solicitado. A ferramenta confere que o primeiro objeto continua legivel e com o mesmo ID candidato.
+
+Em vez de executar outra varredura sequencial de 64 MiB, procura triplas candidatas `[begin,end,capacity]` em ate `0x800` bytes de `World` e `LocalPlayer`. Cada buffer tem limite de 4096 bytes de conteudo (capacidade ate 8192); examina strides de 4 e 8 bytes e ate 512 entradas. Para cada campo, testa referencia direta a **ambos** os ponteiros, ou referencia indireta por meio dos primeiros dois DWORDs de um intermediario legivel. Nao identifica automaticamente listas de unidades.
+
+```powershell
+git pull --ff-only origin main
+cmake -S . -B build-clean -G "Visual Studio 18 2026" -A Win32
+cmake --build build-clean --config Release
+ctest --test-dir build-clean -C Release --output-on-failure
+.\build-clean\Release\aoe2hd_unit_collection_discovery.exe
+```
+
+Arquivo: `aoe2hd_unit_collections_v1.csv` com offsets do root, endereco do buffer, stride, contagem, indices e contadores de coincidencias diretas/indiretas por ancora, alem de `both`. `both=1` e apenas uma hipotese de colecao que contem evidencias de duas unidades. `both=0` NAO demonstra ausencia de unidade no jogo: a busca e restrita aos roots, ao tamanho dos buffers e a um salto indireto. Proximo experimento recomendado: repetir em mais de uma partida e verificar se a estrutura sobrevive a mudancas de selecao. Arquivo sobrescrito a cada execucao.
