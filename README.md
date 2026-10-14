@@ -315,3 +315,17 @@ Quando solicitado, crie um aldeão **sem selecioná-lo** e pressione Enter para 
 - \`aoe2hd_unit_array_delta_v1.csv\`: instantâneo após o teste.
 
 **Limitações**: o relatório delta registra o estado posterior, e a comparação temporal detalhada pode ser feita pela junção por \`candidate,slot\` com o CSV inicial; não infere automaticamente criação de objeto. Proximidade de 8 bytes, leitura plausível de HP ou IDs distintos não confirma coleção. O orçamento de memória pode deixar regiões sem varredura. Os endereços de uma execução não devem ser reutilizados na próxima.
+
+## UnitArrayCandidateValidator v2
+
+Mantém a v1 intacta. A v2 não exige manter o segundo aldeão selecionado após criar um novo: valida diretamente o World e os IDs candidatos de A/B. Registra regiões tentadas e bytes efetivamente lidos em \`aoe2hd_unit_array_coverage_v2.csv\`. Armazena as entradas candidatas antes da criação e emite comparação por slot com colunas before/after e changed em \`aoe2hd_unit_array_delta_v2.csv\`. Os demais resultados são \`aoe2hd_unit_array_candidates_v2.csv\` e \`aoe2hd_unit_array_root_refs_v2.csv\`.
+
+\`\`\`powershell
+git pull --ff-only origin main
+cmake -S . -B build-clean -G "Visual Studio 18 2026" -A Win32
+cmake --build build-clean --config Release
+ctest --test-dir build-clean -C Release --output-on-failure
+.\build-clean\Release\aoe2hd_unit_array_candidate_validator_v2.exe --max-mib 128
+\`\`\`
+
+Selecione A inicialmente, depois B quando solicitado; após a primeira leitura, crie um aldeão usando o Centro Urbano sem selecionar a unidade recém-criada, então pressione Enter. Se nenhum par for encontrado, os arquivos de candidatos e delta podem conter apenas cabeçalhos: isso é resultado inconclusivo, não falha do jogo. A busca permanece limitada por bytes e não demonstra cobertura de todo o processo.
