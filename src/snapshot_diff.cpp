@@ -62,12 +62,29 @@ bool capture(HANDLE h,uint32_t pid,uint32_t base,aoe2hd::Snapshot& s){
     bool valid=true;
     for(uint32_t i=0;i<count;++i){
      uint32_t v=0;
-     if(!u32(h,b,i*stride,v)){valid=false;break;}
-     col.values.push_back(v);
+     for(uint32_t w=0;w<stride/4;++w){
+      if(!u32(h,b,i*stride+w*4,v)){valid=false;break;}
+      col.values.push_back(v);
+     }
+     if(!valid)break;
     }
     if(valid)s.collections.push_back(std::move(col));
    }
   }
+ }
+ // Only sample direct pointer-like values from candidate entry words.
+ // Bounded: 256 distinct target addresses, 64 bytes per target, no recursive traversal.
+ std::set<uint32_t> pointers;
+ for(const auto& col:s.collections)for(uint32_t value:col.values)
+  if(value>=0x10000 && value<=UINT32_MAX-64 && (value&3u)==0)pointers.insert(value);
+ size_t inspected=0;
+ for(uint32_t address:pointers){
+  if(inspected++>=256)break;
+  aoe2hd::ObjectSample sample; sample.address=address;
+  uint32_t words[16]{};
+  sample.readable=read(h,address,words,sizeof(words));
+  if(sample.readable)sample.words.assign(words,words+16);
+  s.objects.emplace(address,std::move(sample));
  }
  uint32_t ownerAgain=0,worldAgain=0,playerAgain=0,b2=0,e2=0,c2=0;
  if(!u32(h,base,0x006F2C58,ownerAgain)||!u32(h,owner,0xC8,worldAgain)||
@@ -79,10 +96,18 @@ bool capture(HANDLE h,uint32_t pid,uint32_t base,aoe2hd::Snapshot& s){
 }
 void save(const std::string& path,const aoe2hd::Snapshot& s){
  std::ofstream out(path,std::ios::trunc);
- out<<"pid,world,local,source,offset,stride,begin,end,capacity_end,index,value\n";
+ out<<"pid,world,local,source,offset,stride,begin,end,capacity_end,index,word,value\n";
  for(const auto& c:s.collections)for(size_t i=0;i<c.values.size();++i)
   out<<s.pid<<','<<s.world<<','<<s.local<<','<<c.source<<','<<c.offset<<','
-     <<c.stride<<','<<c.begin<<','<<c.end<<','<<c.cap<<','<<i<<','<<c.values[i]<<'\n';
+     <<c.stride<<','<<c.begin<<','<<c.end<<','<<c.cap<<','<<(i/(c.stride/4))<<','<<(i%(c.stride/4))<<','<<c.values[i]<<'\n';
+ std::ofstream objects(path+".objects.csv",std::ios::trunc);
+ objects<<"pid,world,local,address,readable,word,value\n";
+ for(const auto& p:s.objects){
+  const auto& o=p.second;
+  if(!o.readable){objects<<s.pid<<','<<s.world<<','<<s.local<<','<<p.first<<",0,-1,0\n";continue;}
+  for(size_t i=0;i<o.words.size();++i)
+   objects<<s.pid<<','<<s.world<<','<<s.local<<','<<p.first<<",1,"<<i<<','<<o.words[i]<<'\n';
+ }
 }
 }
 int main(){
@@ -107,10 +132,11 @@ int main(){
  auto changes=aoe2hd::Compare(before,after);
  std::ofstream csv("aoe2hd_snapshot_diff.csv",std::ios::trunc);
  if(!csv){std::cerr<<"Falha ao criar CSV.\n";return 4;}
- csv<<"source,offset,stride,kind,index,before,after\n";
+ csv<<"source,offset,stride,kind,index,word,before,after\n";
  for(const auto& c:changes)csv<<c.source<<','<<c.offset<<','<<c.stride<<','
-    <<c.kind<<','<<c.index<<','<<c.before<<','<<c.after<<'\n';
+    <<c.kind<<','<<c.index<<','<<c.word<<','<<c.before<<','<<c.after<<'\n';
  std::cout<<"A="<<before.collections.size()<<" B="<<after.collections.size()
           <<" changes="<<changes.size()<<"\nCSV: aoe2hd_snapshot_diff.csv\n"
+          <<"Campos de objetos amostrados: A="<<before.objects.size()<<" B="<<after.objects.size()<<"\n"
           <<"As alteracoes sao evidencias estruturais, nao unidades confirmadas.\n";
 }
