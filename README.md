@@ -577,3 +577,17 @@ ctest --test-dir build-clean -C Release --output-on-failure
 Antes de iniciar, selecione *uma* construção produtora com fila vazia, confirme o tipo informado e **mantenha-a selecionada**. Capture as sete etapas: vazia, adicionar 1, adicionar 2 do mesmo tipo, adicionar 3 do mesmo tipo, cancelar 1, concluir 1, concluir 2. Informe o tamanho realmente observado e uma etiqueta para o tipo produzido. Repita a ferramenta em outra partida/construção (por exemplo, Quartel produzindo Milícia), e **renomeie/mova os CSVs entre execuções** para não sobrescrevê-los. Arquivos: \`aoe2hd_production_queue_types_v4.csv\` e \`aoe2hd_production_queue_type_changes_v4.csv\`.
 
 A verificação das contagens continua sendo **visual**, não automática; \`independent_verified=0\`. Endereços absolutos variam entre execuções; diferenças do ponteiro invalidam comparações entre seus conteúdos. Não há identificação validada das entradas da fila nem enumeração de unidades existentes. Campos de outros edifícios podem ter semântica totalmente diferente; não classifique ponteiros ou contadores somente por semelhança numérica.
+
+## ProductionQueueStructureDiscovery v5 — fila mista no Quartel
+
+Ferramenta read-only independente: selecione um **Quartel vazio** e mantenha-o selecionado em todas as etapas. Captura campos \`Building+0x214/0x218/0x21C\`, 512 bytes do destino de \`+0x214\` e os primeiros 128 DWORDs deste destino, com metades de 16 bits separadas. Para cada fase, o operador informa **ordem visual exata** (separada por \`|\`), quantidade e confirmação. Etapas previstas: vazio; uma Milícia; Milícia + Lanceiro; Milícia + Lanceiro + Milícia; cancelar uma Milícia (se possível); conclusão da primeira unidade; conclusão da próxima. **Não invente confirmações:** caso o jogo só permita cancelar outra posição da fila, informe a ordem efetiva. Também é possível que a construção não permita uma das combinações; registre o estado real ou interrompa e relate o impedimento.
+
+\`\`\`powershell
+git pull --ff-only origin main
+cmake -S . -B build-clean -G "Visual Studio 18 2026" -A Win32
+cmake --build build-clean --config Release
+ctest --test-dir build-clean -C Release --output-on-failure
+.\build-clean\Release\aoe2hd_production_queue_structure_discovery_v5.exe
+\`\`\`
+
+Relatórios: \`aoe2hd_production_queue_mixed_stages_v5.csv\`, \`aoe2hd_production_queue_mixed_words_v5.csv\` e \`aoe2hd_production_queue_mixed_deltas_v5.csv\`. A comparação ignora alterações de conteúdo entre endereços distintos e marca transições não comparáveis. \`root_count_matches\` e \`entry_count_matches_comparable\` são correspondências de diferenças quantitativas, não prova do tipo ou formato interno. Para descobrir a organização da fila mista, compare os campos por fase e por tipo solicitado. **Eventos e tipos continuam dependentes da observação do operador**, sem verificação independente da produção. Esta versão ainda não varre ponteiros de segundo nível nem enumera unidades existentes no mapa.
