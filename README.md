@@ -361,3 +361,21 @@ ctest --test-dir build-clean -C Release --output-on-failure
 Antes de iniciar selecione A; após a primeira varredura, selecione B e pressione Enter; após a segunda, selecione A e pressione Enter novamente. Saídas: \`aoe2hd_unit_array_references_v4.csv\`, \`aoe2hd_unit_array_pairs_v4.csv\` e \`aoe2hd_unit_array_summary_v4.csv\`.
 
 **Limitações:** o programa compara valores encontrados por varredura, não snapshots simultâneos. Ausência de correspondência em determinada fase é codificada como zero no relatório, e **não significa** que o endereço armazenava zero. A ordem de regiões é fixa para a sessão; endereços fora do orçamento não são examinados. Em particular, \`stable_B\` significa que uma referência permaneceu em B nas fases B e retorno a A, não que tenha sido observada na primeira fase. Continua sendo uma hipótese, não uma enumeração de unidades.
+
+## PlayerUnitCollectionDiscovery v1 — vetores a partir dos jogadores
+
+Ferramenta independente, somente leitura, que muda a estratégia de busca global por ponteiros para uma investigação de coleções **ligadas diretamente a World, LocalPlayer e entradas de jogadores**. As duas unidades selecionadas, A e B, servem exclusivamente como âncoras para verificar candidatos; não se usam slots de seleção para localizar coleções.
+
+Lê janelas de até 0x800 bytes de cada raiz; procura triples de ponteiros \`begin/end/capacity\` plausíveis e, para cada tripla, testa entradas diretas com stride 4/8/12/16 e região de até 64 KiB. Registra candidatos com e sem as duas âncoras, com resultado \`dual_anchor_hypothesis\` quando ambas aparecem numa mesma interpretação.
+
+\`\`\`powershell
+git pull --ff-only origin main
+cmake -S . -B build-clean -G "Visual Studio 18 2026" -A Win32
+cmake --build build-clean --config Release
+ctest --test-dir build-clean -C Release --output-on-failure
+.\build-clean\Release\aoe2hd_player_unit_collection_discovery.exe
+\`\`\`
+
+Selecione A antes de iniciar, B quando solicitado e pressione Enter. Gera \`aoe2hd_player_unit_collections_v1.csv\` e \`aoe2hd_player_unit_collections_summary_v1.csv\`.
+
+**Limites:** examina somente *vetores diretos* nestas raízes, não listas encadeadas, indireções ou subobjetos; uma coincidência de ponteiros não prova propriedade nem enumeração. A ferramenta não varre toda a memória. Requer compilação/teste no Windows para validar a integração.
