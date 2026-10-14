@@ -457,3 +457,17 @@ ctest --test-dir build-clean -C Release --output-on-failure
 Comece com um aldeão conhecido selecionado para validar a sessão, e mantenha a partida ativa. Quando solicitado, apenas deixe transcorrer um intervalo sem criar unidades e pressione Enter (controle). Depois, crie um aldeão; é permitido selecionar o Centro Urbano; pressione Enter após a conclusão. Saídas: \`aoe2hd_world_dynamic_fields_v1.csv\`, \`aoe2hd_world_dynamic_roots_v1.csv\` e \`aoe2hd_world_dynamic_summary_v1.csv\`.
 
 **Limitações:** compara janelas estruturais fixas, não heaps arbitrários ou conteúdo de ponteiros. Apenas mudanças alinhadas de 4 bytes são registradas. A conclusão é limitada à janela de cada raiz que permaneceu inteiramente legível nas três fases. A versão ainda não testa uma segunda criação nem comprova contadores de unidade; exige confirmação em múltiplos experimentos. Integração Windows ainda não verificada na sessão de desenvolvimento.
+
+## WorldDynamicUnitDiscovery v2 — duas criações com controles intercalados
+
+Executável independente e read-only. Depois de selecionar um aldeão para validar a sessão, execute o programa, **selecione o Centro Urbano e mantenha a mesma seleção nas cinco capturas**. Os cinco snapshots são: inicial, controle 1 (nenhuma criação), criação 1 (exatamente um aldeão concluído), controle 2 (nenhuma criação), criação 2 (mais um aldeão concluído). A ferramenta valida ambos os slots de seleção antes/depois de cada captura e a identidade da primeira âncora no final; abandona o experimento se a seleção variar. Examina até 0x800 bytes de World e dos objetos de jogadores conhecidos. \`clean_repeat\` exige estabilidade nos dois controles e modificação nas duas criações; \`increment_one\` exige adicionalmente incremento de exatamente 1 nos dois eventos, interpretando campos como uint32.
+
+\`\`\`powershell
+git pull --ff-only origin main
+cmake -S . -B build-clean -G "Visual Studio 18 2026" -A Win32
+cmake --build build-clean --config Release
+ctest --test-dir build-clean -C Release --output-on-failure
+.\build-clean\Release\aoe2hd_world_dynamic_unit_discovery_v2.exe
+\`\`\`
+
+CSV: \`aoe2hd_world_dynamic_fields_v2.csv\`, \`aoe2hd_world_dynamic_roots_v2.csv\`, \`aoe2hd_world_dynamic_summary_v2.csv\`. Campos \`clean_repeat\` e \`increment_one\` são **hipóteses correlacionais**, não prova de contagem de aldeões. As duas criações também consomem recursos e avançam o tempo. Esta versão não distingue tipos de estruturas além de comparação de words, não examina listas em heaps e não usa leitura de seleção para enumerar unidades. A compilação no Windows deve ser validada no ambiente de execução do jogo.
