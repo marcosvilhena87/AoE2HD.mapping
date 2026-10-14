@@ -166,10 +166,10 @@ int main(){
  uint32_t selected=0,selected2=0;
  if(!u32(process.h,a.local,0x15c,selected)||!u32(process.h,a.local,0x160,selected2)||
     selected==0||selected!=selected2){std::cerr<<"Selection invalid\n";return 4;}
- struct Capture {std::string event;std::vector<std::vector<uint8_t>> bytes;bool stable=false;};
+ struct Capture {std::string event;std::vector<std::vector<uint8_t>> bytes;bool stable=false;bool eventCompleted=false;};
  std::vector<Capture> captures;
- auto capture=[&](const std::string& event){
-  Capture c;c.event=event;
+ auto capture=[&](const std::string& event,bool completed){
+  Capture c;c.event=event;c.eventCompleted=completed;
   uint32_t x=0,y=0;
   if(!u32(process.h,a.local,0x15c,x)||!u32(process.h,a.local,0x160,y)||
      x!=selected||y!=selected2)return false;
@@ -183,7 +183,7 @@ int main(){
      x!=selected||y!=selected2)return false;
   c.stable=true;captures.push_back(std::move(c));return true;
  };
- if(!capture("baseline")){std::cerr<<"Initial capture failed\n";return 4;}
+ if(!capture("baseline",false)){std::cerr<<"Initial capture failed\n";return 4;}
  const char* instructions[]={
   "CONTROL: no new units or research; press ENTER.",
   "VILLAGER_1: finish creating exactly one villager; press ENTER.",
@@ -195,7 +195,13 @@ int main(){
  for(int i=0;i<5;++i){
   std::cout<<instructions[i]<<"\n";
   std::getline(std::cin,line);
-  if(!capture(names[i])){std::cerr<<"Selection changed during "<<names[i]<<"; discard data\n";return 4;}
+  bool completed=(i==1||i==2);
+  if(i>=3){
+   std::cout<<"Was this optional event actually COMPLETED? Type y for yes, n for skipped: ";
+   std::getline(std::cin,line);
+   completed=(line=="y"||line=="Y");
+  }
+  if(!capture(names[i],completed)){std::cerr<<"Selection changed during "<<names[i]<<"; discard data\n";return 4;}
  }
  uint32_t ownerNow=0,worldNow=0,id=0;
  if(!u32(process.h,base,0x006F2C58,ownerNow)||ownerNow!=a.owner||
@@ -204,8 +210,8 @@ int main(){
  std::ofstream values("aoe2hd_world_dynamic_counter_values_v3.csv");
  std::ofstream changes("aoe2hd_world_dynamic_counter_deltas_v3.csv");
  if(!values||!changes)return 5;
- values<<"event,player,role,offset,word,low16,high16,readable\n";
- changes<<"event,player,role,offset,previous_low,current_low,delta_low,previous_high,current_high,delta_high,word_changed\n";
+ values<<"event,event_completed,player,role,offset,word,low16,high16,readable\n";
+ changes<<"event,event_completed,player,role,offset,previous_low,current_low,delta_low,previous_high,current_high,delta_high,word_changed\n";
  for(size_t phase=0;phase<captures.size();++phase){
   const auto& c=captures[phase];
   for(size_t i=0;i<targets.size();++i){
@@ -213,13 +219,13 @@ int main(){
    if(data.size()<0x10)continue;
    uint32_t word=aoe2hd::ReadWordEvent(data,0x0c);
    auto split=aoe2hd::SplitCounter(word);
-   values<<c.event<<','<<targets[i].player<<','
+   values<<c.event<<','<<c.eventCompleted<<','<<targets[i].player<<','
          <<(targets[i].local?"LocalPlayer":"Player")<<",892,"
          <<word<<','<<split.low<<','<<split.high<<",1\n";
    if(phase==0||captures[phase-1].bytes[i].size()<0x10)continue;
    auto previous=aoe2hd::SplitCounter(
       aoe2hd::ReadWordEvent(captures[phase-1].bytes[i],0x0c));
-   changes<<c.event<<','<<targets[i].player<<','
+   changes<<c.event<<','<<c.eventCompleted<<','<<targets[i].player<<','
           <<(targets[i].local?"LocalPlayer":"Player")<<",892,"
           <<previous.low<<','<<split.low<<','<<aoe2hd::Delta16(previous.low,split.low)<<','
           <<previous.high<<','<<split.high<<','<<aoe2hd::Delta16(previous.high,split.high)<<','
@@ -228,11 +234,11 @@ int main(){
  }
  std::ofstream adjacent("aoe2hd_world_dynamic_counter_neighborhood_v3.csv");
  if(!adjacent)return 5;
- adjacent<<"event,player,offset,raw32\n";
+ adjacent<<"event,event_completed,player,offset,raw32\n";
  for(const auto& c:captures)for(size_t i=0;i<targets.size();++i){
   const auto& data=c.bytes[i];if(data.size()!=0x40)continue;
   for(uint32_t off=0;off<0x40;off+=4)
-   adjacent<<c.event<<','<<targets[i].player<<','<<(0x370+off)<<','
+   adjacent<<c.event<<','<<c.eventCompleted<<','<<targets[i].player<<','<<(0x370+off)<<','
            <<aoe2hd::ReadWordEvent(data,off)<<"\n";
  }
  std::cout<<"WorldDynamicUnitDiscovery v3 phases="<<captures.size()
