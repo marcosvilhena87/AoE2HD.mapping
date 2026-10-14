@@ -607,3 +607,17 @@ ctest --test-dir build-clean -C Release --output-on-failure
 \`\`\`
 
 Arquivos: \`aoe2hd_production_queue_entries_v6.csv\` (slots decodificados), \`aoe2hd_production_queue_alignment_v6.csv\` (possíveis alinhamentos e modelos) e \`aoe2hd_production_queue_metadata_v6.csv\` (ponteiro e contadores por fase). Endereços absolutos não são portáveis entre partidas. Os eventos são relatados pelo operador, sem prova automática da ação; buffers com dados antigos podem gerar falsos positivos. Esta versão não enumera unidades já criadas no mapa.
+
+## ProductionQueueStructureDiscovery v7 — enumeração ativa de filas de unidades
+
+Ferramenta independente, read-only. Selecione uma construção produtora (ex.: Quartel) e mantenha sua seleção. Não execute pesquisa tecnológica durante o experimento: **pesquisa não pode ser enfileirada** como unidades, e seu estado interno não foi mapeado. A ferramenta usa \`Building+0x214\` como ponteiro para registros candidatos, \`Building+0x218\` (high16) como número de grupos e \`Building+0x21C\` (low16) como total de unidades. Lê até 512 bytes e enumera **somente os primeiros N grupos**, ignorando slots antigos além do limite. Cada grupo é um par \`uint16_t type, quantity\`. Rejeita inconsistências de contagens, quantidades nulas, tipos iguais em grupos adjacentes, excesso de grupos/unidades e falhas de leitura. Expande os grupos para a sequência de IDs e compara com a observação visual, que **não é uma confirmação automática independente**.
+
+\`\`\`powershell
+git pull --ff-only origin main
+cmake -S . -B build-clean -G "Visual Studio 18 2026" -A Win32
+cmake --build build-clean --config Release
+ctest --test-dir build-clean -C Release --output-on-failure
+.\build-clean\Release\aoe2hd_production_queue_structure_discovery_v7.exe
+\`\`\`
+
+O programa solicita oito capturas (vazio, primeira, segunda, terceira, quarta inclusão, cancelamento e duas conclusões), mas é obrigatório informar a sequência *realmente* vista; use \`M\`=Milícia (74), \`S\`=Lanceiro (93), \`V\`=Aldeão (83), separadas por \`|\`, ou \`empty\`. CSVs: \`aoe2hd_production_queue_enumeration_v7.csv\` e \`aoe2hd_production_queue_groups_v7.csv\`. Esta primeira versão cobre esses três IDs conhecidos, não é um decodificador universal de tipos de unidade; o usuário deve validar o objeto de construção e a execução no jogo. Um snapshot vazio com ambos contadores zero é válido mesmo com ponteiro antigo persistente. O teste automatizado cobre enumeração, agregação, limite de grupos e condições inválidas. **Não enumera aldeões já existentes no mapa.**
