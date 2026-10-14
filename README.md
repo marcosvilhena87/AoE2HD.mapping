@@ -379,3 +379,21 @@ ctest --test-dir build-clean -C Release --output-on-failure
 Selecione A antes de iniciar, B quando solicitado e pressione Enter. Gera \`aoe2hd_player_unit_collections_v1.csv\` e \`aoe2hd_player_unit_collections_summary_v1.csv\`.
 
 **Limites:** examina somente *vetores diretos* nestas raízes, não listas encadeadas, indireções ou subobjetos; uma coincidência de ponteiros não prova propriedade nem enumeração. A ferramenta não varre toda a memória. Requer compilação/teste no Windows para validar a integração.
+
+## PlayerUnitCollectionDiscovery v2 — inspeção estrutural das entradas
+
+Preserva a v1. Parte de World/LocalPlayer e dos jogadores conhecidos, procura vetores plausíveis de stride 8 e inclui explicitamente a tripla de World+0x88 quando válida. Examina os campos +0 e +4 de cada entrada, tenta leitura direta de ID (+0x08) e HP (+0x34) do objeto candidato e uma única indireção. A validação é heurística: IDs/HP plausíveis não comprovam classe nem propriedade da unidade.
+
+Selecionar aldeão A, iniciar a ferramenta, selecionar aldeão B e pressionar Enter. Depois da primeira captura, selecionar Centro Urbano se necessário, criar um aldeão sem selecioná-lo e pressionar Enter. A ferramenta valida World e identidade candidata de A/B diretamente, sem exigir seleção constante, e compara os mesmos slots antes/depois.
+
+\`\`\`powershell
+git pull --ff-only origin main
+cmake -S . -B build-clean -G "Visual Studio 18 2026" -A Win32
+cmake --build build-clean --config Release
+ctest --test-dir build-clean -C Release --output-on-failure
+.\build-clean\Release\aoe2hd_player_unit_collection_discovery_v2.exe
+\`\`\`
+
+Arquivos: \`aoe2hd_player_unit_vectors_v2.csv\` (vetores de stride 8), \`aoe2hd_player_unit_entries_v2.csv\` (todos os campos e duas fases), \`aoe2hd_player_unit_roots_v2.csv\` (quantidade de vetores plausíveis e palavras legíveis por raiz) e \`aoe2hd_player_unit_delta_v2.csv\` (alterações nos mesmos slots).
+
+Limitações importantes: somente vetores diretos nas raízes e uma indireção no conteúdo da entrada; não percorre grafos arbitrários ou listas encadeadas. Vetores recém-criados ou realocados depois do snapshot inicial não serão descobertos automaticamente na segunda fase. Uma mudança de ID ou HP pode ser causada por outros eventos do jogo. Os testes de integração Windows devem ser executados localmente.
