@@ -487,3 +487,17 @@ ctest --test-dir build-clean -C Release --output-on-failure
 Procedimento: selecione primeiro um aldeão para inicializar a âncora. Quando o programa solicitar, selecione o Centro Urbano, que **deve permanecer selecionado em todas as capturas**. Capture baseline, controle sem alterações voluntárias, criação concluída de um aldeão, segunda criação concluída, evento opcional de uma unidade que não seja aldeão, e evento opcional de uma pesquisa. Para as duas etapas opcionais, informe explicitamente \`y\` se o evento ocorreu ou \`n\` se foi pulado. Caso só tenha um Centro Urbano e não consiga produzir outra unidade sem mudar a seleção, pule o evento (\`n\`); não mude a seleção para completar uma etapa opcional.
 
 Arquivos: \`aoe2hd_world_dynamic_counter_values_v3.csv\` (word32 + halfwords de cada jogador em cada fase), \`aoe2hd_world_dynamic_counter_deltas_v3.csv\` (mudanças por evento, com \`event_completed\`) e \`aoe2hd_world_dynamic_counter_neighborhood_v3.csv\` (janela estrutural de 64 bytes). As capturas não são simultâneas para jogadores diferentes e \`event_completed\` é uma declaração do operador; sem confirmação independente, não comprova causalidade. A leitura exige manter identidades/World e a seleção; o campo ainda pode ser contador de fila, estatística ou outro estado, não população atual nem coleção de unidades.
+
+## WorldDynamicUnitDiscovery v4 — eventos de fila e conclusão
+
+Ferramenta independente, somente leitura. Examina as janelas de 0x800 bytes de World e de cada jogador conhecido, acompanhando também o campo suspeito \`LocalPlayer+0x37C\` dentro da janela. Em vez de atribuir uma alteração à criação em geral, registra seis capturas: baseline, controle, início da fila, treinamento, conclusão e pós-controle. A seleção do Centro Urbano deve permanecer idêntica do começo ao fim; qualquer mudança invalida a coleta. Cada estágio de evento recebe uma declaração explícita do operador (\`y\`/\`n\`); a ferramenta **não** verifica autonomamente que o aldeão surgiu ou que a fila foi iniciada. Por isso todos os relatórios marcam \`independent_event_verified=0\`.
+
+\`\`\`powershell
+git pull --ff-only origin main
+cmake -S . -B build-clean -G "Visual Studio 18 2026" -A Win32
+cmake --build build-clean --config Release
+ctest --test-dir build-clean -C Release --output-on-failure
+.\build-clean\Release\aoe2hd_world_dynamic_unit_discovery_v4.exe
+\`\`\`
+
+Saídas: \`aoe2hd_world_dynamic_fields_v4.csv\` (valores nos seis estágios, alterações de 32 bits e flags de mudanças exclusivas à fila ou à conclusão), \`aoe2hd_world_dynamic_roots_v4.csv\` (cobertura dos snapshots) e \`aoe2hd_world_dynamic_stages_v4.csv\` (confirmações manuais dos eventos). Caso não consiga capturar o treinamento ainda em andamento, informe \`n\`; não interprete o estágio correspondente como treinamento confirmado. A classificação de mudanças é correlacional: alterações de recursos, tempo e outras variáveis podem coincidir com as etapas. Esta versão **não possui um identificador independente de aldeões nascidos** e não confirma população ou enumeração de unidades.
