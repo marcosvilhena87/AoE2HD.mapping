@@ -501,3 +501,19 @@ ctest --test-dir build-clean -C Release --output-on-failure
 \`\`\`
 
 Saídas: \`aoe2hd_world_dynamic_fields_v4.csv\` (valores nos seis estágios, alterações de 32 bits e flags de mudanças exclusivas à fila ou à conclusão), \`aoe2hd_world_dynamic_roots_v4.csv\` (cobertura dos snapshots) e \`aoe2hd_world_dynamic_stages_v4.csv\` (confirmações manuais dos eventos). Caso não consiga capturar o treinamento ainda em andamento, informe \`n\`; não interprete o estágio correspondente como treinamento confirmado. A classificação de mudanças é correlacional: alterações de recursos, tempo e outras variáveis podem coincidir com as etapas. Esta versão **não possui um identificador independente de aldeões nascidos** e não confirma população ou enumeração de unidades.
+
+## WorldDynamicUnitDiscovery v5 — teste de fila de aldeões
+
+Executável separado e **somente leitura**, sem substituir as versões anteriores. Inspeciona dois candidatos de 16 bits (metade alta): \`LocalPlayer+0x37E\` como possível estado de fila, e \`LocalPlayer+0x522\` como possível estatística de conclusão. Captura uma janela de \`LocalPlayer+0x360..0x543\` (words de 4 bytes) em sete etapas: **baseline, fila 1, fila 2, fila 3, cancelar 1, conclusão 1, conclusão 2**. A ferramenta pergunta explicitamente quantos aldeões estão visivelmente na fila (incluindo o que está em treinamento) e quantos foram concluídos desde a linha de base, além de pedir \`y/n\` para confirmação visual. Essas contagens são observações do operador, **não verificações automáticas do jogo**.
+
+Antes de iniciar a ferramenta, selecione um aldeão conhecido para obter a âncora. Depois, selecione um Centro Urbano com fila vazia e mantenha-o selecionado até o fim. Garanta população e recursos suficientes. Entre capturas, se alguma unidade concluir antes do momento esperado, **informe os valores realmente observados**; não force a contagem prevista nem marque a observação como confirmada sem verificar. O treinamento continua avançando enquanto o programa aguarda; para um experimento mais controlado, use velocidade baixa ou pause quando possível.
+
+\`\`\`powershell
+git pull --ff-only origin main
+cmake -S . -B build-clean -G "Visual Studio 18 2026" -A Win32
+cmake --build build-clean --config Release
+ctest --test-dir build-clean -C Release --output-on-failure
+.\build-clean\Release\aoe2hd_world_dynamic_unit_discovery_v5.exe
+\`\`\`
+
+Saídas: \`aoe2hd_world_dynamic_queue_values_v5.csv\`, \`aoe2hd_world_dynamic_queue_deltas_v5.csv\`, \`aoe2hd_world_dynamic_queue_neighborhood_v5.csv\`. \`queue_matches_all\` e \`completion_matches_all\` exigem que as variações dos campos acompanhados reproduzam as contagens informadas em todas as transições confirmadas. Nenhuma correspondência demonstra, por si só, que exista uma coleção de objetos-aldeões no mapa; apenas valida a hipótese de um contador relacionado à fila/conclusão. Não há evento verificado independentemente, e a ferramenta não verifica o conteúdo da fila via estruturas internas.
