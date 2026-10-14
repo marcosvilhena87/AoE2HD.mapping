@@ -425,3 +425,19 @@ ctest --test-dir build-clean -C Release --output-on-failure
 \`\`\`
 
 Arquivos: \`aoe2hd_player_owned_layout_v4.csv\` (campos brutos por jogador), \`aoe2hd_player_owned_evidence_v4.csv\` (hipóteses count/pointer e ocorrências A/B) e \`aoe2hd_player_owned_delta_v4.csv\` (comparação dos campos antes/depois). A ausência de mudanças nos 0x400 bytes monitorados não prova ausência de mutação em outras estruturas; a versão não segue ponteiros de tabelas realocadas nem identifica automaticamente a terceira unidade. As correspondências permanecem hipóteses, não enumeração confirmada.
+
+## PlayerUnitCollectionDiscovery v5 — rastreamento de conteúdo indireto
+
+Ferramenta independente, somente leitura. Com aldeão A selecionado, inicie a v5, selecione B e pressione Enter. A ferramenta enumera as raízes dos jogadores e segue \`Player+0x14\`; lê os primeiros 0x400 bytes de cada subobjeto distinto, filtra valores alinhados como possíveis ponteiros e captura até **2048 endereços de destino distintos** com snapshots de **128 bytes** cada. Deduplica destinos comuns e registra todas as origens \`jogador → subobjeto → campo → destino\`.
+
+Após a captura, crie um aldeão (é permitido selecionar o Centro Urbano) sem selecionar o recém-criado e pressione Enter. A v5 valida diretamente os IDs candidatos de A/B e World, relê os mesmos endereços, computa bytes alterados e procura ponteiros diretos para A/B dentro dos 128 bytes.
+
+\`\`\`powershell
+git pull --ff-only origin main
+cmake -S . -B build-clean -G "Visual Studio 18 2026" -A Win32
+cmake --build build-clean --config Release
+ctest --test-dir build-clean -C Release --output-on-failure
+.\build-clean\Release\aoe2hd_player_unit_collection_discovery_v5.exe
+\`\`\`
+
+CSV: \`aoe2hd_player_indirect_delta_v5.csv\` (mudanças por destino), \`aoe2hd_player_indirect_paths_v5.csv\` (origem dos destinos) e \`aoe2hd_player_indirect_summary_v5.csv\` (resumo). A leitura atual exige que os 128 bytes estejam inteiramente legíveis; candidatos parciais ficam fora. Quando o destino se torna ilegível após a ação, \`changed_bytes=0\` significa comparação indisponível, **não** ausência de alteração. O experimento observa somente endereços capturados antes da criação e não descobre automaticamente novas tabelas ou a identidade da unidade criada. Mudanças de conteúdo não constituem comprovação de uma coleção de unidades.
