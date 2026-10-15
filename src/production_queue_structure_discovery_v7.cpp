@@ -3,6 +3,7 @@
 #include <windows.h>
 #include <tlhelp32.h>
 #include "ProductionQueueEnumerationV7.h"
+#include "ProductionQueueReader.h"
 #include <cstdint>
 #include <cstdlib>
 #include <fstream>
@@ -91,20 +92,13 @@ int main(){
   std::cout<<"Visually verified (y/n): ";
   if(!std::getline(std::cin,line))return 4;
   bool verified=line=="y"||line=="Y";
-  uint32_t pointer=0,w218=0,w21c=0;
-  if(!word(h.h,selection,0x214,pointer)||!word(h.h,selection,0x218,w218)||
-     !word(h.h,selection,0x21c,w21c)){std::cerr<<"Building fields unreadable\n";return 4;}
-  uint16_t groupCount=uint16_t(w218>>16),unitCount=uint16_t(w21c);
-  std::vector<uint8_t> bytes;
-  bool readable=false;
-  if(groupCount>0&&groupCount<=128&&unitCount<=1000&&pointer>=0x10000&&
-     !(pointer&3u)&&pointer<=UINT32_MAX-512){
-   bytes.resize(512);readable=read(h.h,pointer,bytes.data(),bytes.size());
-   if(!readable)bytes.clear();
-  }
-  aoe2hd::QueueEnumerationV7 result;
-  if(groupCount==0&&unitCount==0)result=aoe2hd::EnumerateQueueV7({},0,0);
-  else if(readable)result=aoe2hd::EnumerateQueueV7(bytes,groupCount,unitCount);
+  auto snapshot=aoe2hd::ReadProductionQueue(selection,
+   [&](uint32_t p,uint32_t off,uint32_t& out){return word(h.h,p,off,out);},
+   [&](uint32_t p,void* data,size_t len){return read(h.h,p,data,len);});
+  uint32_t pointer=snapshot.pointer;
+  uint16_t groupCount=snapshot.groupCount,unitCount=snapshot.unitCount;
+  bool readable=snapshot.valid()&&groupCount>0;
+  auto result=snapshot.queue;
   if(!stable()){std::cerr<<"Selection changed while capturing\n";return 4;}
   bool equal=verified&&result.valid&&expected==result.expanded;
   valid+=result.valid;matched+=equal;
