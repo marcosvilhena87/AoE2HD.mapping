@@ -778,3 +778,19 @@ ctest --test-dir build-clean -C Release --output-on-failure
 ```
 
 Relatórios: `aoe2hd_player_object_collection_paths_v3.csv` para correspondências com âncoras; `aoe2hd_player_object_collection_nodes_v3.csv` com cada nó processado e status; `aoe2hd_player_object_collection_coverage_v3.csv` com cobertura por raiz e profundidade. A fila pode conter muitos ponteiros que apenas parecem válidos; portanto estes resultados ainda não demonstram uma coleção de entidades nem a enumeração autônoma de aldeões. Mesmo `truncated=0` se refere apenas ao universo limitado examinado, não à memória total do jogo.
+
+## PlayerObjectCollectionDiscovery v4 — Structural Candidate Ranking
+
+Pesquisa **somente leitura** partindo de `World` e `LocalPlayer`; registra cinco âncoras (Centro Urbano A, Quartel B, Centro Urbano D, Campo de Arqueiros E, Aldeão C) por seleção e solicita um sexto objeto distinto como controle. A v4 usa `VirtualQueryEx` para verificar toda a extensão dos 1024 bytes de cada nó antes de `ReadProcessMemory`. Mantém até 3 arestas de ponteiro, cotas de tentativas de 1/48/96/96 por raiz e profundidade, fila de até 512 candidatos por compartimento e limite total de 2 MiB em leituras tentadas. Procura âncoras mesmo quando o destino do ponteiro não é legível.
+
+Cada nó legível recebe métricas exploratórias de densidade de ponteiros legíveis (até 64 destinos distintos amostrados), quantidade de valores distintos e padrões plausíveis de início/fim de intervalo. A pontuação dá maior peso a referências conhecidas e ordena **candidatos dentro de cada ramificação**, com rodízio entre ramificações para reduzir monopolização. O rodízio não prova que os ramos sejam coleções. As referências possíveis são amostradas (até 32 valores por nó); a ferramenta pode omitir caminhos. Não valida automaticamente ponteiros individuais como entidades reais.
+
+```powershell
+git pull --ff-only origin main
+cmake -S . -B build-clean -G "Visual Studio 18 2026" -A Win32
+cmake --build build-clean --config Release
+ctest --test-dir build-clean -C Release --output-on-failure
+.\build-clean\Release\aoe2hd_player_object_collection_discovery_v4.exe
+```
+
+Saídas: `aoe2hd_player_object_collection_paths_v4.csv` (referências a âncoras), `aoe2hd_player_object_collection_nodes_v4.csv` (status, indicadores estruturais, pontuação e origem), `aoe2hd_player_object_collection_coverage_v4.csv` (cotas, falhas de leitura, rejeições prévias, duplicações e truncamento por nível). O experimento não enumera aldeões sem seleção, e ausência de correspondência não prova ausência de uma coleção.
