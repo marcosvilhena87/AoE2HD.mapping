@@ -826,3 +826,21 @@ ctest --test-dir build-clean -C Release --output-on-failure
 ```
 
 Relatório: `aoe2hd_player_object_collection_targeted_v6.csv` (legibilidade nas duas capturas, igualdade de hash, possíveis vetores, sequência de ponteiros, IDs plausíveis e correspondência exata com as cinco âncoras). A ferramenta investiga **endereços de candidatos fornecidos manualmente**, não descobre coleções por si só. A ausência de correspondências não exclui estruturas baseadas em IDs ou fora das janelas testadas.
+
+## PlayerObjectCollectionDiscovery v7 — Controlled Entity Creation Differential Analysis
+
+Experimentação externa **somente leitura** em três etapas A/controle/B. A ferramenta registra as cinco âncoras usuais por seleção inicial e exige um sexto objeto não registrado. Depois recebe de 1 a 16 endereços candidatos **válidos no processo atual** (hexadecimais separados por espaços, sem lista automática de endereços antigos). O mesmo conjunto de janelas de 1024 bytes é lido nas três etapas:
+
+- **A:** anote a contagem de aldeões; não crie unidades e pressione Enter.
+- **Controle:** deixe a simulação avançar sem criar ou destruir objetos; pressione Enter.
+- **Intervenção:** crie exatamente um aldeão, espere sua conclusão, **não o selecione**, e pressione Enter.
+
+O CSV `aoe2hd_player_object_collection_differential_v7.csv` registra offset, valores antes/controle/depois, estabilidade no controle, incremento exato de um, novos valores com formato de ponteiro e validação pontual de leitura do ID em `+0x08`. O CSV `aoe2hd_player_object_collection_summary_v7.csv` apresenta contagens por janela. As diferenças são *correlações*: campos de simulação podem variar por razões diversas; repita com um segundo aldeão e outra sessão para confirmar. O experimento só investiga as janelas fornecidas, não enumera diretamente aldeões e não cobre automaticamente estruturas de ID/índice externas a elas.
+
+```powershell
+git pull --ff-only origin main
+cmake -S . -B build-clean -G "Visual Studio 18 2026" -A Win32
+cmake --build build-clean --config Release
+ctest --test-dir build-clean -C Release --output-on-failure
+.\build-clean\Release\aoe2hd_player_object_collection_discovery_v7.exe
+```
