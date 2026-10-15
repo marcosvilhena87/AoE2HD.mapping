@@ -674,3 +674,17 @@ Arquivos: `aoe2hd_building_reference_stages_v3.csv` e `aoe2hd_building_reference
 ### BuildingObjectDiscovery v3 — diagnóstico e retomada de captura
 
 A v3 agora registra `aoe2hd_building_reference_diagnostics_v3.csv`, indicando separadamente `selection_unavailable`, `anchor_identity_changed_or_unreadable`, `owner_changed_or_unreadable` e `world_changed_or_unreadable`. Falhas transitórias de seleção permitem tentar a mesma fase novamente (pressione Enter após selecionar um objeto); `q` encerra conservando as capturas parciais. Os CSVs de estágios e janelas são descarregados em disco a cada etapa concluída. Se a âncora ou o contexto da partida mudar, o experimento interrompe sem inferir persistência. Protocolo do save: A = Centro Urbano 1, B = Quartel, C = Aldeão, D = Centro Urbano 2, A_again = Centro Urbano 1. As etiquetas de tipo são orientações ao operador, não classificações automáticas.
+
+## BuildingObjectDiscovery v4 — Persistent Reference Neighborhood Analysis
+
+Experimento somente leitura: selecione o **Centro Urbano A**, confirme sua identidade e informe uma referência persistente atual em hexadecimal. Informe `0` para procurar referências diretas a A em até 96 MiB (a busca lista candidatas e solicita a escolha de uma). Endereços absolutos de execuções anteriores **não são universais**; recomenda-se redescobrir candidatos em cada sessão. O programa examina 4 KiB alinhados à referência escolhida, de `ref - 2048` até `ref + 2047`, e repete cinco vezes: A, Quartel B, Aldeão C, Centro Urbano D e A novamente.
+
+```powershell
+git pull --ff-only origin main
+cmake -S . -B build-clean -G "Visual Studio 18 2026" -A Win32
+cmake --build build-clean --config Release
+ctest --test-dir build-clean -C Release --output-on-failure
+.\build-clean\Release\aoe2hd_building_object_discovery_v4.exe
+```
+
+Relatórios: `aoe2hd_building_reference_stages_v4.csv` (identidade da seleção e permanência da referência) e `aoe2hd_building_reference_window_words_v4.csv` (palavras de 32 bits da janela, valores, referências a A/seleção e potenciais ponteiros com IDs plausíveis). As saídas são descarregadas em disco a cada etapa concluída. O leitor verifica apenas valores parecidos com ponteiros como hipóteses; um ID numérico plausível e um ponteiro legível **não provam** objeto válido ou estrutura de coleção. A v4 ainda usa a seleção para estabelecer A e não enumera aldeões automaticamente.
