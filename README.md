@@ -655,3 +655,18 @@ ctest --test-dir build-clean -C Release --output-on-failure
 ```
 
 Relatórios: `aoe2hd_building_object_candidates_v2.csv` e `aoe2hd_building_object_summary_v2.csv`. Indicadores: `persistent_A`, `persistent_B`, `near_both`, `queue_A_valid`, `queue_B_valid`. **Limitação essencial:** a varredura procura endereços diretos, não coleções indexadas por IDs, arrays indiretos ou regiões excluídas pelo orçamento. A e B ainda são obtidas por seleção inicial, portanto persistência não demonstra descoberta autônoma de construções nem de aldeões no mapa. Não destrua os objetos durante a execução.
+
+## BuildingObjectDiscovery v3 — caracterização de referências persistentes
+
+Experimento **read-only** com construção A conhecida e uma ou mais referências candidatas. Primeiro selecione A e confirme. Informe o endereço da referência da v2 em hexadecimal (por exemplo `10880718`), ou informe `0` para repetir uma busca direta limitada a 96 MiB. **Endereços absolutos podem mudar entre partidas/processos**: sempre valide o endereço usando a âncora atual; o programa não presume que a referência antiga permanecerá válida.
+
+Em seguida capture cinco estágios, mantendo A viva: `A` (selecionar A), `B` (outra construção), `C` (unidade diferente), `D_optional` (preferencialmente outra construção do mesmo tipo que A), `A_again` (voltar a A). A ferramenta registra o valor da referência em cada estágio e até 64 bytes anteriores e posteriores em palavras de 32 bits. Os resultados não comprovam por si só uma coleção, seu proprietário ou autonomia de descoberta.
+
+```powershell
+git pull --ff-only origin main
+cmake -S . -B build-clean -G "Visual Studio 18 2026" -A Win32
+cmake --build build-clean --config Release
+.\build-clean\Release\aoe2hd_building_object_discovery_v3.exe
+```
+
+Arquivos: `aoe2hd_building_reference_stages_v3.csv` e `aoe2hd_building_reference_windows_v3.csv`. Compare a coluna `points_to_A` entre estágios e procure vizinhos com transições coerentes, sem inferir estrutura apenas pela proximidade. A implementação ainda não enumera construções nem aldeões sem seleção.
