@@ -704,3 +704,19 @@ ctest --test-dir build-clean -C Release --output-on-failure
 ```
 
 CSV: `aoe2hd_building_reference_stages_v5.csv`, `aoe2hd_building_reference_window_words_v5.csv` e `aoe2hd_building_stride_evidence_v5.csv`. O programa não prova coleção persistente ou enumeração de unidades não selecionadas.
+
+## BuildingObjectDiscovery v6 — stride validation against controls
+
+Experimento read-only, mantendo as cinco etapas de seleção A (Centro Urbano 1), B (Quartel), C (Aldeão), D (Centro Urbano 2) e A_again. Selecione inicialmente A, informe `0` para redescobrir referências na partida atual e escolha a candidata persistente. O programa lê uma janela de 4 KiB e avalia **481 espaçamentos**, de **128 a 2048 bytes**, em passos de 4 bytes.
+
+Para cada espaçamento, registra pares comparados, pares com dois valores não nulos, correspondências não nulas, pares de zeros, correspondências de valores comuns (>3 ocorrências em uma mesma janela) e valores menos comuns (até 3 ocorrências). A razão `nonzero_match_rate` não inclui pares com zero. Essas métricas são exploratórias: a taxa pode continuar elevada por campos constantes, autocorrelação e comparações dependentes; **nenhum espaçamento é declarado estrutura confirmada automaticamente**.
+
+```powershell
+git pull --ff-only origin main
+cmake -S . -B build-clean -G "Visual Studio 18 2026" -A Win32
+cmake --build build-clean --config Release
+ctest --test-dir build-clean -C Release --output-on-failure
+.\build-clean\Release\aoe2hd_building_object_discovery_v6.exe
+```
+
+CSV: `aoe2hd_building_reference_stages_v6.csv`, `aoe2hd_building_reference_window_words_v6.csv`, `aoe2hd_building_stride_evidence_v6.csv` (496 e 992 bytes para comparação histórica) e `aoe2hd_building_stride_ranking_v6.csv` (todos os espaçamentos). O arquivo de ranking registra resultados por etapa, **não classificação ordenada final**: analise e ordene as métricas com controles e verificação cruzada entre etapas. A v6 ainda não encontra uma coleção confirmada de objetos nem enumera aldeões sem seleção.
