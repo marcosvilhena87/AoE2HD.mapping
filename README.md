@@ -688,3 +688,19 @@ ctest --test-dir build-clean -C Release --output-on-failure
 ```
 
 Relatórios: `aoe2hd_building_reference_stages_v4.csv` (identidade da seleção e permanência da referência) e `aoe2hd_building_reference_window_words_v4.csv` (palavras de 32 bits da janela, valores, referências a A/seleção e potenciais ponteiros com IDs plausíveis). As saídas são descarregadas em disco a cada etapa concluída. O leitor verifica apenas valores parecidos com ponteiros como hipóteses; um ID numérico plausível e um ponteiro legível **não provam** objeto válido ou estrutura de coleção. A v4 ainda usa a seleção para estabelecer A e não enumera aldeões automaticamente.
+
+## BuildingObjectDiscovery v5 — análise de estruturas repetidas
+
+Experimento somente leitura baseado na v4. Após selecionar Centro Urbano A, informe referência atual em hexadecimal ou `0` para procurar candidatas; escolha uma referência plausivelmente persistente. Em cinco etapas (A, Quartel B, Aldeão C, Centro Urbano D, A_again), captura 4 KiB em torno da referência e testa distâncias **496 e 992 bytes** entre palavras de 32 bits.
+
+A métrica `equal_nonzero` conta pares de valores iguais e não nulos; `nonzero_pairs` conta pares onde os dois valores são não nulos; `equal_zero` conta pares ambos iguais a zero, reportados separadamente. `nonzero_match_rate=equal_nonzero/nonzero_pairs` quando há pares elegíveis. Campos constantes e duplicação de estruturas não equivalem, isoladamente, a registros de objetos. Resultados precisam ser confrontados com endereços e IDs de objetos conhecidos em diferentes capturas.
+
+```powershell
+git pull --ff-only origin main
+cmake -S . -B build-clean -G "Visual Studio 18 2026" -A Win32
+cmake --build build-clean --config Release
+ctest --test-dir build-clean -C Release --output-on-failure
+.\build-clean\Release\aoe2hd_building_object_discovery_v5.exe
+```
+
+CSV: `aoe2hd_building_reference_stages_v5.csv`, `aoe2hd_building_reference_window_words_v5.csv` e `aoe2hd_building_stride_evidence_v5.csv`. O programa não prova coleção persistente ou enumeração de unidades não selecionadas.
