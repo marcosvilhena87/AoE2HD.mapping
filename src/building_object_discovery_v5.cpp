@@ -134,6 +134,7 @@ int main(){
           <<" reference=0x"<<std::hex<<ref<<std::dec<<"\n"
           <<"CSV: aoe2hd_building_reference_stages_v5.csv\n"
           <<"CSV: aoe2hd_building_reference_window_words_v5.csv\n"
-          <<"CSV: aoe2hd_building_stride_evidence_v5.csv\n"\n          <<"Repeated values are candidate evidence, not confirmed object records.\n";
+          <<"CSV: aoe2hd_building_stride_evidence_v5.csv\n"
+          <<"Repeated values are candidate evidence, not confirmed object records.\n";
  return 0;
 }
