@@ -734,3 +734,17 @@ ctest --test-dir build-clean -C Release --output-on-failure
 ```
 
 Resultados: `aoe2hd_building_object_identity_hits_v7.csv` (posição da referência e objeto-âncora coincidente) e `aoe2hd_building_object_identity_stages_v7.csv` (contagem de referências e objetos distintos em cada etapa). Os objetos precisam permanecer vivos e acessíveis. **Correspondências exatas demonstram apenas que a janela contém ponteiros para âncoras conhecidas**; não demonstram coleção completa, propriedade ou enumeração autônoma de construções e aldeões. Os testes cobrem comparação de múltiplos endereços conhecidos.
+
+## PlayerObjectCollectionDiscovery v1 — busca multiâncora em World / LocalPlayer
+
+Ferramenta read-only que registra por seleção **cinco âncoras conhecidas** (Centro Urbano A, Quartel B, Centro Urbano D, Campo de Arqueiros E, Aldeão C) e pede a seleção de um **sexto objeto distinto** antes da análise. A partir das raízes `World` e `LocalPlayer`, examina offsets de `0x000` a `0x3FC` em incrementos de quatro bytes. Se um valor é um ponteiro plausível para uma janela legível de 4096 bytes, conta quantas palavras dessa janela coincidem com os endereços capturados e, separadamente, quantos objetos **distintos** foram encontrados. O sexto objeto serve como controle de seleção.
+
+```powershell
+git pull --ff-only origin main
+cmake -S . -B build-clean -G "Visual Studio 18 2026" -A Win32
+cmake --build build-clean --config Release
+ctest --test-dir build-clean -C Release --output-on-failure
+.\build-clean\Release\aoe2hd_player_object_collection_discovery_v1.exe
+```
+
+Relatório: `aoe2hd_player_object_collection_candidates_v1.csv`. Indicador `with_2plus_distinct_anchors` corresponde a janelas com pelo menos duas âncoras diferentes, **não** a coleções confirmadas. A versão examina apenas janelas com ponteiros diretos nos primeiros 1.024 bytes de cada raiz, não segue múltiplos níveis de indireção nem cobre listas indexadas apenas por IDs. Ainda requer seleção para registrar as âncoras e não enumera aldeões automaticamente. Uma ausência de resultado não prova que o jogo não tenha uma coleção de objetos.
