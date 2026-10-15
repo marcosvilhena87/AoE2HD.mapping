@@ -5,10 +5,13 @@
 #include <cstdint>
 #include <cstring>
 #include <deque>
+#include <sstream>
+#include <iomanip>
 #include <set>
 #include <string>
 #include <vector>
 namespace aoe2hd {
+inline std::string PointerOffsetHexV3(size_t offset){std::ostringstream out;out<<std::hex<<offset;return out.str();}
 struct TraversalNodeV3 {uint32_t address=0;unsigned root=0,depth=0;std::string path;};
 struct TraversalEventV3 {unsigned root=0,depth=0;uint32_t address=0;std::string path,status;size_t discovered=0,hits=0;};
 struct TraversalHitV3 {unsigned root=0,depth=0;uint32_t slot=0,target=0;size_t anchor=0;std::string path;};
@@ -60,13 +63,13 @@ TraversalResultV3 TraverseObjectsV3(const std::vector<uint32_t>& roots,
     for(size_t off=0;off+4<=bytes.size();off+=4){
      uint32_t value=0;std::memcpy(&value,bytes.data()+off,4);
      for(size_t a=0;a<anchors.size();++a)if(value&&value==anchors[a].address){
-      out.hits.push_back({unsigned(r),d,uint32_t(node.address+off),value,a,node.path+"+0x"+std::to_string(off)});
+      out.hits.push_back({unsigned(r),d,uint32_t(node.address+off),value,a,node.path+"+0x"+PointerOffsetHexV3(off)});
       ++hits;++bucket.hitCount;
      }
      if(d>=settings.maxDepth||value<0x10000||(value&3u))continue;
      auto& next=pending[at(r,d+1)];
      if(next.size()>=settings.queueCapPerBucket){++out.buckets[at(r,d+1)].capDropped;out.truncated=true;continue;}
-     next.push_back({value,unsigned(r),d+1,node.path+"+0x"+std::to_string(off)});++discovered;++bucket.queued;
+     next.push_back({value,unsigned(r),d+1,node.path+"+0x"+PointerOffsetHexV3(off)});++discovered;++bucket.queued;
     }
     out.events.push_back({unsigned(r),d,node.address,node.path,"ok",discovered,hits});
    }
