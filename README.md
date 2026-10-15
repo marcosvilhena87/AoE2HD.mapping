@@ -762,3 +762,19 @@ ctest --test-dir build-clean -C Release --output-on-failure
 ```
 
 Relatórios: `aoe2hd_player_object_collection_paths_v2.csv` (profundidade, origem e referência à âncora) e `aoe2hd_player_object_collection_summary_v2.csv` (nós, leituras, orçamento, truncamento e cobertura). **O percurso é exploratório e pode conter caches de seleção, ponteiros transitórios ou caminhos redundantes**; não prova coleção de objetos, não é descoberta autônoma das âncoras e não enumera aldeões existentes sem seleção. Uma busca sem resultados, especialmente se truncada, não demonstra ausência de uma coleção.
+
+## PlayerObjectCollectionDiscovery v3 — travessia equilibrada e telemetria
+
+Esta versão mantém a leitura externa do processo em modo somente leitura e coleta cinco âncoras por seleção inicial: Centro Urbano A, Quartel B, Centro Urbano D, Campo de Arqueiros E e Aldeão C. Selecione um sexto objeto distinto para iniciar a investigação.
+
+A busca examina até 3 arestas de ponteiro partindo de `World` e `LocalPlayer`, usando uma janela de **1.024 bytes** por nó. Cotas por raiz e por profundidade: **1, 48, 96 e 96** tentativas respectivamente para profundidades 0 a 3. Orçamento global: **2 MiB**; fila por raiz/profundidade: **512 candidatos**. Rejeições por endereço inválido, duplicação e falha de leitura são contabilizadas. As filas são percorridas por nível; os relatórios registram truncamentos e também nós sem correspondência com âncoras.
+
+```powershell
+git pull --ff-only origin main
+cmake -S . -B build-clean -G "Visual Studio 18 2026" -A Win32
+cmake --build build-clean --config Release
+ctest --test-dir build-clean -C Release --output-on-failure
+.\build-clean\Release\aoe2hd_player_object_collection_discovery_v3.exe
+```
+
+Relatórios: `aoe2hd_player_object_collection_paths_v3.csv` para correspondências com âncoras; `aoe2hd_player_object_collection_nodes_v3.csv` com cada nó processado e status; `aoe2hd_player_object_collection_coverage_v3.csv` com cobertura por raiz e profundidade. A fila pode conter muitos ponteiros que apenas parecem válidos; portanto estes resultados ainda não demonstram uma coleção de entidades nem a enumeração autônoma de aldeões. Mesmo `truncated=0` se refere apenas ao universo limitado examinado, não à memória total do jogo.
