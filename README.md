@@ -670,3 +670,7 @@ cmake --build build-clean --config Release
 ```
 
 Arquivos: `aoe2hd_building_reference_stages_v3.csv` e `aoe2hd_building_reference_windows_v3.csv`. Compare a coluna `points_to_A` entre estágios e procure vizinhos com transições coerentes, sem inferir estrutura apenas pela proximidade. A implementação ainda não enumera construções nem aldeões sem seleção.
+
+### BuildingObjectDiscovery v3 — diagnóstico e retomada de captura
+
+A v3 agora registra `aoe2hd_building_reference_diagnostics_v3.csv`, indicando separadamente `selection_unavailable`, `anchor_identity_changed_or_unreadable`, `owner_changed_or_unreadable` e `world_changed_or_unreadable`. Falhas transitórias de seleção permitem tentar a mesma fase novamente (pressione Enter após selecionar um objeto); `q` encerra conservando as capturas parciais. Os CSVs de estágios e janelas são descarregados em disco a cada etapa concluída. Se a âncora ou o contexto da partida mudar, o experimento interrompe sem inferir persistência. Protocolo do save: A = Centro Urbano 1, B = Quartel, C = Aldeão, D = Centro Urbano 2, A_again = Centro Urbano 1. As etiquetas de tipo são orientações ao operador, não classificações automáticas.
