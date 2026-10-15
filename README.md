@@ -720,3 +720,17 @@ ctest --test-dir build-clean -C Release --output-on-failure
 ```
 
 CSV: `aoe2hd_building_reference_stages_v6.csv`, `aoe2hd_building_reference_window_words_v6.csv`, `aoe2hd_building_stride_evidence_v6.csv` (496 e 992 bytes para comparação histórica) e `aoe2hd_building_stride_ranking_v6.csv` (todos os espaçamentos). O arquivo de ranking registra resultados por etapa, **não classificação ordenada final**: analise e ordene as métricas com controles e verificação cruzada entre etapas. A v6 ainda não encontra uma coleção confirmada de objetos nem enumera aldeões sem seleção.
+
+## BuildingObjectDiscovery v7 — Object Identity Cross-Validation
+
+Experimento **somente leitura** para cruzar identidades de quatro construções conhecidas com uma janela de 4 KiB ao redor de referência candidata. Registre, em sequência, Centro Urbano A, Quartel B, Centro Urbano D e Campo de Arqueiros E, confirmando o endereço e ID de cada objeto. Selecione A novamente e informe `0` para redescobrir referências na sessão; escolha a referência persistente. Depois faça seis capturas: A, B, um Aldeão C, D, E e A novamente. Os quatro endereços/IDs são coletados **antes** do experimento e usados como gabarito; a busca da janela não utiliza o ponteiro da seleção corrente para declarar correspondências.
+
+```powershell
+git pull --ff-only origin main
+cmake -S . -B build-clean -G "Visual Studio 18 2026" -A Win32
+cmake --build build-clean --config Release
+ctest --test-dir build-clean -C Release --output-on-failure
+.\build-clean\Release\aoe2hd_building_object_discovery_v7.exe
+```
+
+Resultados: `aoe2hd_building_object_identity_hits_v7.csv` (posição da referência e objeto-âncora coincidente) e `aoe2hd_building_object_identity_stages_v7.csv` (contagem de referências e objetos distintos em cada etapa). Os objetos precisam permanecer vivos e acessíveis. **Correspondências exatas demonstram apenas que a janela contém ponteiros para âncoras conhecidas**; não demonstram coleção completa, propriedade ou enumeração autônoma de construções e aldeões. Os testes cobrem comparação de múltiplos endereços conhecidos.
