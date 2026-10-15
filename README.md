@@ -748,3 +748,17 @@ ctest --test-dir build-clean -C Release --output-on-failure
 ```
 
 Relatório: `aoe2hd_player_object_collection_candidates_v1.csv`. Indicador `with_2plus_distinct_anchors` corresponde a janelas com pelo menos duas âncoras diferentes, **não** a coleções confirmadas. A versão examina apenas janelas com ponteiros diretos nos primeiros 1.024 bytes de cada raiz, não segue múltiplos níveis de indireção nem cobre listas indexadas apenas por IDs. Ainda requer seleção para registrar as âncoras e não enumera aldeões automaticamente. Uma ausência de resultado não prova que o jogo não tenha uma coleção de objetos.
+
+## PlayerObjectCollectionDiscovery v2 — percurso de até três níveis
+
+Versão somente leitura do experimento multiâncora. Registra, mediante seleção inicial, Centro Urbano A, Quartel B, Centro Urbano D, Campo de Arqueiros E e Aldeão C. Depois selecione **um sexto objeto diferente** antes de iniciar as leituras. A busca parte das estruturas `World` e `LocalPlayer` e percorre ponteiros alinhados encontrados nos primeiros 1024 bytes de cada nó, com profundidade de **até 3 arestas de ponteiro**; possui orçamento de **512 nós**, **2 MiB de bytes lidos/tentados** e limite de candidatos enfileirados. Os endereços de objetos conhecidos são usados como gabarito de comparação; o percurso não os obtém da seleção no momento da busca. A saída registra o caminho de cada referência encontrada, número de âncoras distintas e se a busca foi truncada.
+
+```powershell
+git pull --ff-only origin main
+cmake -S . -B build-clean -G "Visual Studio 18 2026" -A Win32
+cmake --build build-clean --config Release
+ctest --test-dir build-clean -C Release --output-on-failure
+.\build-clean\Release\aoe2hd_player_object_collection_discovery_v2.exe
+```
+
+Relatórios: `aoe2hd_player_object_collection_paths_v2.csv` (profundidade, origem e referência à âncora) e `aoe2hd_player_object_collection_summary_v2.csv` (nós, leituras, orçamento, truncamento e cobertura). **O percurso é exploratório e pode conter caches de seleção, ponteiros transitórios ou caminhos redundantes**; não prova coleção de objetos, não é descoberta autônoma das âncoras e não enumera aldeões existentes sem seleção. Uma busca sem resultados, especialmente se truncada, não demonstra ausência de uma coleção.
