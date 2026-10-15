@@ -13,7 +13,7 @@
 #include <vector>
 namespace aoe2hd {
 inline std::string HexOffsetV4(size_t n){std::ostringstream s;s<<std::hex<<n;return s.str();}
-struct CandidateV4 {uint32_t address=0;unsigned root=0,depth=0;std::string path;};
+struct CandidateV4 {uint32_t address=0;unsigned root=0,depth=0;std::string path;double priority=0;};
 struct NodeEvidenceV4 {
  CandidateV4 node;std::string status;size_t rawPointers=0,validPointers=0,distinctPointers=0,anchorHits=0,childrenQueued=0;
  double pointerDensity=0;unsigned structuralHints=0;double score=0;
@@ -59,6 +59,9 @@ ResultV4 TraverseV4(const std::vector<uint32_t>& roots,const std::vector<ObjectA
     else groups[size_t(it-keys.begin())].push_back(c);
    }
    queue.clear();
+   // Rank *within* each parent branch, while round-robin keeps branches diverse.
+   for(auto& g:groups)std::stable_sort(g.begin(),g.end(),
+    [](const CandidateV4& a,const CandidateV4& b){return a.priority>b.priority;});
    size_t remaining=0;for(const auto& g:groups)remaining+=g.size();
    for(size_t round=0;remaining;round++){
     bool any=false;
@@ -117,7 +120,7 @@ ResultV4 TraverseV4(const std::vector<uint32_t>& roots,const std::vector<ObjectA
        uint32_t target=values[pos];
        if(!validRange(target))continue;
        if(next.size()>=cfg.queueCap){out.truncated=true;++out.buckets[index(r,depth+1)].capDropped;continue;}
-       next.push_back({target,unsigned(r),depth+1,node.path+"->0x"+HexOffsetV4(target)});
+       next.push_back({target,unsigned(r),depth+1,node.path+"->0x"+HexOffsetV4(target),e.score});
        ++e.childrenQueued;++bucket.queued;
       }
      }
