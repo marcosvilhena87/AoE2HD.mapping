@@ -155,7 +155,8 @@ int main(){
  }
  std::cout<<"BuildingObjectDiscovery v3 completed phases=5 refs="<<refs.size()<<"\n"
           <<"CSV: aoe2hd_building_reference_stages_v3.csv\n"
-          <<"CSV: aoe2hd_building_reference_windows_v3.csv\n"\n          <<"CSV: aoe2hd_building_reference_diagnostics_v3.csv\n"
+          <<"CSV: aoe2hd_building_reference_windows_v3.csv\n"
+          <<"CSV: aoe2hd_building_reference_diagnostics_v3.csv\n"
           <<"These observations do not independently establish ownership or collection semantics.\n";
  return 0;
 }
