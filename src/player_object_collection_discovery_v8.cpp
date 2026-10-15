@@ -27,6 +27,7 @@
 #include "PlayerObjectCollectionDiscoveryV6.h"
 #include "PlayerObjectCollectionDiscoveryV7.h"
 #include "PlayerObjectCollectionDiscoveryV8.h"
+#include "PlayerObjectCollectionPathResolverV8.h"
 namespace {
 struct Handle{HANDLE value;explicit Handle(HANDLE v):value(v){}~Handle(){if(value&&value!=INVALID_HANDLE_VALUE)CloseHandle(value);}};
 bool rd(HANDLE h,uint32_t addr,void* dst,size_t len){SIZE_T got=0;return ReadProcessMemory(h,reinterpret_cast<LPCVOID>(uintptr_t(addr)),dst,len,&got)&&got==len;}
@@ -83,17 +84,24 @@ int main(){
  };
 
 
- std::cout<<"Enter candidate base address in hex (current game process only):\n";
+ std::cout<<"Candidate path: absolute hex address or World+0xOFF[+0xOFF] / LocalPlayer+0xOFF[+0xOFF]\n";
+ std::cout<<"Each +offset reads a pointer from the preceding object; use verified paths only.\n";
  if(!std::getline(std::cin,line))return 4;
+ aoe2hd::RootPathV8 path;
+ if(!aoe2hd::ParseRootPathV8(line,path)){std::cerr<<"Invalid path.\n";return 4;}
+ auto resolve=[&](uint32_t& address){
+  return aoe2hd::ResolveRootPathV8(path,world,local,
+   [&](uint32_t slot,uint32_t& next){return probe(slot,4)&&rd(proc.value,slot,&next,4);},address);
+ };
  uint32_t candidate=0;
- try{
-  size_t consumed=0;unsigned long x=std::stoul(line,&consumed,16);
-  if(consumed!=line.size()||x<0x10000||x>UINT32_MAX-0x290||(x&3u))return 4;
-  candidate=uint32_t(x);
- }catch(...){return 4;}
+ if(!resolve(candidate)){std::cerr<<"Cannot resolve path in the current session.\n";return 4;}
+ std::cout<<"Initial candidate=0x"<<std::hex<<candidate<<std::dec<<"\n";
  const uint32_t offsets[]={0x178,0x28c};
  auto snapshot=[&](){
   std::vector<aoe2hd::PointerSnapshotV8> result;
+  uint32_t current=0;
+  if(!resolve(current)){std::cerr<<"Pointer chain resolution failed for snapshot.\n";return result;}
+  candidate=current;
   for(uint32_t off:offsets){
    aoe2hd::PointerSnapshotV8 sample;
    uint32_t slot=candidate+off;
@@ -112,12 +120,15 @@ int main(){
  std::cout<<"A: BEFORE creation, keep unit count unchanged and press ENTER.\n";
  if(!std::getline(std::cin,line))return 4;
  auto a=snapshot();
+ if(a.size()!=2)return 6;
  std::cout<<"CONTROL: wait without producing/destroying anything and press ENTER.\n";
  if(!std::getline(std::cin,line))return 4;
  auto b=snapshot();
+ if(b.size()!=2)return 6;
  std::cout<<"INTERVENTION: finish creating ONE villager; do not select it; press ENTER.\n";
  if(!std::getline(std::cin,line))return 4;
  auto c=snapshot();
+ if(c.size()!=2)return 6;
  std::vector<uint32_t> ids;
  for(const auto& k:known)ids.push_back(k.id);
  std::ofstream out("aoe2hd_player_object_collection_transitions_v8.csv");
