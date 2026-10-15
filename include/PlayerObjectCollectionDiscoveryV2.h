@@ -26,13 +26,17 @@ TraversalResultV2 TraverseObjectsV2(const std::vector<TraversalNodeV2>& roots,
   if(!read(node.address,bytes.data(),bytes.size()))continue;
   ++out.visited;
   for(size_t off=0;off+4<=bytes.size();off+=4){
+   if(uint64_t(node.address)+off>UINT32_MAX)break;
    uint32_t value=0;std::memcpy(&value,bytes.data()+off,4);
    for(size_t j=0;j<anchors.size();++j)
     if(value&&value==anchors[j].address){
      out.hits.push_back({uint32_t(node.address+off),value,node.depth,node.path+"+0x"+std::to_string(off),j});
     }
-   if(node.depth<maxDepth&&value>=0x10000&&!(value&3u)&&pending.size()<maxNodes*16)
-    pending.push_back({value,node.depth+1,node.path+"+0x"+std::to_string(off)});
+   if(node.depth<maxDepth&&value>=0x10000&&!(value&3u)){
+    if(pending.size()<maxNodes*16)
+     pending.push_back({value,node.depth+1,node.path+"+0x"+std::to_string(off)});
+    else out.truncated=true;
+   }
   }
  }
  return out;
