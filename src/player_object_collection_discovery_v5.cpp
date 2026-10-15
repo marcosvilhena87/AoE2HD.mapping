@@ -80,12 +80,6 @@ int main(){
 
  auto capture=[&](){return aoe2hd::TraverseV4(std::vector<uint32_t>{world,local},known,probe,
   [&](uint32_t address,void* dst,size_t n){return rd(proc.value,address,dst,n);});};
- std::cout<<"Snapshot 1: select unregistered object and press ENTER.\n";
- if(!std::getline(std::cin,line))return 4;
- auto first=capture();
- std::cout<<"Snapshot 2: select a different object and press ENTER.\n";
- if(!std::getline(std::cin,line))return 4;
- auto second=capture();
  auto metrics=[&](const aoe2hd::ResultV4& result){
   std::map<uint64_t,aoe2hd::CollectionMetricsV5> out;
   for(const auto& node:result.nodes){
@@ -100,12 +94,14 @@ int main(){
   }
   return out;
  };
- // Both metric passes read the same live process after snapshot 2; interpret
- // cross-snapshot persistence only through the v4 traversal node identities.
+ std::cout<<"Snapshot 1: select unregistered object and press ENTER.\n";
+ if(!std::getline(std::cin,line))return 4;
+ auto first=capture();
+ auto measuredFirst=metrics(first);
+ std::cout<<"Snapshot 2: select a different object and press ENTER.\n";
+ if(!std::getline(std::cin,line))return 4;
+ auto second=capture();
  auto measured=metrics(second);
- std::set<uint64_t> previous;
- for(const auto& n:first.nodes)if(n.status=="ok")
-  previous.insert((uint64_t(n.node.root)<<32)|n.node.address);
  std::ofstream out("aoe2hd_player_object_collection_candidates_v5.csv");
  std::ofstream coverage("aoe2hd_player_object_collection_coverage_v5.csv");
  if(!out||!coverage)return 5;
@@ -118,7 +114,7 @@ int main(){
   auto it=measured.find(key);if(it==measured.end())continue;
   const auto& m=it->second;
   out<<labels[n.node.root]<<','<<n.node.depth<<','<<n.node.address<<",\""<<n.node.path<<"\","
-    <<previous.count(key)<<','<<m.longestPointerRun<<','<<m.validPointerSlots<<','
+    <<measuredFirst.count(key)<<','<<m.longestPointerRun<<','<<m.validPointerSlots<<','
     <<m.anchorMatches<<','<<m.distinctAnchors<<','<<m.beginEndPairs<<','
     <<m.beginEndCapacityTriples<<','<<m.validatedObjectIDs<<','<<m.score<<"\n";
  }
@@ -127,7 +123,7 @@ int main(){
  coverage<<"second,"<<second.reads<<','<<second.bytesAttempted<<','<<second.preflightCalls<<','
          <<second.truncated<<','<<second.hits.size()<<"\n";
  std::cout<<"PlayerObjectCollectionDiscovery v5 candidates="<<measured.size()
-          <<" persisted_nodes="<<previous.size()<<" anchor_hits="<<second.hits.size()
+          <<" persisted_nodes="<<measuredFirst.size()<<" anchor_hits="<<second.hits.size()
           <<" truncated="<<second.truncated<<"\n"
           <<"CSV: aoe2hd_player_object_collection_candidates_v5.csv\n"
           <<"CSV: aoe2hd_player_object_collection_coverage_v5.csv\n"
