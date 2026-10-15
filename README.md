@@ -794,3 +794,19 @@ ctest --test-dir build-clean -C Release --output-on-failure
 ```
 
 Saídas: `aoe2hd_player_object_collection_paths_v4.csv` (referências a âncoras), `aoe2hd_player_object_collection_nodes_v4.csv` (status, indicadores estruturais, pontuação e origem), `aoe2hd_player_object_collection_coverage_v4.csv` (cotas, falhas de leitura, rejeições prévias, duplicações e truncamento por nível). O experimento não enumera aldeões sem seleção, e ausência de correspondência não prova ausência de uma coleção.
+
+## PlayerObjectCollectionDiscovery v5 — Collection-Aware Structural Discovery
+
+Novo experimento de leitura externa **somente leitura**. Registre cinco âncoras por seleção: Centro Urbano A, Quartel B, Centro Urbano D, Campo de Arqueiros E e Aldeão C; use depois um sexto objeto diferente como controle. A ferramenta coleta duas travessias delimitadas de `World` e `LocalPlayer`, com troca de seleção entre elas. As cotas e o algoritmo de descoberta de nós são herdados da v4 (até 3 níveis, janelas de 1 KiB, orçamento de 2 MiB por travessia).
+
+Para cada nó recuperado na segunda captura, calcula a sequência mais longa de valores consecutivos que apontam a regiões legíveis, o número de âncoras distintas encontradas, possíveis relações entre ponteiros `[begin,end,capacity]` e até 64 destinos com IDs numericamente plausíveis em `+0x08`. Esses indícios **não** certificam a classe nem a identidade dos objetos. A pontuação utiliza esses indicadores sem teto artificial fixo de 40 pontos. A coluna `persisted_node` indica que o mesmo endereço foi recuperado nas duas capturas; **não** prova que seus bytes ou ponteiros internos tenham permanecido iguais.
+
+```powershell
+git pull --ff-only origin main
+cmake -S . -B build-clean -G "Visual Studio 18 2026" -A Win32
+cmake --build build-clean --config Release
+ctest --test-dir build-clean -C Release --output-on-failure
+.\build-clean\Release\aoe2hd_player_object_collection_discovery_v5.exe
+```
+
+Relatórios: `aoe2hd_player_object_collection_candidates_v5.csv` (caminho, persistência do endereço e indicadores estruturais na segunda captura) e `aoe2hd_player_object_collection_coverage_v5.csv` (orçamentos, contagens e truncamento em cada travessia). O CSV de candidatos pode ser ordenado por `score` para análise. A v5 **não** enumera aldeões sem seleção, não verifica se um candidato é uma coleção real e não cobre tabelas representadas apenas por IDs.
