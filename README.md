@@ -810,3 +810,19 @@ ctest --test-dir build-clean -C Release --output-on-failure
 ```
 
 Relatórios: `aoe2hd_player_object_collection_candidates_v5.csv` (caminho, persistência do endereço e indicadores estruturais na segunda captura) e `aoe2hd_player_object_collection_coverage_v5.csv` (orçamentos, contagens e truncamento em cada travessia). O CSV de candidatos pode ser ordenado por `score` para análise. A v5 **não** enumera aldeões sem seleção, não verifica se um candidato é uma coleção real e não cobre tabelas representadas apenas por IDs.
+
+## PlayerObjectCollectionDiscovery v6 — Targeted Candidate Validation
+
+Ferramenta de leitura externa **somente leitura** que testa até 16 endereços candidatos da v5 (hexadecimais, separados por espaço), em vez de ampliar novamente a travessia genérica. Registra cinco âncoras via seleção (Centro Urbano A, Quartel B, Centro Urbano D, Campo de Arqueiros E e Aldeão C), exige um sexto objeto distinto e depois coleta duas leituras de 1024 bytes por endereço com mudança de seleção.
+
+Use a lista padrão oferecida apenas **na mesma sessão de processo** do experimento anterior; caso tenha reiniciado o jogo, informe endereços reidentificados na sessão atual, pois os absolutos podem mudar. A validação registra correspondências exatas com âncoras, sequências de palavras interpretadas como ponteiros, campos `begin/end/capacity` plausíveis, identificadores numéricos em `objeto+0x08` e hash FNV-1a de toda a janela para comparar conteúdo entre capturas. A existência de um número plausível em `+0x08` **não confirma** um objeto de jogo, e `content_equal` indica igualdade do hash, não identidade sem possibilidade de colisão.
+
+```powershell
+git pull --ff-only origin main
+cmake -S . -B build-clean -G "Visual Studio 18 2026" -A Win32
+cmake --build build-clean --config Release
+ctest --test-dir build-clean -C Release --output-on-failure
+.\build-clean\Release\aoe2hd_player_object_collection_discovery_v6.exe
+```
+
+Relatório: `aoe2hd_player_object_collection_targeted_v6.csv` (legibilidade nas duas capturas, igualdade de hash, possíveis vetores, sequência de ponteiros, IDs plausíveis e correspondência exata com as cinco âncoras). A ferramenta investiga **endereços de candidatos fornecidos manualmente**, não descobre coleções por si só. A ausência de correspondências não exclui estruturas baseadas em IDs ou fora das janelas testadas.
