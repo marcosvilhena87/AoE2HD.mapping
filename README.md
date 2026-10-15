@@ -641,3 +641,17 @@ ctest --test-dir build-clean -C Release --output-on-failure
 ```
 
 Arquivo: `aoe2hd_building_reference_persistence_v1.csv`, com endereço da referência, valor posterior e sinais de permanência nos primeiros 0x800 bytes de World/LocalPlayer. Saída de console: `persistent_refs`, `queue_read_valid`, `groups`, `units`. Referências encontradas são **candidatas**, não uma lista de construções: podem pertencer a cache, UI ou objetos transitórios. A varredura é deliberadamente limitada e não prova ausência de referências fora da cobertura. Mesmo se a fila continuar legível após a troca de seleção, isso apenas comprova leitura de um endereço **anteriormente conhecido**; enumeração autônoma de construções ainda exige descobrir a estrutura proprietária dos objetos e reproduzir a descoberta sem seleção inicial. A ferramenta não pesquisa tecnologias nem enumera aldeões presentes no mapa.
+
+## BuildingObjectDiscovery v2 — duas construções e persistência
+
+Ferramenta **somente leitura** para investigar referências a duas construções distintas sem confundir cache de seleção com coleção de objetos. Selecione a construção A, depois B (confirme ambas), e a ferramenta examinará até **96 MiB de regiões legíveis**, com limite de **4 MiB por região**, procurando referências diretas de 32 bits aos dois endereços. Depois selecione um terceiro objeto, diferente de A e B, e pressione Enter. O programa relê referências, conta as que persistem e verifica se ambas aparecem numa vizinhança de 128 bytes, classificando somente candidatos à mesma estrutura. Também consulta ProductionQueueReader para A e B após a terceira seleção.
+
+```powershell
+git pull --ff-only origin main
+cmake -S . -B build-clean -G "Visual Studio 18 2026" -A Win32
+cmake --build build-clean --config Release
+ctest --test-dir build-clean -C Release --output-on-failure
+.\build-clean\Release\aoe2hd_building_object_discovery_v2.exe
+```
+
+Relatórios: `aoe2hd_building_object_candidates_v2.csv` e `aoe2hd_building_object_summary_v2.csv`. Indicadores: `persistent_A`, `persistent_B`, `near_both`, `queue_A_valid`, `queue_B_valid`. **Limitação essencial:** a varredura procura endereços diretos, não coleções indexadas por IDs, arrays indiretos ou regiões excluídas pelo orçamento. A e B ainda são obtidas por seleção inicial, portanto persistência não demonstra descoberta autônoma de construções nem de aldeões no mapa. Não destrua os objetos durante a execução.
