@@ -860,3 +860,17 @@ ctest --test-dir build-clean -C Release --output-on-failure
 ```
 
 Saída: `aoe2hd_player_object_collection_transitions_v8.csv`, com os três valores, IDs numéricos e indicadores para cada deslocamento. A memória pode ser alterada assincronamente pelo jogo; portanto o experimento deve ser repetido antes de concluir causalidade. Endereços antigos podem estar ilegíveis ou ter sido realocados.
+
+### Atualização da v8: resolução relativa às raízes (reinicialização do jogo)
+
+A v8 aceita, além do endereço absoluto hexadecimal válido somente na sessão atual, caminhos explícitos como `World+0x88+0x14` ou `LocalPlayer+0x15c`. Cada deslocamento lê um **ponteiro de 32 bits** no endereço anterior (até três indireções, deslocamentos alinhados e limitados a 0xFFC); o resultado passa a ser a base examinada nos campos `+0x178` e `+0x28C`. A cadeia é recalculada em cada captura A/controle/intervenção e o programa interrompe o experimento se não puder resolvê-la.
+
+**Não existe ainda caminho estável confirmado até a coleção candidata** `0x14D6B188`. Portanto, o suporte a caminhos relativos não significa descoberta automática nem garante funcionamento após reiniciar o jogo. Não confunda `World+0x88` como *endereço direto* com o valor armazenado em `[World+0x88]`: a nova sintaxe interpreta cada termo como indireção. Se nenhum caminho foi validado, redescubra a base na sessão nova antes de repetir a intervenção.
+
+Para verificar o teste adicional:
+```powershell
+git pull --ff-only origin main
+cmake -S . -B build-clean -G "Visual Studio 18 2026" -A Win32
+cmake --build build-clean --config Release
+ctest --test-dir build-clean -C Release --output-on-failure
+```
