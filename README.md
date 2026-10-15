@@ -844,3 +844,19 @@ cmake --build build-clean --config Release
 ctest --test-dir build-clean -C Release --output-on-failure
 .\build-clean\Release\aoe2hd_player_object_collection_discovery_v7.exe
 ```
+
+## PlayerObjectCollectionDiscovery v8 — Targeted Pointer Transition Validation
+
+A v8 valida **somente leitura** os campos `base+0x178` e `base+0x28C` de um endereço-base informado manualmente, válido na **sessão atual do processo**. A hipótese inicial veio de `0x14D6B188` na sessão da v7, mas **não reutilize esse valor caso tenha reiniciado o jogo**. A resolução automática desse endereço entre processos ainda não foi implementada. As cinco âncoras conhecidas são coletadas inicialmente; depois, um sexto objeto distinto é selecionado para o controle de entrada.
+
+O programa faz três capturas após comandos Enter separados: A (sem criar unidades), CONTROLE (simulação avançando sem criar nem destruir unidades) e INTERVENÇÃO (crie um aldeão, aguarde terminar e **não o selecione**). Para cada campo, registra se o ponteiro permaneceu igual no controle, mudou após intervenção e se o novo destino permitiu uma leitura de 12 bytes, inclusive a palavra em `destino+0x08`. A classificação `candidate=1` exige mudança somente na intervenção e legibilidade do destino; isso **não comprova** que a estrutura guarda aldeões, apenas identifica uma transição a ser investigada.
+
+```powershell
+git pull --ff-only origin main
+cmake -S . -B build-clean -G "Visual Studio 18 2026" -A Win32
+cmake --build build-clean --config Release
+ctest --test-dir build-clean -C Release --output-on-failure
+.\build-clean\Release\aoe2hd_player_object_collection_discovery_v8.exe
+```
+
+Saída: `aoe2hd_player_object_collection_transitions_v8.csv`, com os três valores, IDs numéricos e indicadores para cada deslocamento. A memória pode ser alterada assincronamente pelo jogo; portanto o experimento deve ser repetido antes de concluir causalidade. Endereços antigos podem estar ilegíveis ou ter sido realocados.
