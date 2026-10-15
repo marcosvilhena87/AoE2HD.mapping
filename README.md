@@ -627,3 +627,17 @@ O programa solicita oito capturas (vazio, primeira, segunda, terceira, quarta in
 `include/ProductionQueueReader.h` expõe `aoe2hd::ReadProductionQueue(building, readWord, readBytes)`, separando a lógica de leitura da interface do experimento v7. Retorna `ProductionQueueSnapshot` com `pointer`, `groupCount`, `unitCount`, `queue.groups`, `queue.expanded`, `status` e `valid()`. O leitor é genérico, somente leitura, demanda no máximo `4 * groupCount` bytes (até 512), respeita os limites de grupos/unidades e relê ponteiro e contadores após a cópia para detectar alterações durante a captura. Esses controles reduzem leituras inconsistentes, mas não garantem atomicidade frente a modificações rápidas do jogo. Pesquisa tecnológica e unidades vivas do mapa continuam fora de escopo.
 
 A v7 utiliza agora o leitor reutilizável em vez de duplicar sua decodificação. Testes de regressão cobrem fila agrupada `74,93,93,74`, fila vazia, ponteiro inválido e mutação simulada entre leituras. Para validar no Windows: `cmake --build build-clean --config Release` e `ctest --test-dir build-clean -C Release --output-on-failure`.
+
+## BuildingReferenceDiscovery v1 — referências persistentes a construções
+
+Experimento independente e **somente leitura** destinado a descobrir referências a uma construção que sobrevivam à mudança da seleção. A ferramenta começa com **uma construção produtora conhecida selecionada** (essa seleção é apenas uma âncora experimental); examina regiões legíveis da memória do processo `AoK HD.exe`, com orçamento máximo de **64 MiB de bytes varridos** e **até 4 MiB por região**. Registra endereços cujas palavras de 32 bits apontam exatamente para o objeto selecionado. Depois solicita que você **selecione outro objeto ou desmarque a construção**, sem destruí-la, e relê as referências para identificar quais ainda apontam para ela. Também chama `ProductionQueueReader` com o endereço-âncora depois de mudar a seleção, verificando a possibilidade de leitura de sua fila sem mantê-la selecionada.
+
+```powershell
+git pull --ff-only origin main
+cmake -S . -B build-clean -G "Visual Studio 18 2026" -A Win32
+cmake --build build-clean --config Release
+ctest --test-dir build-clean -C Release --output-on-failure
+.\build-clean\Release\aoe2hd_building_reference_discovery_v1.exe
+```
+
+Arquivo: `aoe2hd_building_reference_persistence_v1.csv`, com endereço da referência, valor posterior e sinais de permanência nos primeiros 0x800 bytes de World/LocalPlayer. Saída de console: `persistent_refs`, `queue_read_valid`, `groups`, `units`. Referências encontradas são **candidatas**, não uma lista de construções: podem pertencer a cache, UI ou objetos transitórios. A varredura é deliberadamente limitada e não prova ausência de referências fora da cobertura. Mesmo se a fila continuar legível após a troca de seleção, isso apenas comprova leitura de um endereço **anteriormente conhecido**; enumeração autônoma de construções ainda exige descobrir a estrutura proprietária dos objetos e reproduzir a descoberta sem seleção inicial. A ferramenta não pesquisa tecnologias nem enumera aldeões presentes no mapa.
