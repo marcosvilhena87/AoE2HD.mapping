@@ -621,3 +621,9 @@ ctest --test-dir build-clean -C Release --output-on-failure
 \`\`\`
 
 O programa solicita oito capturas (vazio, primeira, segunda, terceira, quarta inclusão, cancelamento e duas conclusões), mas é obrigatório informar a sequência *realmente* vista; use \`M\`=Milícia (74), \`S\`=Lanceiro (93), \`V\`=Aldeão (83), separadas por \`|\`, ou \`empty\`. CSVs: \`aoe2hd_production_queue_enumeration_v7.csv\` e \`aoe2hd_production_queue_groups_v7.csv\`. Esta primeira versão cobre esses três IDs conhecidos, não é um decodificador universal de tipos de unidade; o usuário deve validar o objeto de construção e a execução no jogo. Um snapshot vazio com ambos contadores zero é válido mesmo com ponteiro antigo persistente. O teste automatizado cobre enumeração, agregação, limite de grupos e condições inválidas. **Não enumera aldeões já existentes no mapa.**
+
+## ProductionQueueReader — leitor reutilizável
+
+`include/ProductionQueueReader.h` expõe `aoe2hd::ReadProductionQueue(building, readWord, readBytes)`, separando a lógica de leitura da interface do experimento v7. Retorna `ProductionQueueSnapshot` com `pointer`, `groupCount`, `unitCount`, `queue.groups`, `queue.expanded`, `status` e `valid()`. O leitor é genérico, somente leitura, demanda no máximo `4 * groupCount` bytes (até 512), respeita os limites de grupos/unidades e relê ponteiro e contadores após a cópia para detectar alterações durante a captura. Esses controles reduzem leituras inconsistentes, mas não garantem atomicidade frente a modificações rápidas do jogo. Pesquisa tecnológica e unidades vivas do mapa continuam fora de escopo.
+
+A v7 utiliza agora o leitor reutilizável em vez de duplicar sua decodificação. Testes de regressão cobrem fila agrupada `74,93,93,74`, fila vazia, ponteiro inválido e mutação simulada entre leituras. Para validar no Windows: `cmake --build build-clean --config Release` e `ctest --test-dir build-clean -C Release --output-on-failure`.
