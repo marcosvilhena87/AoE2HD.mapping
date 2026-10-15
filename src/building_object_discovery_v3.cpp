@@ -88,32 +88,74 @@ int main(){
  if(!samples||!windows)return 5;
  samples<<"stage,selected_address,selected_id,reference_address,reference_value,reference_readable,points_to_A,anchor_alive\n";
  windows<<"stage,reference_address,relative_offset,absolute_address,value,readable\n";
+ std::ofstream diag("aoe2hd_building_reference_diagnostics_v3.csv");
+ if(!diag)return 5;
+ diag<<"stage,attempt,selected_pointer,selected_id,anchor_id,owner_pointer,world_pointer,reason\n";
  const char* phases[]={"A","B","C","D_optional","A_again"};
- for(const char* phase:phases){
-  std::cout<<"STAGE "<<phase<<": select requested object; D_optional may be any distinct building, press ENTER.\n";
-  if(!std::getline(std::cin,line))return 4;
-  uint32_t current=0,currentId=0,actual=0,ownerNow=0,worldNow=0;
-  if(!selected(current,currentId)||!w(process.value,anchor,8,actual)||
-     actual!=identity||!w(process.value,base,0x006F2C58,ownerNow)||
-     ownerNow!=owner||!w(process.value,owner,0xc8,worldNow)||worldNow!=world){
-   std::cerr<<"Selection or anchor changed unexpectedly\n";return 4;
-  }
-  for(uint32_t ref:refs){
-   uint32_t val=0;bool ok=rd(process.value,ref,&val,4);
-   samples<<phase<<','<<current<<','<<currentId<<','<<ref<<','<<(ok?val:0)<<','
-          <<ok<<','<<(ok&&val==anchor)<<",1\n";
-   for(int offset=-64;offset<=64;offset+=4){
-    uint32_t at=0,v=0;bool safe=offset<0?ref>=uint32_t(-offset):ref<=UINT32_MAX-uint32_t(offset);
-    if(safe)at=uint32_t(int64_t(ref)+offset);
-    bool readOk=safe&&rd(process.value,at,&v,4);
-    windows<<phase<<','<<ref<<','<<offset<<','<<at<<','<<(readOk?v:0)<<','<<readOk<<"\n";
+ const char* instructions[]={"select Centro Urbano 1 (A)","select Quartel (B)",
+  "select an Aldeao (C)","select Centro Urbano 2 (D)","reselect Centro Urbano 1 (A)"};
+ unsigned completed=0;
+ for(size_t phaseIdx=0;phaseIdx<5;++phaseIdx){
+  const char* phase=phases[phaseIdx];
+  bool captured=false;
+  while(!captured){
+   std::cout<<"STAGE "<<phase<<": "<<instructions[phaseIdx]
+            <<". ENTER capture; r retry; q stop with CSVs.\n";
+   if(!std::getline(std::cin,line))return 4;
+   if(line=="q"||line=="Q"){
+    std::cout<<"Stopped by operator, completed="<<completed<<" phases; partial CSVs saved.\n";
+    return 0;
    }
+   if(line=="r"||line=="R")continue;
+   uint32_t current=0,currentId=0,actual=0,ownerNow=0,worldNow=0;
+   bool selectionOk=selected(current,currentId);
+   bool anchorOk=w(process.value,anchor,8,actual)&&actual==identity;
+   bool ownerOk=w(process.value,base,0x006F2C58,ownerNow)&&ownerNow==owner;
+   bool worldOk=ownerOk&&w(process.value,owner,0xc8,worldNow)&&worldNow==world;
+   std::string reason="ok";
+   if(!ownerOk)reason="owner_changed_or_unreadable";
+   else if(!worldOk)reason="world_changed_or_unreadable";
+   else if(!anchorOk)reason="anchor_identity_changed_or_unreadable";
+   else if(!selectionOk)reason="selection_unavailable";
+   diag<<phase<<','<<1<<','<<current<<','<<currentId<<','<<actual<<','
+       <<ownerNow<<','<<worldNow<<','<<reason<<"\n";
+   diag.flush();
+   if(reason!="ok"){
+    std::cerr<<"Capture rejected: "<<reason<<"\n";
+    if(!ownerOk||!worldOk||!anchorOk){
+     std::cerr<<"Context or anchor no longer stable; stopping safely.\n";
+     return 4;
+    }
+    std::cerr<<"Select a single object and press ENTER to retry; q to stop.\n";
+    continue;
+   }
+   if((phaseIdx==0||phaseIdx==4)&&current!=anchor){
+    std::cerr<<"Expected original Centro Urbano A; retry this stage.\n";continue;
+   }
+   if(phaseIdx>=1&&phaseIdx<=3&&current==anchor){
+    std::cerr<<"Expected an object distinct from A; retry.\n";continue;
+   }
+   for(uint32_t ref:refs){
+    uint32_t val=0;bool ok=rd(process.value,ref,&val,4);
+    samples<<phase<<','<<current<<','<<currentId<<','<<ref<<','<<(ok?val:0)<<','
+           <<ok<<','<<(ok&&val==anchor)<<",1\n";
+    for(int offset=-64;offset<=64;offset+=4){
+     uint32_t at=0,v=0;
+     bool safe=offset<0?ref>=uint32_t(-offset):ref<=UINT32_MAX-uint32_t(offset);
+     if(safe)at=uint32_t(int64_t(ref)+offset);
+     bool readOk=safe&&rd(process.value,at,&v,4);
+     windows<<phase<<','<<ref<<','<<offset<<','<<at<<','<<(readOk?v:0)<<','<<readOk<<"\n";
+    }
+   }
+   samples.flush();windows.flush();
+   ++completed;captured=true;
+   std::cout<<" captured "<<phase<<" selected=0x"<<std::hex<<current<<std::dec
+            <<" refs="<<refs.size()<<"\n";
   }
-  std::cout<<" selected=0x"<<std::hex<<current<<std::dec<<" refs="<<refs.size()<<"\n";
  }
  std::cout<<"BuildingObjectDiscovery v3 completed phases=5 refs="<<refs.size()<<"\n"
           <<"CSV: aoe2hd_building_reference_stages_v3.csv\n"
-          <<"CSV: aoe2hd_building_reference_windows_v3.csv\n"
+          <<"CSV: aoe2hd_building_reference_windows_v3.csv\n"\n          <<"CSV: aoe2hd_building_reference_diagnostics_v3.csv\n"
           <<"These observations do not independently establish ownership or collection semantics.\n";
  return 0;
 }
