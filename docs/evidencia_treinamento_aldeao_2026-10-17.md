@@ -52,3 +52,15 @@ Fonte: `training_timeline.csv` recebido do usuário (fase `ciclo_aldeao`, base a
 | Retorno ao inativo | 399 | 39.800324 | 0 | 65535 |
 
 O contador `+0xC44` cresce quase linearmente em passos próximos a três a cada 0,5 s, comportamento **fortemente compatível** com progresso percentual 0–100. O campo adjacente `+0xC42` comuta conjuntamente entre 0xFFFF (sentinela de inatividade candidata) e 0x0053 (identificador/estado de unidade candidato). A queda intermediária 53→0 é compatível com cancelamento, e 99→0 é compatível com conclusão, **sem marcas de ação no log**. Nenhum dos dois comportamentos confirma sozinho a semântica exata. A base `0x18769018` continua absoluta da sessão, sem cadeia estável verificada. Recomenda-se confirmar a porcentagem no HUD e comparar uma segunda classe de unidade para validar o papel de 0x0053.
+
+## Investigação da semântica de 0x0053 (83) — referência de unidades
+
+Foi pesquisado o catálogo atual e o código histórico do próprio repositório: `TrainingCandidateBase+0xC42` continua registrado apenas como hipótese, e os leitores históricos de fila (`ProductionQueueEntriesV6.h`, `ProductionQueueEnumerationV7.h`) decodificam `uint16 type` e `uint16 quantity`, **sem tabela local que converta o número 83 em nome de unidade**.
+
+Referências externas independentes identificam `83 (0x0053)` como **Villager (Male)** (aldeão masculino):
+
+- https://aoe2control.github.io/enums/ (`UnitObjectType.VILLAGER_MALE = 83`);
+- https://airef.github.io/tables/objects.html (`83 Villager Male`, `293 Villager Female`, `74 Militia`);
+- https://ksneijders.github.io/AoE2ScenarioParser/api/AoE2ScenarioParser/datasets/units.html (`VILLAGER_MALE=83`, `VILLAGER_FEMALE=293`).
+
+**Inferência atual**: o valor `+0xC42 = 0x0053` em ambos os treinamentos de aldeão é compatível com **ID do tipo de unidade em treinamento**, e `0xFFFF` fora de treinamento é compatível com sentinela de fila vazia/nenhuma unidade ativa. A evidência reforça a hipótese, mas **não a valida diretamente na versão HD 5.8.INT**: tabelas externas podem descrever interfaces/versões diferentes e coincidência com um único tipo não exclui estados alternativos. Confirmar com milícia (ID de referência 74 / 0x004A) e, se possível, outras unidades; monitorar alternância +0xC42 de 0xFFFF ao ID durante a fila, retorno em cancelamento/conclusão e comportamento após reinício. Não alterar o status `hipotese` sem validação.
