@@ -33,3 +33,6 @@ CandidateBase,0x28C,Ponteiro candidato B,ptr32,hipotese,README.md
 ABSOLUTO_SESSAO,0x14D6B188,Base candidata v7,ptr32,sessao_observada,README.md
 ABSOLUTO_SESSAO,0x00B90000,Base de módulo em teste histórico,ptr32,sessao_observada,README.md
 ABSOLUTO_SESSAO,0x1929E848,World em teste histórico,ptr32,sessao_observada,README.md
+ResourceTable,0x010,Vagas populacionais disponiveis candidato,float32,hipotese,docs/evidencia_populacao_2026-10-17.md
+ResourceTable,0x02C,Populacao usada candidato A,float32,hipotese,docs/evidencia_populacao_2026-10-17.md
+ResourceTable,0x04C,Populacao usada candidato B,float32,hipotese,docs/evidencia_populacao_2026-10-17.md
