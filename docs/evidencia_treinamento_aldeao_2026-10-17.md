@@ -64,3 +64,20 @@ Referências externas independentes identificam `83 (0x0053)` como **Villager (M
 - https://ksneijders.github.io/AoE2ScenarioParser/api/AoE2ScenarioParser/datasets/units.html (`VILLAGER_MALE=83`, `VILLAGER_FEMALE=293`).
 
 **Inferência atual**: o valor `+0xC42 = 0x0053` em ambos os treinamentos de aldeão é compatível com **ID do tipo de unidade em treinamento**, e `0xFFFF` fora de treinamento é compatível com sentinela de fila vazia/nenhuma unidade ativa. A evidência reforça a hipótese, mas **não a valida diretamente na versão HD 5.8.INT**: tabelas externas podem descrever interfaces/versões diferentes e coincidência com um único tipo não exclui estados alternativos. Confirmar com milícia (ID de referência 74 / 0x004A) e, se possível, outras unidades; monitorar alternância +0xC42 de 0xFFFF ao ID durante a fila, retorno em cancelamento/conclusão e comportamento após reinício. Não alterar o status `hipotese` sem validação.
+
+## Replicação com milícia — evidência independente do ID de unidade
+
+Fonte: `training_timeline(1).csv` enviado pelo usuário, contendo **721 linhas de amostras** acumuladas por append: 486 da sessão anterior de aldeão e 235 da sessão de milícia. A segunda sessão reinicia `sequence=1` e `elapsed_seconds` do zero. Portanto **não combinar os tempos relativos nem inferir continuidade de uma única execução**. São 721 leituras `ok`, nenhum erro. O usuário informa que **treinou uma milícia**.
+
+Na nova sessão de milícia (235 amostras):
+
+| Evento | Amostra | Tempo relativo (s) | `+0xC42` uint16 | `+0xC44` uint16 |
+|---|---:|---:|---:|---:|
+| Antes | 1 | ~0.0 | 65535 (0xFFFF) | 0 |
+| Início observado de progresso | 49 | ~4.8 | **74 (0x004A)** | 2 |
+| Último valor crescente | 181 | ~18.0 | **74 (0x004A)** | 96 |
+| Retorno à inatividade | 186 | ~18.5 | 65535 (0xFFFF) | 0 |
+
+Há **137 amostras** com `+0xC42=74`, 98 com `+0xC42=65535` na sessão da milícia. A sessão anterior com aldeão possui 260 amostras `+0xC42=83` e 226 com `+0xC42=65535`; total acumulado: 137 (ID 74), 260 (ID 83), 324 (sentinela 65535). Coincidência específica entre o tipo de unidade treinado e o valor observado: aldeão masculino **83/0x0053**, milícia **74/0x004A** (ver links externos e ressalvas acima).
+
+**Conclusão delimitada:** `TrainingCandidateBase+0xC42` é agora candidato fortemente corroborado de **ID do tipo de unidade na produção ativa**; `+0xC44` é candidato fortemente corroborado de progresso percentual (ciclo crescente até 96, depois zero). O retorno simultâneo a 0xFFFF/0 é compatível com fila/produção inativa. Ainda não há confirmação da cadeia de ponteiros, reidentificação após reiniciar, equivalência exata ao indicador de HUD em múltiplos pontos, nem controles para unidades diferentes e várias entradas na fila. **Manter status de catálogo `hipotese`**, embora com evidência observacional forte.
