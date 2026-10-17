@@ -36,3 +36,19 @@ O histórico já contém `Building+0x214/+0x218/+0x21C` para fila de produção,
 Hipótese: campo guarda progresso ou contador relacionado ao treinamento. Alternativas: temporizador, etapa de animação, ID ou estado da interface. Testar leituras `uint16` de `+0x0C44` e `+0x0C42` antes/durante/após treinamento, cancelamento, seleção e reinício. Comparar com o percentual do HUD; uma observação igual a 17 não estabelece relação percentual nem unidade de tempo.
 
 **Status:** offset `+0x0C44` como `hipotese`; endereços absolutos como `sessao_observada`. Código de instrução representa RVAs de funções, não endereços de dados de treinamento.
+
+## Monitor uint16 de dois ciclos — CSV com 486 amostras
+
+Fonte: `training_timeline.csv` recebido do usuário (fase `ciclo_aldeao`, base absoluta de sessão `0x18769018`). Amostragem `0.1 s`; **486/486 leituras ok, zero erros, 54 mudanças exibidas**. Tempo total registrado de `0.0009` a `48.500529` s.
+
+| Transição | Amostra | Tempo relativo (s) | `+0xC44` | `+0xC42` |
+|---|---:|---:|---:|---:|
+| Inicial/inativo | 1 | 0.0009 | 0 | 65535 (0xFFFF) |
+| Ciclo 1 em andamento | 93 | 9.200524 | 1 | 83 (0x0053) |
+| Último valor do ciclo 1 | 179 | 17.800662 | 53 | 83 |
+| Retorno ao inativo | 185 | 18.400351 | 0 | 65535 |
+| Ciclo 2 em andamento | 231 | 23.000598 | 2 | 83 |
+| Último valor do ciclo 2 | 394 | 39.300529 | 99 | 83 |
+| Retorno ao inativo | 399 | 39.800324 | 0 | 65535 |
+
+O contador `+0xC44` cresce quase linearmente em passos próximos a três a cada 0,5 s, comportamento **fortemente compatível** com progresso percentual 0–100. O campo adjacente `+0xC42` comuta conjuntamente entre 0xFFFF (sentinela de inatividade candidata) e 0x0053 (identificador/estado de unidade candidato). A queda intermediária 53→0 é compatível com cancelamento, e 99→0 é compatível com conclusão, **sem marcas de ação no log**. Nenhum dos dois comportamentos confirma sozinho a semântica exata. A base `0x18769018` continua absoluta da sessão, sem cadeia estável verificada. Recomenda-se confirmar a porcentagem no HUD e comparar uma segunda classe de unidade para validar o papel de 0x0053.
