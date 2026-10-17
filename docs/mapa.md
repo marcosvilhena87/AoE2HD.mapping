@@ -20,3 +20,9 @@ Fila experimental: `Building+0x214` (ponteiro), `+0x218` (high16, grupos), `+0x2
 **Não confirmado:** coleção global em `World+0x88`, campos `CandidateBase+0x178/+0x28C`. A base `0x14D6B188` era de uma sessão e não tem caminho estável verificado.
 
 Veja [CSV](../dados/enderecos.csv) para tipos e status.
+
+## Investigação de população (candidatos ainda não localizados)
+
+O catálogo atual não contém campos confirmados de população atual, limite populacional ou população em produção. A sondagem de pesquisa `AoE2HD.control --probe-population` busca, sem escrita, valores numéricos plausíveis nos primeiros 0x400 bytes de `WorldPlayer` e da `ResourceTable`, comparando-os aos números **informados manualmente a partir da interface** em vários estados. Nenhum deslocamento dentro dessa janela é presumido válido até haver correspondência consistente, mudanças positivas e negativas e repetição após reinício. 
+
+Os resultados são candidatos em arquivo CSV gerado pelo controle, não entradas confirmadas no catálogo. Uma correspondência acidental — sobretudo números 0, 1, 200 etc. — não prova semântica. Não confundir população utilizada com limite, unidades em fila ou habitações.
