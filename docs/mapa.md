@@ -34,3 +34,13 @@ O leitor histórico `include/ProductionQueueReader.h` usa `Building+0x214` como 
 ## Campo candidato de treinamento de aldeão
 
 O Cheat Engine observou `0x18769C5C` com valor 17 (configuração 4 Bytes), mas as instruções `mov [eax],cx`, `mov [esi],ax`, `mov [ebx],ax` e `cmp ax,[ebx+0xC44]` manipulam 16 bits. Na captura da comparação, `EBX=0x18769018` e `EBX+0xC44=0x18769C5C`. Assim, `TrainingCandidateBase+0xC44` é offset candidato uint16; não foi demonstrado que `TrainingCandidateBase` seja um objeto `Building` nem que o valor represente uma porcentagem direta. Ver [evidência detalhada](evidencia_treinamento_aldeao_2026-10-17.md).
+
+## Investigação: localizar TrainingCandidateBase a partir da construção selecionada (2026-10-17)
+
+Código histórico inspecionado no commit 62c3a7e1a22dec68af31f6501fda3c4f7f2795a7: `src/production_queue_structure_discovery_v7.cpp`, `src/unit_reference_discovery_v4.cpp`, `src/entity_graph_discovery_v5.cpp` e `include/UnitReferenceDiscovery.h`.
+
+O código v7 demonstra método histórico para obter **o objeto da construção selecionada** em uma sessão: módulo+`0x006F2C58` → Owner; Owner+`0xC8` → World; World+`0x174` → índice local; World+`0x184` → vetor de player entries de 8 bytes; entrada local → ponteiro WorldPlayer; WorldPlayer+`0x15C` e `+0x160` → objeto selecionado (somente se ambos forem idênticos, não nulos). A rotina verifica a vtable de World, identidade `selected+0x08`, seleção estável antes/depois e pede confirmação visual de edifício de produção. Então lê a fila via `Building+0x214/+0x218/+0x21C`. Logo, existe **âncora histórica de seleção** reutilizável, ainda necessitando revalidação nesta versão/sessão.
+
+**Não existe neste código cadeia demonstrada entre Building selecionado e TrainingCandidateBase**. O Cheat Engine apontou o acesso `[EBX+0xC44]` com EBX absoluto `0x18769018`, mas em outra captura ESI/ECX=`0x18866938` ao acessar `[esi+0x220]` e `[ecx+0x150]`. Diferença entre endereços e instruções não comprova que um seja origem do outro. Não assumir que `selected+0xC44` represente o campo de progresso.
+
+Experimento planejado: selecionar Centro Urbano, confirmar `+0x15C/+0x160` e ID estáveis; registrar ponteiro do objeto, comparar com base `0x18769018` **somente se ainda for a mesma sessão**, inspecionar o `selected+0xC42/+0xC44` e opcionalmente uma janela delimitada de referências de primeiro nível à base; alternar seleção para Quartel, desmarcar e reiniciar o processo. Identificar a relação estrutural somente após resultados de controlo positivos/negativos. Não promover offsets.
