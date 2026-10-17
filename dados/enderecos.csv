@@ -52,5 +52,5 @@ ABSOLUTO_SESSAO,0x14E92AE4,ID 83 candidato B observado em CE,uint32,sessao_obser
 ABSOLUTO_SESSAO,0x14E92B54,ID 83 candidato C observado em CE,uint32,sessao_observada,docs/evidencia_treinamento_aldeao_2026-10-17.md
 
 ABSOLUTO_SESSAO,0x143D8F80,Contador cumulativo de aldeoes candidato (nao cai apos morte),uint32,sessao_observada,docs/evidencia_contador_aldeoes_2026-10-17.md
-ABSOLUTO_SESSAO,0x187B0214,Contador inclusivo de fila de aldeoes candidato (+1 ao enfileirar; reverte no cancelamento),uint32,sessao_observada,docs/evidencia_contador_aldeoes_2026-10-17.md
+ABSOLUTO_SESSAO,0x187B0214,Contador candidato vivos mais indicador de fila (+1 mesmo com varias unidades enfileiradas),uint32,sessao_observada,docs/evidencia_contador_aldeoes_2026-10-17.md
 ABSOLUTO_SESSAO,0x187B0DCC,Contador de aldeoes vivos candidato (aumenta na conclusao; diminui na morte),uint32,sessao_observada,docs/evidencia_contador_aldeoes_2026-10-17.md
