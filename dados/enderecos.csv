@@ -39,3 +39,4 @@ ResourceTable,0x04C,Populacao usada candidato B,float32,hipotese,docs/evidencia_
 TrainingCandidateBase,0xC44,Campo 16-bit candidato relacionado a treinamento,uint16,hipotese,docs/evidencia_treinamento_aldeao_2026-10-17.md
 ABSOLUTO_SESSAO,0x18769C5C,Campo observado no Cheat Engine valor 17,uint16,sessao_observada,docs/evidencia_treinamento_aldeao_2026-10-17.md
 ABSOLUTO_SESSAO,0x18769018,Base candidata identificada pelo registrador EBX,ptr32,sessao_observada,docs/evidencia_treinamento_aldeao_2026-10-17.md
+TrainingCandidateBase,0xC42,Marcador ou ID candidato da unidade em treinamento,uint16,hipotese,docs/evidencia_treinamento_aldeao_2026-10-17.md
