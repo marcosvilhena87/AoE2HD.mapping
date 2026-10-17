@@ -35,3 +35,13 @@ Replicação observacional em outra composição de unidades (milícias, não al
 ## Teste antes/durante/depois de treinar aldeão
 
 Fonte: log PowerShell e `population_candidates(3).csv` fornecidos pelo usuário. Estados anotados: antes `4/5`, durante `4/5`, depois `5/5`. Os três candidatos persistiram em 3/3 estados e uma transição: `ResourceTable+0x010` (float32, vagas livres) `1|1|0`; `ResourceTable+0x02C` (float32, usada A) `4|4|5`; `ResourceTable+0x04C` (float32, usada B) `4|4|5`. Conclusão restrita: os três campos não divergiram dos números informados durante a fila nesta amostragem. O filtro de correspondência pode excluir outros campos de fila/reserva, que exigem captura bruta sem filtragem. Sem prova de que os dois contadores de população usada tenham semântica idêntica. Status: hipótese.
+
+## Monitor bruto contínuo: treinamento de aldeão (152 amostras)
+
+Fonte: `population_timeline.csv` enviado pelo usuário, amostragem de 0,25 s, rótulo `treinamento_aldeao`; de `2026-10-17T21:10:18.734208+00:00` a `2026-10-17T21:10:56.483322+00:00`. 152 leituras `ok`, nenhum erro, ponteiro da ResourceTable `0x17F14318` (somente desta sessão).
+
+- Amostras 1–128: `ResourceTable+0x010=1`, `+0x02C=4`, `+0x04C=4`.
+- Amostra 129 (21:10:50.733454 UTC) até 152: `+0x010=0`, `+0x02C=5`, `+0x04C=5`.
+- `used_b - used_a` foi zero em 152/152 amostras, e o limite reconstruído (`vagas+usada`) foi 5 em 152/152.
+- Somente uma transição efetiva observada; não há timestamps separados para início, cancelamento ou conclusão de fila, logo não inferir semânticas idênticas nem ausência universal de reserva antecipada.
+- Status mantido `hipotese`. Próximo experimento: registrar rótulos e horários para início da fila, cancelamento, conclusão e morte, ou comparar após reinício.
