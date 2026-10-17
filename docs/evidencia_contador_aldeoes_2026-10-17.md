@@ -36,3 +36,7 @@ O usuário realizou testes de comportamento nos três candidatos que inicialment
 Modelo candidato para testar: `fila_inclusiva = vivos + aldeoes_em_fila`, `total_cumulativo = aldeoes_criados`, `vivos = aldeoes_atuais`. Se as três leituras continuarem consistentes ao treinar duas unidades, cancelar uma, concluir uma e perder outra, a identificação poderá ser elevada com novas sessões e cadeias estáveis.
 
 Endereços absolutos da sessão não constituem offsets estáveis. Preservar `uint32` como tipo configurado no Cheat Engine; validar com instruções de acesso posteriormente.
+
+## Correção experimental — fila não é contada integralmente
+
+O usuário esclareceu que `0x187B0214` **aumenta somente em 1** quando há aldeões na fila, mesmo que sejam enfileirados dois ou mais. Portanto, a hipótese anterior `aldeões vivos + quantidade total de aldeões enfileirados` está **refutada** pelos testes. Nova hipótese: `aldeões vivos + indicador binário de presença de treinamento/fila de aldeões` (0 se não há, 1 se existe ao menos um), **ou** reserva única de população relacionada à produção, ainda sem determinação de semântica exata. O campo cai ao valor anterior após cancelar a fila, segundo observação anterior. Falta testar múltiplas construções produzindo simultaneamente, cancelamento parcial mantendo outra unidade na fila, conclusão de uma unidade com outra ainda na fila, mortes durante a fila, e verificar se o deslocamento relativo aos aldeões vivos é sempre 0 ou 1. Não nomear como contagem total de fila; preservar status experimental.
