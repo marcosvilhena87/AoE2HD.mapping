@@ -126,3 +126,13 @@ Quatro imagens fornecidas pelo usuário mostram rotas do Cheat Engine até o cam
 Há dezenas de rotas alternativas, inclusive de `AoK HD.exe+0x005B....`, `+0x006DA4B4` e `THREADSTACK`. Múltiplos caminhos no mesmo processo não fornecem provas independentes nem estabilidade após reinício. A ordem apresentada pelo scanner deve ser interpretada segundo a semântica real de desreferenciação do Cheat Engine, sem tratá-la automaticamente como uma sequência de offsets diretos. Cadeias globais podem localizar uma estrutura compartilhada de interface/produção, não necessariamente um Building. Os RVA base são novos candidatos, não endereços verificados.
 
 Validação necessária: repetir pointer scan/rescan depois de reiniciar o executável, confirmar novo endereço alvo via progresso, resolver as duas rotas curtas com leitura de memória, comparar `C42` e `C44`, testar produção de aldeão/milícia e alternar seleção. Não promover os registros antes de controles positivos/negativos.
+
+## Nova captura do Pointer Scanner: mesmo caminho, novo alvo
+
+Duas capturas de tela posteriores apontam para `0x14E8C11C` (valor exibido 21), enquanto as anteriores apontavam para `0x18769C5C` (valor 23). A base de treinamento **derivada condicionalmente** é `0x14E8B4D8`, pois `0x14E8B4D8+0xC44=0x14E8C11C`. Os caminhos abaixo reaparecem nos dois conjuntos:
+
+- `AoK HD.exe+0x006F4170` — offsets Cheat Engine: `F0, C44`.
+- `AoK HD.exe+0x006DA4B4` — offsets Cheat Engine: `C, 8A4, C44`.
+- Também persistem caminhos maiores pela mesma raiz e por `+0x006F3D90`, `+0x006EEF98` etc.
+
+**Inferência:** repetição forte de candidatos com raízes RVA de módulo e alvo absoluto diferente. As imagens isoladamente não atestam se houve encerramento/reinicialização completa de `AoK HD.exe` nem se os ponteiros foram reavaliados em memória ao vivo depois de rescan; confirmar isso com operador. Preservar ordem de offsets como exibida pelo CE (sua expressão aninhada usual é avaliada a partir do último offset para o primeiro); não assumir travessia em ordem esquerda→direita. Próxima verificação: avaliar as duas cadeias curtas via leitura externa no novo processo, comparar endereço resolvido ao alvo CE, `uint16 C42` em `0x14E8C11A` e `uint16 C44` em `0x14E8C11C` enquanto unidades 83 e 74 são treinadas, e repetir após novo reinício. Não promover a historico_validado ainda.
