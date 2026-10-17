@@ -30,3 +30,7 @@ Os resultados são candidatos em arquivo CSV gerado pelo controle, não entradas
 ## Instrumentação de fila de produção (somente leitura)
 
 O leitor histórico `include/ProductionQueueReader.h` usa `Building+0x214` como ponteiro, metade superior do word em `+0x218` para número de grupos e metade inferior do word em `+0x21C` para total de unidades. Grupos são entradas de 4 bytes `<uint16 type, uint16 quantity>` conforme `ProductionQueueEntriesV6.h`; uma releitura dos três campos detecta possíveis alterações concorrentes. A origem de `Building` ainda precisa ser validada por seleção de edifício ou outra descoberta independente. O monitor experimental aceita endereço absoluto **temporário** informado manualmente e registra fila e população no mesmo instante; um resultado coerente não eleva os offsets a validados.
+
+## Campo candidato de treinamento de aldeão
+
+O Cheat Engine observou `0x18769C5C` com valor 17 (configuração 4 Bytes), mas as instruções `mov [eax],cx`, `mov [esi],ax`, `mov [ebx],ax` e `cmp ax,[ebx+0xC44]` manipulam 16 bits. Na captura da comparação, `EBX=0x18769018` e `EBX+0xC44=0x18769C5C`. Assim, `TrainingCandidateBase+0xC44` é offset candidato uint16; não foi demonstrado que `TrainingCandidateBase` seja um objeto `Building` nem que o valor represente uma porcentagem direta. Ver [evidência detalhada](evidencia_treinamento_aldeao_2026-10-17.md).
