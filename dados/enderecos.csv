@@ -47,3 +47,6 @@ ABSOLUTO_SESSAO,0x1838FEDC,Campo progresso de treinamento em nova partida,uint16
 RVA,0x006F4170,Raiz candidata ponteiro treinamento CE caminho F0 C44,ptr32,hipotese,docs/evidencia_treinamento_aldeao_2026-10-17.md
 RVA,0x006DA4B4,Raiz candidata ponteiro treinamento CE caminho C 8A4 C44,ptr32,hipotese,docs/evidencia_treinamento_aldeao_2026-10-17.md
 RVA,0x006EEF98,Raiz candidata ponteiro treinamento CE caminho longo,ptr32,hipotese,docs/evidencia_treinamento_aldeao_2026-10-17.md
+ABSOLUTO_SESSAO,0x14E92A6C,ID 83 candidato A observado em CE,uint32,sessao_observada,docs/evidencia_treinamento_aldeao_2026-10-17.md
+ABSOLUTO_SESSAO,0x14E92AE4,ID 83 candidato B observado em CE,uint32,sessao_observada,docs/evidencia_treinamento_aldeao_2026-10-17.md
+ABSOLUTO_SESSAO,0x14E92B54,ID 83 candidato C observado em CE,uint32,sessao_observada,docs/evidencia_treinamento_aldeao_2026-10-17.md
