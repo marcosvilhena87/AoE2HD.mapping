@@ -21,3 +21,13 @@ Relato do usuário: início com 4 unidades (3 aldeões e 1 batedor), construçã
 | População usada B | `ResourceTable+0x04C` | `float32` | `4,4,5,6,7,8` | 6/6 | 4/4 |
 
 A fórmula `limite = vagas + população usada` reproduziu os seis valores do HUD. Não indica por si só se `+0x02C` e `+0x04C` possuem semânticas diferentes (p.ex. população real e outro contador). Sem testes com unidade em fila, cancelamento, morte, diferentes tipos de unidade ou nova execução após reinício. Preservar os três como `hipotese`; não converter correlação em validação definitiva.
+
+## Replicação com milícias — seis estados
+
+Fonte: `population_candidates(2).csv` enviado pelo usuário e log da sondagem. Situação informada: três aldeões e um batedor iniciais, construção de uma casa e treinamento de quatro milícias. Estados HUD: `4/5`, `4/10`, `5/10`, `6/10`, `7/10`, `8/10`.
+
+- `ResourceTable+0x010`, float32, `free_slots`: `1|6|5|4|3|2` (6/6 estados; 5/5 transições).
+- `ResourceTable+0x02C`, float32, `used`: `4|4|5|6|7|8` (6/6 estados; 4/4 transições).
+- `ResourceTable+0x04C`, float32, `used`: `4|4|5|6|7|8` (6/6 estados; 4/4 transições).
+
+Replicação observacional em outra composição de unidades (milícias, não aldeões). Ainda não distingue `+0x02C` de `+0x04C`, nem testa fila de produção, cancelamento, perdas de unidades ou comparação temporal antes/depois de reinício do processo. Os três continuam hipóteses, sem promoção de status.
