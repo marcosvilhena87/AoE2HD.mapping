@@ -113,3 +113,16 @@ Hipótese reforçada: a mesma base mostra diferentes unidades e seus progressos,
 ## Instrumentação Training Monitor v3
 
 Foi integrado ao AoE2HD.control o comando `--monitor-training-v3`, que lê antes/depois os campos de seleção experimentais `LocalPlayer+0x15C/+0x160`, o ponteiro e ID do objeto selecionado e, entre essas duas leituras, `TrainingCandidateBase+0xC42/+0xC44`. Se a seleção muda durante a amostra, a captura é descartada com erro explícito. O CSV registra cada amostra e separa `selecao_mudou`, `selecao_e_treinamento_mudaram`, `treinamento_deixou_de_aparecer`, `tipo_exibido_mudou` e `progresso_mudou`. Nenhum desses eventos implica cancelamento ou conclusão sem evidência independente. Mantidos todos os offsets como hipóteses e não descoberta uma cadeia estável para TrainingCandidateBase. Ainda pendente executar os testes no Windows e capturar uma nova partida.
+
+## Pointer Scanner — cadeias relativas ao módulo (capturas de 2026-10-17)
+
+Quatro imagens fornecidas pelo usuário mostram rotas do Cheat Engine até o campo absoluto de sessão `0x18769C5C` (valor 23). Rotas candidatas prioritárias, transcritas exatamente na ordem das colunas Offset 0, Offset 1 etc. do scanner (hexadecimal):
+
+- `AoK HD.exe+0x006F4170`: `F0, C44` (curta).
+- `AoK HD.exe+0x006DA4B4`: `C, 8A4, C44` (curta, outra raiz).
+- `AoK HD.exe+0x006F4170`: `F0, F0, F4, C44`.
+- `AoK HD.exe+0x006EEF98`: `774, 4, 2C, F0, F0, F0, C44`.
+
+Há dezenas de rotas alternativas, inclusive de `AoK HD.exe+0x005B....`, `+0x006DA4B4` e `THREADSTACK`. Múltiplos caminhos no mesmo processo não fornecem provas independentes nem estabilidade após reinício. A ordem apresentada pelo scanner deve ser interpretada segundo a semântica real de desreferenciação do Cheat Engine, sem tratá-la automaticamente como uma sequência de offsets diretos. Cadeias globais podem localizar uma estrutura compartilhada de interface/produção, não necessariamente um Building. Os RVA base são novos candidatos, não endereços verificados.
+
+Validação necessária: repetir pointer scan/rescan depois de reiniciar o executável, confirmar novo endereço alvo via progresso, resolver as duas rotas curtas com leitura de memória, comparar `C42` e `C44`, testar produção de aldeão/milícia e alternar seleção. Não promover os registros antes de controles positivos/negativos.
