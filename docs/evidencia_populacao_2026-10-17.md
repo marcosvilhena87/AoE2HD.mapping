@@ -45,3 +45,7 @@ Fonte: `population_timeline.csv` enviado pelo usuário, amostragem de 0,25 s, r�
 - `used_b - used_a` foi zero em 152/152 amostras, e o limite reconstruído (`vagas+usada`) foi 5 em 152/152.
 - Somente uma transição efetiva observada; não há timestamps separados para início, cancelamento ou conclusão de fila, logo não inferir semânticas idênticas nem ausência universal de reserva antecipada.
 - Status mantido `hipotese`. Próximo experimento: registrar rótulos e horários para início da fila, cancelamento, conclusão e morte, ou comparar após reinício.
+
+## Monitor conjunto população/fila — endereço ilustrativo, leitura inconclusiva
+
+Fonte: `population_queue_timeline.csv` (106 amostras, 2026-10-17 21:18:34–21:19:01 UTC). O usuário executou `--building-address 0x12345678`, endereço fornecido apenas como exemplo na documentação, não ponteiro de construção verificado. Em 106/106 amostras, `queue_pointer=0x00000000`, `queue_groups=0`, `queue_units=0`, `queue_status=experimental_unvalidated`. Tais zeros **não provam fila vazia**, porque a base da construção não foi confirmada. Recursos populacionais: `used_a=used_b=4` e vagas `1` até amostra 90; da amostra 91 em diante `used_a=used_b=5`, vagas `0`. Sem erros de leitura, mas a ausência de erro não valida a semântica do ponteiro. Próximo passo é obter endereço real da construção selecionada e marcar base não verificada como inconclusiva.
