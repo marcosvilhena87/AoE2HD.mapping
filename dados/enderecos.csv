@@ -50,3 +50,7 @@ RVA,0x006EEF98,Raiz candidata ponteiro treinamento CE caminho longo,ptr32,hipote
 ABSOLUTO_SESSAO,0x14E92A6C,ID 83 candidato A observado em CE,uint32,sessao_observada,docs/evidencia_treinamento_aldeao_2026-10-17.md
 ABSOLUTO_SESSAO,0x14E92AE4,ID 83 candidato B observado em CE,uint32,sessao_observada,docs/evidencia_treinamento_aldeao_2026-10-17.md
 ABSOLUTO_SESSAO,0x14E92B54,ID 83 candidato C observado em CE,uint32,sessao_observada,docs/evidencia_treinamento_aldeao_2026-10-17.md
+
+ABSOLUTO_SESSAO,0x143D8F80,Contador de aldeoes candidato A valor 7,uint32,sessao_observada,docs/evidencia_contador_aldeoes_2026-10-17.md
+ABSOLUTO_SESSAO,0x187B0214,Contador de aldeoes candidato B valor 7,uint32,sessao_observada,docs/evidencia_contador_aldeoes_2026-10-17.md
+ABSOLUTO_SESSAO,0x187B0DCC,Contador de aldeoes candidato C valor 7,uint32,sessao_observada,docs/evidencia_contador_aldeoes_2026-10-17.md
