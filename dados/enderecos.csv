@@ -1,0 +1,35 @@
+raiz,offset_ou_endereco,descricao,tipo,status,origem
+RVA,0x006F2C58,Owner global,ptr32,historico_validado,docs/memory-map.md
+RVA,0x005D329C,Vtable World,ptr32,historico_validado,docs/memory-map.md
+RVA,0x005DC8A0,Vtable Gaia,ptr32,historico_validado,docs/memory-map.md
+RVA,0x005DCAE4,Vtable HumanOrCoop,ptr32,historico_validado,docs/memory-map.md
+RVA,0x005DC618,Vtable Computer,ptr32,historico_validado,docs/memory-map.md
+Owner,0xC8,Ponteiro World,ptr32,historico_validado,docs/memory-map.md
+World,0x174,Índice jogador local,uint32,historico_validado,docs/memory-map.md
+World,0x184,Players begin,ptr32,historico_validado,docs/memory-map.md
+World,0x188,Players end,ptr32,historico_validado,docs/memory-map.md
+World,0x18C,Players capacity,ptr32,historico_validado,docs/memory-map.md
+PlayerEntry,0x00,Object,ptr32,historico_validado,docs/memory-map.md
+PlayerEntry,0x04,ControlBlock,ptr32,historico_validado,docs/memory-map.md
+WorldPlayer,0x04,World back pointer,ptr32,historico_validado,docs/memory-map.md
+WorldPlayer,0x08,Discriminador (2 Gaia/1 local/3 CPU historicamente),uint32,semantica_parcial,docs/memory-map.md
+WorldPlayer,0x3C,Tabela recursos,ptr32,historico_validado,docs/memory-map.md
+ResourceTable,0x00,Food,float32,historico_validado,docs/memory-map.md
+ResourceTable,0x04,Wood,float32,historico_validado,docs/memory-map.md
+ResourceTable,0x08,Stone,float32,historico_validado,docs/memory-map.md
+ResourceTable,0x0C,Gold,float32,historico_validado,docs/memory-map.md
+LocalPlayer,0x15C,Ponteiro seleção A,ptr32,ancora_experimental,README.md
+LocalPlayer,0x160,Ponteiro seleção B,ptr32,ancora_experimental,README.md
+Object,0x08,ID candidato,uint32,hipotese,README.md
+Object,0x0C,Tipo candidato,uint32,hipotese,README.md
+Object,0x10,Proprietário candidato,ptr32,hipotese,README.md
+Object,0x34,HP candidato,float32,hipotese,README.md
+World,0x88,Possível vetor de objetos/unidades,desconhecido,hipotese,README.md
+Building,0x214,Ponteiro fila de produção,ptr32,experimental_implementado,ProductionQueueReader.h
+Building,0x218,Contagem de grupos high16,uint16,experimental_implementado,ProductionQueueReader.h
+Building,0x21C,Contagem de unidades low16,uint16,experimental_implementado,ProductionQueueReader.h
+CandidateBase,0x178,Ponteiro candidato A,ptr32,hipotese,README.md
+CandidateBase,0x28C,Ponteiro candidato B,ptr32,hipotese,README.md
+ABSOLUTO_SESSAO,0x14D6B188,Base candidata v7,ptr32,sessao_observada,README.md
+ABSOLUTO_SESSAO,0x00B90000,Base de módulo em teste histórico,ptr32,sessao_observada,README.md
+ABSOLUTO_SESSAO,0x1929E848,World em teste histórico,ptr32,sessao_observada,README.md
