@@ -31,3 +31,7 @@ Fonte: `population_candidates(2).csv` enviado pelo usuário e log da sondagem. S
 - `ResourceTable+0x04C`, float32, `used`: `4|4|5|6|7|8` (6/6 estados; 4/4 transições).
 
 Replicação observacional em outra composição de unidades (milícias, não aldeões). Ainda não distingue `+0x02C` de `+0x04C`, nem testa fila de produção, cancelamento, perdas de unidades ou comparação temporal antes/depois de reinício do processo. Os três continuam hipóteses, sem promoção de status.
+
+## Teste antes/durante/depois de treinar aldeão
+
+Fonte: log PowerShell e `population_candidates(3).csv` fornecidos pelo usuário. Estados anotados: antes `4/5`, durante `4/5`, depois `5/5`. Os três candidatos persistiram em 3/3 estados e uma transição: `ResourceTable+0x010` (float32, vagas livres) `1|1|0`; `ResourceTable+0x02C` (float32, usada A) `4|4|5`; `ResourceTable+0x04C` (float32, usada B) `4|4|5`. Conclusão restrita: os três campos não divergiram dos números informados durante a fila nesta amostragem. O filtro de correspondência pode excluir outros campos de fila/reserva, que exigem captura bruta sem filtragem. Sem prova de que os dois contadores de população usada tenham semântica idêntica. Status: hipótese.
