@@ -20,3 +20,19 @@ Distâncias: B−A = `0x43D7294`; C−B = `0xBB8`. **Não há evidência de raiz
 6. Desselecionar edifícios e reiniciar processo; buscar ponteiros ou RVA novamente para validar persistência.
 
 A captura única de valor 7 **não prova** a semântica de qualquer campo. Até haver transições positivas e negativas em controles, status `sessao_observada`/candidato; evitar classificá-lo como validado. A leitura é exclusivamente observacional.
+
+## Ensaios dinâmicos: fila, conclusão, cancelamento e morte
+
+O usuário realizou testes de comportamento nos três candidatos que inicialmente exibiam 7:
+
+| Endereço de sessão | Entrada na fila | Conclusão do treinamento | Cancelamento | Morte de aldeão | Interpretação experimental |
+|---|---|---|---|---|---|
+| `0x187B0214` | +1 imediatamente (valor 8 observado) | os demais alcançam a contagem | retorna ao valor anterior | diminui, segundo relato "os outros sim" | aldeões vivos **mais** aldeões enfileirados, ou outro contador inclusivo de fila |
+| `0x143D8F80` | não foi relatado aumento antecipado | +1 | não foi relatado | **não diminui** | total cumulativo de aldeões concluídos/criados, hipótese; verificar reinício e perdas |
+| `0x187B0DCC` | não foi relatado aumento antecipado | +1 | não foi relatado | **diminui** | aldeões vivos, hipótese principal |
+
+**Nota sobre o primeiro campo:** o relato de diminuição na morte é indireto ("os outros sim"), portanto confirmar com pares de leituras antes/depois. **Nota sobre o segundo:** não diminuir ao morrer é compatível com contagem histórica de aldeões produzidos, mas também com valor em cache ainda não atualizado; não inferir sem teste temporal. Não assumir que o primeiro campo equivale exatamente a vivo + todas as unidades em filas simultâneas antes de testar duas filas, duas construções e cancelamento parcial.
+
+Modelo candidato para testar: `fila_inclusiva = vivos + aldeoes_em_fila`, `total_cumulativo = aldeoes_criados`, `vivos = aldeoes_atuais`. Se as três leituras continuarem consistentes ao treinar duas unidades, cancelar uma, concluir uma e perder outra, a identificação poderá ser elevada com novas sessões e cadeias estáveis.
+
+Endereços absolutos da sessão não constituem offsets estáveis. Preservar `uint32` como tipo configurado no Cheat Engine; validar com instruções de acesso posteriormente.
