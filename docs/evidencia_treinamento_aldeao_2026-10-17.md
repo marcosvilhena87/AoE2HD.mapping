@@ -152,3 +152,15 @@ Fonte: `training_auto_v3.csv` enviado pelo usuário. O arquivo foi anexado em mo
 Na última execução: o objeto selecionado `0x10509D58` (ID de objeto 1996) coincidiu com `C42=83` em 62 amostras, predominando aldeão; o objeto `0x102DF200` (ID 2305) coincidiu com `C42=74` em 46 amostras, predominando milícia. Valores cruzados temporários: na amostra 94 (objeto 1996, `C42=74`, progresso 6), o ID mudou para 83/progresso 23 na amostra 95; padrão similar nas amostras 113 (objeto 1996, ID74/progresso17) e 114 (ID83/progresso34). Trocas de seleção e atualização do campo não são estritamente síncronas a 0,1s; uma captura estável antes/depois da seleção não prova que o espelho da UI foi atualizado. Duas quedas para sentinela durante seleção estável: amostra 175, objeto 1996; amostra 195, objeto 2305; a causa (cancelamento/conclusão/seleção lógica da UI) não pode ser determinada apenas pelo CSV.
 
 **Evidência atual**: o resolvedor conseguiu acompanhar treino ativo e convergência das rotas durante uma execução real sem erro. Os dois objetos têm associação forte a seus respectivos tipos de produção, consistente com CU/Quartel, mas os tipos de edifício não foram diretamente verificados pela captura. Hipótese principal: `TrainingCandidateBase` é contexto/espelho compartilhado relacionado à seleção e produção ativa, não estrutura per-Building. Não promover offsets por esta evidência sozinha. Próxima instrumentação: incorporar janela de estabilização da seleção, registrar defasagem seleção→C42 e usar estados transitórios explícitos em vez de inferir causa de encerramento.
+
+## Três novos endereços candidatos relacionados à unidade treinada
+
+Cheat Engine XML fornecido pelo usuário na sessão de base resolvida `0x14E8B4D8`: três entradas configuradas como **4 Bytes** e `LastState=83` em `0x14E92A6C`, `0x14E92AE4`, `0x14E92B54`. Comparação aritmética (não prova pertencimento à mesma estrutura):
+
+| Endereço absoluto da sessão | Diferença para base 0x14E8B4D8 | Diferença para C44 0x14E8C11C | Valor observado |
+|---|---|---|---|
+| 0x14E92A6C | +0x7594 | +0x6950 | 83 |
+| 0x14E92AE4 | +0x760C | +0x69C8 | 83 |
+| 0x14E92B54 | +0x767C | +0x6A38 | 83 |
+
+As distâncias internas entre os endereços são `0x78` e `0x70`; sugerem região com entradas próximas, mas **não estabelecem array, stride fixo, estrutura ou semântica**. São candidatos para ID de unidade treinada / referências do contexto da interface. Uma única captura com 83 é insuficiente para distinguir campos duplicados, IDs estáticos ou coincidência. Validar acompanhando simultaneamente o ID de `TrainingCandidateBase+0xC42`, alternando seleções de Centro Urbano/Quartel em treinamento (83 versus 74), inatividade (0xFFFF) e reiniciando o executável. Conservar tipo registrado no Cheat Engine `4 Bytes` como `uint32` **observacional**, sem descartar possibilidade de campo real `uint16` até inspeção das instruções de acesso. Não promover offsets relativos deduzidos apenas por subtração; cadastrar absolutos de sessão como candidatos.
