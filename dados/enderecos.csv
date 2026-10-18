@@ -21,7 +21,7 @@ ResourceTable,0x0C,Gold,float32,historico_validado,docs/memory-map.md
 LocalPlayer,0x15C,Ponteiro seleção A,ptr32,ancora_experimental,README.md
 LocalPlayer,0x160,Ponteiro seleção B,ptr32,ancora_experimental,README.md
 Object,0x08,ID individual candidato (distinto A B C D; A estavel apos movimento),uint32,hipotese,README.md
-Object,0x0C,Tipo candidato (valores diferentes entre aldeoes observados),uint32,hipotese,README.md
+Object,0x0C,Ponteiro candidato relacionado a tipo (milicia e lanceiro: low16 74 e 93 em alvo+0x10/+0x14),ptr32,hipotese,README.md
 Object,0x10,Proprietário candidato (apontou para WorldPlayer local nos 4 aldeoes),ptr32,hipotese,README.md
 Object,0x34,HP candidato,float32,hipotese,README.md
 World,0x88,Possível vetor de objetos/unidades,desconhecido,hipotese,README.md
@@ -58,3 +58,6 @@ ResourceTable,0x094,Contador de aldeoes vivos validado funcionalmente em duas se
 WorldPlayer,0x36C,Contador de milicias vivas validado funcionalmente apos reinicio (milicia lanceiro aldeao); u16 e u32 coincidem,uint32,validado,docs/evidencia_contador_milicias_2026-10-17.md
 ResourceTable,0x0A0,Campo associado a milicias candidato (assinatura 1-2-1-3-2-2; semantica exata pendente),float32,hipotese,docs/evidencia_contador_milicias_2026-10-17.md
 World,0x0E8,Tabela indexada por ID de objeto (entrada ID*4) validada funcionalmente em nova sessao,ptr32,validado,docs/evidencia_identidade_aldeoes_2026-10-17.md
+Object,0x078,Ponteiro candidato para estrutura contendo campos 4 nos tres aldeoes,ptr32,hipotese,docs/evidencia_identidade_aldeoes_2026-10-17.md
+Object78Target,0x00C,Campo candidato com valor 4 nos tres aldeoes,uint32,hipotese,docs/evidencia_identidade_aldeoes_2026-10-17.md
+Object78Target,0x094,Campo candidato com valor 4 nos tres aldeoes,uint32,hipotese,docs/evidencia_identidade_aldeoes_2026-10-17.md
