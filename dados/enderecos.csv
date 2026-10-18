@@ -20,9 +20,9 @@ ResourceTable,0x08,Stone,float32,historico_validado,docs/memory-map.md
 ResourceTable,0x0C,Gold,float32,historico_validado,docs/memory-map.md
 LocalPlayer,0x15C,Ponteiro seleção A,ptr32,ancora_experimental,README.md
 LocalPlayer,0x160,Ponteiro seleção B,ptr32,ancora_experimental,README.md
-Object,0x08,ID candidato,uint32,hipotese,README.md
-Object,0x0C,Tipo candidato,uint32,hipotese,README.md
-Object,0x10,Proprietário candidato,ptr32,hipotese,README.md
+Object,0x08,ID individual candidato (distinto A B C D; A estavel apos movimento),uint32,hipotese,README.md
+Object,0x0C,Tipo candidato (valores diferentes entre aldeoes observados),uint32,hipotese,README.md
+Object,0x10,Proprietário candidato (apontou para WorldPlayer local nos 4 aldeoes),ptr32,hipotese,README.md
 Object,0x34,HP candidato,float32,hipotese,README.md
 World,0x88,Possível vetor de objetos/unidades,desconhecido,hipotese,README.md
 Building,0x214,Ponteiro fila de produção,ptr32,experimental_implementado,ProductionQueueReader.h
