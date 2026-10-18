@@ -61,4 +61,6 @@ World,0x0E8,Tabela indexada por ID de objeto (entrada ID*4) validada funcionalme
 Object,0x078,Ponteiro para estrutura de classe validado em duas sessoes com aldeao infantaria e construcao,ptr32,validado,docs/evidencia_identidade_aldeoes_2026-10-17.md
 Object78Target,0x00C,Classe de unidade validada funcionalmente (aldeao 4 infantaria 6 construcao 3),uint32,validado,docs/evidencia_identidade_aldeoes_2026-10-17.md
 Object78Target,0x094,Campo variavel em aldeao (5 para 6 apos mudanca de atividade); nao e classe estavel,uint32,hipotese,docs/evidencia_identidade_aldeoes_2026-10-17.md
-ObjectTypeTarget,0x10,ID especifico do tipo uint16 (casas 70 quarteis 12 TCs 109 moinhos 68 armazens 562; replicacao pendente),uint16,candidato_experimental,docs/evidencia_identidade_aldeoes_2026-10-17.md
+ObjectTypeTarget,0x10,ID especifico de unidade/construcao (uint16); corroborado por v6-v8 em 12 capturas e nova sessao declarada; valido funcionalmente no HD estudado,uint16,validado,docs/validacao_tipos_unidades_v8_2026-10-18.md
+ObjectTypeTarget,0x12,Campo vizinho nao equivale sempre ao ID do tipo (casa 464 vs 70 TC 141 vs 109); semantica desconhecida,uint16,hipotese,docs/validacao_tipos_unidades_v8_2026-10-18.md
+ObjectTypeTarget,0x14,Campo vizinho coincide com ID do tipo nos 12 controles v8 mas equivalencia semantica ainda nao demonstrada,uint16,candidato_experimental,docs/validacao_tipos_unidades_v8_2026-10-18.md
