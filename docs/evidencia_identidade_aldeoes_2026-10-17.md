@@ -1,0 +1,3 @@
+# Identidade individual de aldeoes - Discovery v1
+
+Instrumentacao no AoE2HD.control com modo --discover-villager-identity. Usa cadeia historica ate WorldPlayer local, selecao LocalPlayer+0x15C/+0x160, candidatos Object+0x08 ID, +0x0C tipo, +0x10 proprietario e +0x34 HP. Etapas: A, B, C, reselecao A, movimento/reselecao A, novo D. Confere estabilidade de selecao, identidade diferente entre objetos e igualdade ao reselecionar A. Resultados ainda nao obtidos em jogo real. Todos os candidatos continuam com seus status originais, sem promocao. Proximo passo: investigacao de colecao global de objetos para enumeracao sem selecao.
