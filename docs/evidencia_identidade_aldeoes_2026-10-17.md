@@ -1,3 +1,9 @@
 # Identidade individual de aldeoes - Discovery v1
 
 Instrumentacao no AoE2HD.control com modo --discover-villager-identity. Usa cadeia historica ate WorldPlayer local, selecao LocalPlayer+0x15C/+0x160, candidatos Object+0x08 ID, +0x0C tipo, +0x10 proprietario e +0x34 HP. Etapas: A, B, C, reselecao A, movimento/reselecao A, novo D. Confere estabilidade de selecao, identidade diferente entre objetos e igualdade ao reselecionar A. Resultados ainda nao obtidos em jogo real. Todos os candidatos continuam com seus status originais, sem promocao. Proximo passo: investigacao de colecao global de objetos para enumeracao sem selecao.
+
+## Resultado real Villager Identity Discovery v1 (seis capturas)
+
+CSV `villager_identity_v1.csv`: `WorldPlayer local=0x18315744` nesta sessao. A: objeto `0x13EA6720`, ID candidato 2108; B: `0x13EA85A0`, ID 2109; C: `0x13EA81D0`, ID 2110; reselecao de A e movimento/reselecao de A mantiveram ponteiro `0x13EA6720` e ID 2108; D: `0x13EAE6D8`, ID 2417. Todas as seis fases registraram leitura bem sucedida e ancoras LocalPlayer+0x15C/+0x160 coincidentes. Identificadores distintos nao sao necessariamente sequenciais.
+
+`Object+0x10` apontou para `0x18315744` em todos os objetos (igual ao jogador local; evidencia da hipotese de proprietario). `Object+0x34` foi 40.0 em todos (HP candidato, ainda sem controle por dano). `Object+0x0C` foi 408937992 para A/B/C, mas 334993232 para D: refuta a interpretacao simplista de um unico codigo de tipo identico para todos os aldeoes observados; investigar papel estrutural e variantes. Os enderecos absolutos sao apenas desta sessao. `Object+0x08` e identidade individual **comprovada comportamentalmente nesta sessao**, mas status do catalogo permanece hipotese ate controles em partida independente/apos reinicio e teste de vida/morte/reutilizacao de IDs. Nenhuma enumeracao automatica de todos os aldeoes foi comprovada.
