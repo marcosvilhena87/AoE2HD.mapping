@@ -35,7 +35,7 @@ ABSOLUTO_SESSAO,0x00B90000,Base de módulo em teste histórico,ptr32,sessao_obse
 ABSOLUTO_SESSAO,0x1929E848,World em teste histórico,ptr32,sessao_observada,README.md
 ResourceTable,0x010,Vagas populacionais disponiveis candidato,float32,hipotese,docs/evidencia_populacao_2026-10-17.md
 ResourceTable,0x02C,Populacao usada candidato A,float32,hipotese,docs/evidencia_populacao_2026-10-17.md
-ResourceTable,0x04C,Contador cumulativo candidato (nao diminuiu com morte),float32,hipotese,docs/evidencia_populacao_2026-10-17.md
+ResourceTable,0x04C,Acumulado de unidades produzidas candidato (milicia e aldeao +1; mortes 0),float32,hipotese,docs/evidencia_populacao_2026-10-17.md
 TrainingCandidateBase,0xC44,Campo 16-bit candidato relacionado a treinamento,uint16,hipotese,docs/evidencia_treinamento_aldeao_2026-10-17.md
 ABSOLUTO_SESSAO,0x18769C5C,Campo observado no Cheat Engine valor 17,uint16,sessao_observada,docs/evidencia_treinamento_aldeao_2026-10-17.md
 ABSOLUTO_SESSAO,0x18769018,Base candidata identificada pelo registrador EBX,ptr32,sessao_observada,docs/evidencia_treinamento_aldeao_2026-10-17.md
@@ -54,4 +54,4 @@ ABSOLUTO_SESSAO,0x14E92B54,ID 83 candidato C observado em CE,uint32,sessao_obser
 ABSOLUTO_SESSAO,0x143D8F80,Contador cumulativo de aldeoes candidato (nao cai apos morte),uint32,sessao_observada,docs/evidencia_contador_aldeoes_2026-10-17.md
 ABSOLUTO_SESSAO,0x187B0214,Contador candidato vivos mais indicador de fila (+1 mesmo com varias unidades enfileiradas),uint32,sessao_observada,docs/evidencia_contador_aldeoes_2026-10-17.md
 ABSOLUTO_SESSAO,0x187B0DCC,Contador de aldeoes vivos candidato (aumenta na conclusao; diminui na morte),uint32,sessao_observada,docs/evidencia_contador_aldeoes_2026-10-17.md
-ResourceTable,0x094,Contador de aldeoes vivos candidato,float32,hipotese,docs/evidencia_contador_aldeoes_2026-10-17.md
+ResourceTable,0x094,Contador de aldeoes vivos confirmado em teste funcional 5 fases (reinicio pendente),float32,hipotese,docs/evidencia_contador_aldeoes_2026-10-17.md
