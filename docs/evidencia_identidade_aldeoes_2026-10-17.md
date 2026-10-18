@@ -63,3 +63,7 @@ Ver [ids_aoe2control_hipoteses.md](ids_aoe2control_hipoteses.md). Enumeracoes da
 ## Referencia externa: identificadores do AoE2Control (DE)
 
 Documentadas em `docs/hipoteses_ids_aoe2control_2026-10-17.md` as hipoteses de classes 904/4 aldeao, 903/3 edificio, 906/6 infantaria, 950/50 lanceiro, e tipos 83/74/93. Esses numeros sao sugestoes para sondagem numerica com controles, e **nao** evidenciam offsets de memoria identicos entre DE e HD. O controle de classe continua pendente; nenhum endereco foi validado por correspondencia numerica isolada.
+
+## Unit Class Validation v1 — implementacao pendente de captura real
+
+Em AoE2HD.control foi implementado `--validate-unit-class` para verificar `Object+0x78 -> +0x0C/+0x94` em uint32 e low16. Etapas: tres aldeoes diferentes, milicia, lanceiro, construcao, mesmo aldeao A apos mudar de atividade e A consultado sem selecao. Compara candidato de classe interna 4 (aoe2control UnitClass.VILLAGER=904 e transformacao -900 como hipotese), mas registra dados brutos de cada controle e falhas. Verifica identidade no indice `World+0xE8` e rejeita mudanca de raizes/selecao no meio da captura. Nao altera o status dos campos: Object+0x78, Object78Target+0x0C e Object78Target+0x94 continuam `hipotese`. Nenhuma captura real da v1 ainda foi recebida.
