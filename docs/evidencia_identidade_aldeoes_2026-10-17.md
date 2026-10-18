@@ -19,3 +19,7 @@ O experimento gerou 9 registros: oito referencias localizadas em LocalPlayer+0x1
 ## Collection Discovery v3 — implementacao pendente de execucao real
 
 Novo comando no AoE2HD.control: `--discover-villager-collection-v3`. Coleta A/B/C/D da sessao atual via selecao; remove selecao no controle final; pesquisa blocos diretos e filhos de World, WorldPlayer e ResourceTable, priorizando World+0x88. Procura dois ou mais IDs ou ponteiros de aldeoes distintos na mesma regiao, sob strides 4, 8, 12 ou 16 bytes. As ancoras de selecao conhecidas nao contam como evidencia de colecao. Nao reutiliza enderecos absolutos da sessao passada; resultados serao registrados como `collection_candidate`, sem validacao automatica ou mudanca dos statuses do catalogo. A implementacao e os testes sinteticos foram publicados, sem captura real ate o momento.
+
+## Resultado real Collection Discovery v3
+
+Arquivo villager_collection_v3.csv: cinco registros. Referencias de identidade A=2108, B=2109, C=2110, D=2417 registradas; controle no_selection com status negative_selection_pass; 50 regioes examinadas e **zero** linhas collection_candidate. A ferramenta nao identificou arranjo compartilhado de dois ou mais desses objetos nos strides 4/8/12/16 na cobertura pesquisada. Resultado negativo e valido, mas nao exclui colecao global baseada em indices, referencias indiretas ou blocos de dimensao maior. Nenhum novo offset deve ser promovido ou inferido. Os campos e enderecos candidatos anteriores permanecem preservados.
