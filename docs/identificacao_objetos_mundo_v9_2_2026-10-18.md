@@ -112,3 +112,17 @@ Outras variacoes: tipo 595 ID 2294 perdeu ~54.419091 (17 eventos), possivelmente
 ## Resource Transfer Validation v9.9 — protocolo de correspondência temporal
 
 Foi implementado `--validate-resource-transfers-v9-9` no AoE2HD.control. A rotina compara os deltas de `Object+0x48` float32 em amostras consecutivas, ligando reduções (fonte candidata) a aumentos de magnitude aproximadamente igual (coletor candidato), para IDs e tipos estáveis. Tolera diferença absoluta até 0,02 ou relativa de 1%, com delta mínimo 0,1. Quando um nó possui mais de um parceiro possível, marca `ambiguous_candidate`; ligação biunívoca na amostra recebe `unique_candidate`, o que **não prova causalidade**. Testes com madeira tipo 351 e possíveis frutos tipo 59 são os controles prioritários; tipos de coletores 123/120 continuam candidatos. Arquivo de saída `resource_transfers_v9_9.csv`. Nenhum offset é promovido a validado antes de captura real reproduzida.
+
+## Resource Transfer Validation v9.9 — primeira execução real
+
+Fonte: `resource_transfers_v9_9.csv` fornecido pelo usuário. 20 amostras de ~2 s, 179 pares candidatos ao todo, classificados como 34 `unique_candidate` (19,0%) e 145 `ambiguous_candidate` (81,0%). A primeira amostra só estabelece baseline. Repetições de um mesmo par são eventos em tempos distintos, não objetos novos. Não foram identificadas falhas na saída do terminal, que mostra 2191 objetos na linha de base, chegando a 2189/2190 em outras amostras; o CSV de pares não permite explicar ausências.
+
+Pares únicos recorrentes (fonte ID/tipo -> coletor ID/tipo; numero de amostras; soma das perdas apenas nessas amostras, em unidades do float32 +0x48; erro absoluto médio):
+- 2039/66 -> 2004/581: 12 amostras, -14.449095, erro médio ~0.000105; tipo 66 já associado a ouro em mapeamentos anteriores.
+- 2014/59 -> 2002/120: 9 amostras, -8.359714, erro médio ~0.000008; reforça tipo 59 como candidato a arbusto e tipo 120 como possível coletor de alimento.
+- 2123/351 -> 2293/218: 5 amostras, -3.892212, erro médio ~0.000005.
+- 2117/351 -> 2292/123: 4 amostras, -3.349343, erro médio ~0.000003.
+- 2022/59 -> 2298/120: 2 amostras, -1.869126, erro médio ~0.000010.
+- 2116/351 -> 2001/123: 2 amostras, -1.349399, erro médio ~0.000001.
+
+O conjunto reforça que o float32 `Object+0x48` contém quantidade que diminui em fontes e aumenta em coletores candidatos. Pareamento é coincidência temporal e de magnitude com tolerância, **não prova causalidade, direção física ou classificação visual**. Tipos 59, 120, 123, 218 e 581 mantidos como hipóteses de papel funcional. Tipos 351 (árvore) e 66 (ouro) baseados em evidências anteriores. A próxima validação deve separar sessões controladas por recurso e relacionar os objetos com unidades observadas na tela, sem promover offsets a validados prematuramente.
