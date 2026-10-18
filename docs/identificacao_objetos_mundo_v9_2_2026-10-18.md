@@ -98,3 +98,13 @@ Objeto ID individual 2086, tipo 594, object_pointer `0x14763138`, owner_pointer 
 ## Wood & Berry Resource Discovery v9.8 — protocolo
 
 Controlador agora inclui `--map-wood-berries-v9-8`: inventario automatico e temporal dos objetos, sem digitar IDs, usando tipo em `[Object+0x0C]+0x10` e candidato a quantidade restante `Object+0x48` float32. O tipo 351 foi observado como arvore em controle guiado v9.2 e agora e classificado `tree_candidate`, nao como identificador universal de todas as especies de arvore. O ID de tipo dos arbustos de frutas NAO foi identificado e permanece `unclassified`. Novas coletas controladas em madeira e frutas servirao para relacionar tipo/ID individual a fonte visual; variacao de +0x48 sozinha nao valida semantica. O modo nao atribui HP a arvores/arbustos nem cria novo offset. Primeira captura v9.8 ainda pendente.
+
+## Wood & Berry v9.8 — primeira serie temporal, 20 amostras
+
+Fonte: `wood_berries_v9_8.csv` fornecido pelo operador. 2.188 linhas baseline, 150 `resource_changed`, 1 `appeared` (ID 2295 tipo 592, amostra 13), 1 `missing_from_scan` (ID 2294 tipo 595, amostra 19); 0 erros reportados. Tipo 351: 1.969 objetos mantidos nas 20 amostras. Outros objetos analisados: 219/220.
+
+Alteracoes por tipo: 351 ID 2120 teve 15 deltas totalizando -16.939416 no float32 `Object+0x48`, compativel com arvore sendo cortada. Tipo 59 ID 2014 teve tres quedas (-0.984184, -0.979591, -0.255142), total -2.218917, de valores 117.219109 a 115.000191. Outros 11 objetos tipo 59 iniciaram com `Object+0x48=125` e permaneceram sem alteracoes. **Tipo 59 e candidato forte a arbusto de frutas**, pendente confirmacao visual e replicacao.
+
+Correlacao potencial fonte -> coletor: nas amostras 2, 3 e 4, ID 2014 (tipo 59) diminuiu respectivamente ~0.984184, 0.979591, 0.255142 e ID 2002 (tipo 120) aumentou ~0.984243, 0.979604, 0.255149 (diferencas residuais pequenas). Igualmente, nas amostras 2–7, queda de ID 2120 tipo 351 foi espelhada por aumento aproximado de ID 2001 tipo 123, por exemplo -1.238266 vs +1.238250 e -1.232422 vs +1.232401. Isto sugere *transferencia de recurso entre objeto fonte e coletor*, mas **nao valida** nomes dos tipos 120/123 sem controle visual.
+
+Outras variacoes: tipo 595 ID 2294 perdeu ~54.419091 (17 eventos), possivelmente outra fonte de recursos; tipo 590 IDs 2004/2005/2293 e tipo 592 IDs 2006/2292 mostraram valores de pequena magnitude com aumentos, possiveis estados internos de unidades, sem rotulos. Nao concluir categoria pelo valor de +0x48 isoladamente, nem afirmar que objeto ausente foi destruido. Os offsets permanecem candidatos ate experimentos controlados adicionais.
