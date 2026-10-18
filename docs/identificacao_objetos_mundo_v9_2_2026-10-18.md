@@ -70,3 +70,7 @@ No controlador o modo `--identify-world-attributes-v9-5` preserva a captura pelo
 ## Correcao World Object Attributes v9.5.1 — HP em Armadilhas de Pesca
 
 Informacao funcional fornecida pelo operador: Armadilhas de Pesca possuem **HP aplicavel** e quantidade de alimento disponivel, como atributos distintos. O controlador foi corrigido para informar `hp_status=candidate` em `fish_trap/before` e `fish_trap/gathering` e mostrar `hp_current` candidato quando `Object+0x34` for legivel. `Object+0x48` permanece candidato a alimento restante. A existencia do atributo HP na armadilha nao valida o offset +0x34; confirmar por variacao controlada do HP. Cardumes e carcacas permanecem `not_applicable` para HP. Nenhum novo endereco de memoria foi validado nesta correcao.
+
+## Descoberta de objetos pelo tipo — protocolo de automacao
+
+Implementado no AoE2HD.control `--discover-world-objects-v9-6` (varredura automaticamente pela tabela `World+0xE8`) e opcao `--world-attributes-v9-5-auto` no capturador de atributos, sem digitacao dos IDs individuais. Tipos com rotulos candidatos: 594 animal (controle v9.2), 199 armadilha (v9.3), 458 cardume (v9.3). Nao generalizar para todas as especies/variantes. Em cada categoria, selecao automatica somente quando existe exatamente um candidato; ambiguidades nao sao resolvidas por suposicao. Nenhum novo offset foi criado/validado. Experimento real de descoberta automatica pendente.
