@@ -58,3 +58,17 @@ O controlador passou a disponibilizar `--discover-villagers-v2`: busca valores u
 Arquivo `villager_discovery_v2.csv` fornecido pelo usuario, sete fases. Distribuicao de classificacoes: 2 `living_compatible`, 17 `cumulative_compatible`, 2069 `unclassified`, 261 `insufficient_stages`, zero `queue_indicator_compatible`. Valores nos sete estagios (`baseline_3,queue_1,queue_3,cancel_partial,cancel_all,complete_1,lose_1`): `ResourceTable+0x94` float32 = **3,3,3,3,3,4,3** (melhor candidato aldeoes vivos); `ResourceTable+0x2C` float32 = **4,4,4,4,4,5,4** (mesma variacao mas deslocamento +1; previamente hipotese de populacao utilizada); `ResourceTable+0x4C` float32 = **4,4,4,4,4,5,5** (cumulativo compativel, possivelmente outro total de populacao); `WorldPlayer+0x522` uint16 = **0,0,0,0,0,1,1** (evento cumulativo compativel). Os outros 15 cumulativos podem ser aliases/campos de estado nao relacionados; nao promover em bloco.
 
 Controles necessarios: construir unidade militar sem aldeao, registrar `ResourceTable+0x94/+0x2C/+0x4C`, matar unidade militar, treinar e matar aldeao, testar mais de uma fila e comparar HUD antes/depois. Particularidade: valores 4 em +0x2C/+0x4C mesmo no estado nominal de tres aldeoes podem indicar unidade nao aldeao ou outra definicao de populacao; nao chamar esses dois campos de contador exclusivo de aldeoes sem controle negativo militar. A v2 classifica **padroes relativos**, portanto um campo pode passar com qualquer valor-base. Todos os enderecos dinamicos oriundos dessas estruturas sao offsets candidatos, nao confirmados apos reinicio.
+
+## Resultado Discovery v2 — sete etapas com partida inicial de tres aldeoes
+
+O usuario executou `--discover-villagers-v2 --villager-window 0x800`. Foram capturados 61 blocos de memoria e gerados 2349 candidatos variaveis no CSV, dos quais 17 tem padrao cumulativo completo e 2 tem padrao de contador vivo completo. Nenhum registro foi classificado como indicador binario de fila. Todos os enderecos absolutos abaixo sao especificos da sessao.
+
+A ResourceTable do jogador estava em `0x10164AF0`. Campos float32:
+
+- `ResourceTable+0x094` / `0x10164B84`: **3,3,3,3,3,4,3**; candidato prioritario a quantidade atual de aldeoes vivos, com suporte a subida na conclusao e descida na morte.
+- `ResourceTable+0x02C` / `0x10164B1C`: **4,4,4,4,4,5,4**; campo ja catalogado como populacao usada A, nao contar como prova de contador de aldeoes: inicial 4 apesar de haver 3 aldeoes.
+- `ResourceTable+0x04C` / `0x10164B3C`: **4,4,4,4,4,5,5**; campo previamente candidato a populacao usada B, mas o fato de nao diminuir com morte indica que deve ser reavaliado: possivel total acumulado/estatistica, ainda sem semantica validada.
+
+Fases na ordem baseline_3, queue_1, queue_3, cancel_partial, cancel_all, complete_1, lose_1. Os demais candidatos `cumulative_compatible` incluem constantes-base distintas e varios caminhos diferentes para o **mesmo endereco** `0x18B93DC0` (por exemplo `local_player+0x18->ptr+0x08` e `local_player+0x20->ptr+0x148`), portanto nao sao descobertas independentes. A classificacao atual permite deslocamento aditivo do valor inicial: correspondencia completa de transicoes nao garante correspondencia da magnitude com numero de aldeoes.
+
+Necessario testar acoes de unidades militares e mortes de aldeoes em nova sessao para verificar especificidade de `+0x94`. O resultado do script nao valida automaticamente que cada estado do jogo foi cumprido. Nao promover candidatos a validados nem reaproveitar enderecos absolutos.
