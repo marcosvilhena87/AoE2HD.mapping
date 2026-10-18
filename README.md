@@ -39,3 +39,16 @@ O projeto [AoE2HD.control](https://github.com/marcosvilhena87/AoE2HD.control) ut
 - Sem descobertas novas, não alterar artificialmente a contagem ou o status dos 64 registros existentes.
 
 Esta regra é aplicada nas sessões de desenvolvimento em que houver acesso ao GitHub; não representa uma tarefa de monitoramento autônomo em segundo plano.
+
+## Integridade automatizada do catálogo
+
+O workflow [Validar catálogo de memória](.github/workflows/validar-catalogo.yml) é executado em push ou pull request que altere dados, validador, testes ou workflow; também pode ser iniciado manualmente em **Actions → Validar catálogo de memória → Run workflow**.
+
+Para executar localmente, na raiz do repositório:
+
+```bash
+python -m unittest discover -s tests -v
+python scripts/validar_catalogo.py
+```
+
+O validador compara todas as seis colunas de cada registro como **multiconjunto**, sem depender da ordem dos arquivos. Detecta ausência em qualquer direção, duplicação integral, conflito de registros com a mesma combinação de raiz e endereço, problemas de cabeçalho, campos vazios e falta de módulos. Se houver divergência, o comando retorna código 1 e o workflow falha. Não corrige nem promove endereços automaticamente.

@@ -1,0 +1,35 @@
+name: Validar catálogo de memória
+
+on:
+  push:
+    paths:
+      - "dados/**"
+      - "scripts/validar_catalogo.py"
+      - "tests/**"
+      - ".github/workflows/validar-catalogo.yml"
+  pull_request:
+    paths:
+      - "dados/**"
+      - "scripts/validar_catalogo.py"
+      - "tests/**"
+      - ".github/workflows/validar-catalogo.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  integridade:
+    name: Conferir módulos e consolidado
+    runs-on: ubuntu-latest
+    steps:
+      - name: Obter repositório
+        uses: actions/checkout@v4
+      - name: Preparar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Testar o validador
+        run: python -m unittest discover -s tests -v
+      - name: Validar integridade do catálogo real
+        run: python scripts/validar_catalogo.py
