@@ -76,3 +76,17 @@ Necessario testar acoes de unidades militares e mortes de aldeoes em nova sessao
 ## Instrumentacao de controle militar e aldeao para ResourceTable+0x94
 
 Foi implementado no AoE2HD.control o comando `--verify-villager-094`, que resolve ResourceTable a partir do jogador local e captura somente leitura dos campos float32 `+0x94`, `+0x2C`, `+0x4C` em cinco fases: baseline; milicia concluida; milicia perdida; aldeao concluido; aldeao perdido. Testa o delta relativo da hipotese `+0x94`: 0,0,0,+1,0. O comando produz CSV e informa divergencias, mas nao valida visualmente os eventos do jogo nem promove enderecos. Adicionados testes sinteticos; execucao contra a partida real pendente.
+
+## Validacao comportamental com controle militar — cinco fases (CSV real)
+
+O usuario executou `--verify-villager-094` e compartilhou `villager_validation_094.csv`. As cinco etapas foram registradas com `status=ok` e `stage_pass=1`, sem erros e com raiz `ResourceTable=0x10164AF0` **apenas nesta sessao**.
+
+| Etapa | +0x94 float32 | +0x2C float32 | +0x4C float32 |
+|---|---:|---:|---:|
+| baseline | 3 | 4 | 5 |
+| militia_completed | 3 | 5 | 6 |
+| militia_lost | 3 | 4 | 6 |
+| villager_completed | 4 | 5 | 7 |
+| villager_lost | 3 | 4 | 7 |
+
+Conclusao: `ResourceTable+0x94` passou o teste comportamental especifico para aldeoes vivos (milicia nao altera, aldeao altera e retorna na morte). `+0x2C` acompanha populacao atual, enquanto `+0x4C` e compativel com acumulado de unidades produzidas, e nao exclusivo de aldeoes. Apesar da evidencia funcional forte, a cadeia e o endereco do contador ainda exigem verificacao em partida nova **apos reinicio completo do processo**, alem de controles adicionais; estado no CSV permanece `hipotese` ate isso acontecer. Nao reutilizar `0x10164AF0` noutra sessao. O experimento depende de o operador ter realizado fielmente as etapas indicadas.
