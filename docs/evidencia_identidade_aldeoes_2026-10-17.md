@@ -31,3 +31,7 @@ Comando no AoE2HD.control: `--discover-villager-collection-v4`. A investigacao r
 ## Resultado observado da v4
 
 A captura de jogo registrou uma tabela candidata em World+0xE8. O ponteiro de tabela observado na sessao foi 0x13D60018. As entradas em tabela + ID * 4 apontaram para quatro objetos distintos: 2108 para 0x13EA6720, 2109 para 0x13EA85A0, 2110 para 0x13EA81D0 e 2417 para 0x13EAE6D8. Foram 84 sondagens e um candidato, com selecao vazia. Este resultado e uma hipotese forte, nao uma validacao entre reinicios. Necessita teste de novas unidades, mortes, IDs ausentes e reinicio do jogo.
+
+## Villager Collection Validation v1 — protocolo publicado
+
+AoE2HD.control implementou `--verify-villager-collection`, sondagem somente leitura de `World+0xE8` e entrada `table+Object_ID*4` em oito etapas guiadas: A, B, C, desmarcados, D novo, desmarcados com D, A morto, ID potencialmente inexistente. Registra endereco efetivo da tabela por sessao, ID, ponteiro esperado e observado, rechecagem de raizes e selecao. Recomenda-se reiniciar o jogo antes de executar para teste independente. Campos de morte e ID invalido nao tem comportamento presumido: uma entrada pode permanecer historicamente preenchida ou estar inacessivel. Nenhuma captura real desta validacao foi fornecida ainda; manter World+0xE8 como `hipotese` ate o experimento.
