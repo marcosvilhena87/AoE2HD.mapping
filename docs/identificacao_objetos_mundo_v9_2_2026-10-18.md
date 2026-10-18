@@ -56,3 +56,9 @@ Peixes: fish_trap/before capturou ID 2382 tipo 199; fish_trap/gathering capturou
 ## World Object Attributes v9.4 — protocolo publicado
 
 Novo modo do controlador: `--identify-world-attributes-v9-4`, captura somente leitura por ID individual na tabela indexada `World+0xE8`, sem exigir selecao ativa de animal/carcaca/armadilha/cardume. Reaproveita o MESMO ID entre estados da mesma categoria e rejeita tentativa de trocar identificador em comparacao; compara valores candidatos float32 `Object+0x34` e `Object+0x48` e conserva dump de ate 512 bytes. ID da entrada e objeto devem coincidir. Campos sao **candidatos**, nao HP/recurso automaticamente validado, sobretudo para fontes sem HP; resultados reais e controles adicionais pendentes. IDs 2075 (animal), 2382 (fish_trap) e 2234 (fish_school) sao apenas exemplos da sessao v9.3, nao IDs fixos.
+
+## World Object Attributes v9.4 — cardume comparado por ID (captura real)
+
+No CSV `world_object_attributes_v9_4(2).csv`, foram puladas as cinco etapas de animal/armadilha e capturado o MESMO cardume nas duas fases: objeto ID 2234, type_id=458, Object=0x147F7A58, owner=0x158E9014, type_pointer=0x14CE4F98, definition_pointer=0. Status `captured` nas duas, `same_id_candidate`, **zero erros**. Os ponteiros e tipo permaneceram iguais.
+
+Valores float32: `Object+0x48` antes=205.8340301513672, durante coleta=202.19786071777344, delta=-3.63616943359375 (CSV arredonda -3.636169). Campo `Object+0x34` permaneceu 0.0 nas duas. Isso reforca fortemente a HIPOTESE de `Object+0x48` como recurso/alimento restante para cardume tipo 458, mas NAO valida automaticamente a interpretacao para todos os objetos. `Object+0x34=0.0` nao significa HP presente nem prova de ausencia. Prosseguir com replicacao temporal e outros cardumes antes da promocao de status. Enderecos absolutos sao da sessao.
