@@ -126,3 +126,7 @@ Pares únicos recorrentes (fonte ID/tipo -> coletor ID/tipo; numero de amostras;
 - 2116/351 -> 2001/123: 2 amostras, -1.349399, erro médio ~0.000001.
 
 O conjunto reforça que o float32 `Object+0x48` contém quantidade que diminui em fontes e aumenta em coletores candidatos. Pareamento é coincidência temporal e de magnitude com tolerância, **não prova causalidade, direção física ou classificação visual**. Tipos 59, 120, 123, 218 e 581 mantidos como hipóteses de papel funcional. Tipos 351 (árvore) e 66 (ouro) baseados em evidências anteriores. A próxima validação deve separar sessões controladas por recurso e relacionar os objetos com unidades observadas na tela, sem promover offsets a validados prematuramente.
+
+## Wood & Berry Existence v9.10 — existencia somente
+
+Implementado `--map-wood-berry-existence-v9-10` no controlador: uma varredura de leitura da tabela `World+0xE8`, ID individual verificado em `Object+0x08` e tipo uint16 de `[Object+0x0C]+0x10`. Rotulos candidatos: 351 `tree_candidate`; 59 `berry_bush_candidate`, este ainda sem verificacao visual definitiva. CSV `wood_berry_existence_v9_10.csv` com objeto presente/ID/ponteiros/tipo e erros; sem atributos de recurso ou HP. A ausencia em uma janela, especialmente com erros, nao valida inexistencia global. Aguarda primeira varredura real v9.10; nenhum endereco novo foi adicionado.
