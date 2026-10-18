@@ -1,0 +1,3 @@
+# Investigacao do contador de milicias
+
+O controlador AoE2HD.control disponibiliza `--discover-militia`, uma busca somente leitura de campos uint16, uint32 e float32 nas estruturas conhecidas e ponteiros filhos limitados. Protocolo guiado: baseline, milicia +1, morte da milicia, producao de duas milicias, perda de uma, producao de aldeao com milicia restante. Assinatura relativa esperada para milicias vivas: `0,+1,0,+2,+1,+1`. Todos os candidatos permanecem **nao validados** ate captura real e controles adicionais. A descoberta nunca utiliza enderecos absolutos de sessoes antigas. Nenhum offset de milicia foi identificado ate o momento, portanto nao ha nova linha no catalogo de enderecos.
