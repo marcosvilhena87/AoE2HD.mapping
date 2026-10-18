@@ -37,3 +37,7 @@ Os valores reportados no CSV da v8 mostram que `Target+0x12` **não é cópia in
 As experiências v6/v7/v8 oferecem forte validação funcional, em classes diferentes e numa segunda sessão declarada, para **`[Object+0x0C]+0x10` uint16 como ID específico de tipo**. Os ponteiros absolutos e IDs individuais variam por partida; não persistir tais endereços como estáticos. A validação é limitada à versão HD investigada e aos controles testados; não extrapolar para Definitive Edition. O campo `Object+0x0C` é o ponteiro usado no caminho; `Object+0x78 -> +0x0C` permanece caminho distinto da classe.
 
 Fontes: saída de console e CSV `unit_type_validation_v8.csv` fornecidos pelo executor; v6 e v7 documentadas em `evidencia_identidade_aldeoes_2026-10-17.md`.
+
+## Integração no controlador — Unit Type Integration v9
+
+O repositorio AoE2HD.control implementa `--integrate-unit-types-v9`, inventario automatico somente leitura pela tabela `World+0xE8`, sem selecao manual. Le `Object+0x08` (ID individual), `Object+0x10` (dono candidato), `Object+0x0C -> +0x10` (ID tipo uint16, validado funcionalmente nos experimentos anteriores) e `Object+0x78 -> +0x0C` (classe uint32). Registra em CSV tipo/classe/owner; tipos desconhecidos permanecem no relatorio. Por padrao considera apenas objetos de dono local, com janela limitada de IDs; escopo opcional `all` inclui outros donos. Falhas de leitura sao separadas em `read_error` e nao contam como tipos descobertos. O modulo v9 ainda aguarda CSV experimental; nao cria novos offsets.
