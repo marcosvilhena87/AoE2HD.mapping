@@ -10,3 +10,7 @@ O arquivo `militia_discovery.csv` gerado no jogo mostrou 43 regioes monitoradas,
 - `ResourceTable+0xA0`, absoluto apenas nesta sessao `0x102BAC70`: float32 observou `1,2,1,3,2,2`. Tem deslocamento inicial +1, sem semantica exclusiva demonstrada.
 
 As fases sao baseline, conclusao de 1 milicia, morte dessa milicia, conclusao de 2 milicias, morte de 1 dentre as duas, conclusao de aldeao. O offset `WorldPlayer+0x36C` e o melhor candidato a milicias vivas e responde corretamente ao controle de aldeao, mas **nao foi validado apos reinicio completo**. `ResourceTable+0xA0` permanece candidato de significado desconhecido, embora tenha transicoes correlatas. Devem ser realizados controles com outras unidades militares e um novo processo para confirmar especificidade e estabilidade da cadeia. Nao inferir que `uint16` e `uint32` sejam campos distintos.
+
+## Novo teste apos reinicio — implementado, execucao pendente
+
+Foi incluido no AoE2HD.control o comando `--verify-militia-restart`, com sete fases: baseline, milicia concluida, milicia perdida, lanceiro concluido, lanceiro perdido, aldeao concluido, aldeao perdido. A verificacao resolve WorldPlayer e ResourceTable automaticamente; registra `WorldPlayer+0x36C` nos formatos uint16/uint32 e os controles float32 `ResourceTable+0x94` (aldeoes) e `+0x2C` (populacao). As assinaturas relativas esperadas sao milicias `0,1,0,0,0,0,0`, aldeoes `0,0,0,0,0,1,0` e populacao `0,1,0,1,0,1,0`. Confirma somente compatibilidade experimental; offsets de milicias continuam hipotese ate observacao real em outra sessao.
