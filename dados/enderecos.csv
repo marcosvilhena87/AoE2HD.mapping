@@ -57,3 +57,4 @@ ABSOLUTO_SESSAO,0x187B0DCC,Contador de aldeoes vivos candidato (aumenta na concl
 ResourceTable,0x094,Contador de aldeoes vivos validado funcionalmente em duas sessoes apos reinicio,float32,validado,docs/evidencia_contador_aldeoes_2026-10-17.md
 WorldPlayer,0x36C,Contador de milicias vivas validado funcionalmente apos reinicio (milicia lanceiro aldeao); u16 e u32 coincidem,uint32,validado,docs/evidencia_contador_milicias_2026-10-17.md
 ResourceTable,0x0A0,Campo associado a milicias candidato (assinatura 1-2-1-3-2-2; semantica exata pendente),float32,hipotese,docs/evidencia_contador_milicias_2026-10-17.md
+World,0x0E8,Ponteiro candidato da tabela de objetos por ID multiplicado por quatro,ptr32,hipotese,docs/evidencia_identidade_aldeoes_2026-10-17.md
