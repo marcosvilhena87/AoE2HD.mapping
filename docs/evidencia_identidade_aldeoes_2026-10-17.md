@@ -11,3 +11,7 @@ CSV `villager_identity_v1.csv`: `WorldPlayer local=0x18315744` nesta sessao. A: 
 ## Discovery v2 — procura de colecao de objetos
 
 O comando `--discover-villager-collection` no AoE2HD.control inspeciona somente leitura referencias a aldeoes selecionados, usando os caminhos historicos para World, WorldPlayer e ResourceTable. Busca enderecos que apontam para cada objeto selecionado em estruturas de raiz e em ponteiros filhos limitados (janela ate 0x2000 bytes; padrao 0x800; ate 32 filhos por raiz). Controle: A, B, C, D e ausencia de selecao. Registra endereco e origem dos hits; referencias em LocalPlayer+0x15C/+0x160 sao tratadas explicitamente como ancoras, nao colecao. Nenhuma colecao ou offset novo foi confirmado; os candidatos de World+0x88 e CandidateBase+0x178/+0x28C permanecem com seu status historico. Nao ha uso de ponteiros absolutos de aldeoes de sessao anterior. Captura real de v2 pendente.
+
+## Resultado da coleta v2
+
+O experimento gerou 9 registros: oito referencias localizadas em LocalPlayer+0x15C e +0x160 (duas por aldeao A/B/C/D) e um controle negativo sem selecao aprovado. IDs observados: 2108, 2109, 2110 e 2417. Nenhuma referencia de colecao independente da selecao foi identificada dentro da cobertura limitada. Os offsets candidatos existentes continuam como hipoteses; nao foram promovidos. O resultado nao exclui colecoes em outras regioes de memoria.
