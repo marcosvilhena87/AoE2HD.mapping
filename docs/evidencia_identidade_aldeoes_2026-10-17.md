@@ -23,3 +23,7 @@ Novo comando no AoE2HD.control: `--discover-villager-collection-v3`. Coleta A/B/
 ## Resultado real Collection Discovery v3
 
 Arquivo villager_collection_v3.csv: cinco registros. Referencias de identidade A=2108, B=2109, C=2110, D=2417 registradas; controle no_selection com status negative_selection_pass; 50 regioes examinadas e **zero** linhas collection_candidate. A ferramenta nao identificou arranjo compartilhado de dois ou mais desses objetos nos strides 4/8/12/16 na cobertura pesquisada. Resultado negativo e valido, mas nao exclui colecao global baseada em indices, referencias indiretas ou blocos de dimensao maior. Nenhum novo offset deve ser promovido ou inferido. Os campos e enderecos candidatos anteriores permanecem preservados.
+
+## Villager Collection Discovery v4 — candidato, sem execucao real
+
+Comando no AoE2HD.control: `--discover-villager-collection-v4`. A investigacao reutiliza os IDs e ponteiros atuais selecionados de A/B/C/D, exige controle sem selecao e examina descritores begin/end/capacity proximos das raizes ja conhecidas (prioriza World+0x88), vetores de ate 8192 bytes com strides 4/8/12/16/20/24/32/40/48/64/80/96/128, bem como sondagens de tabelas diretas indexadas por Object_ID (offsets ID*4, ID*8, ID*16). Saida inclui regioes cobertas, falhas de leitura e candidatos. Baseline historica: UnitIdentityDiscovery.h e entity_graph_discovery_v5.cpp, revisao 62c3a7e1. Nenhum endereco novo confirmado; World+0x88 permanece hipotese. Captura real v4 pendente.
