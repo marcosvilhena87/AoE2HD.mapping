@@ -35,7 +35,7 @@ ABSOLUTO_SESSAO,0x00B90000,Base de módulo em teste histórico,ptr32,sessao_obse
 ABSOLUTO_SESSAO,0x1929E848,World em teste histórico,ptr32,sessao_observada,README.md
 ResourceTable,0x010,Vagas populacionais disponiveis candidato,float32,hipotese,docs/evidencia_populacao_2026-10-17.md
 ResourceTable,0x02C,Populacao usada candidato A,float32,hipotese,docs/evidencia_populacao_2026-10-17.md
-ResourceTable,0x04C,Populacao usada candidato B,float32,hipotese,docs/evidencia_populacao_2026-10-17.md
+ResourceTable,0x04C,Contador cumulativo candidato (nao diminuiu com morte),float32,hipotese,docs/evidencia_populacao_2026-10-17.md
 TrainingCandidateBase,0xC44,Campo 16-bit candidato relacionado a treinamento,uint16,hipotese,docs/evidencia_treinamento_aldeao_2026-10-17.md
 ABSOLUTO_SESSAO,0x18769C5C,Campo observado no Cheat Engine valor 17,uint16,sessao_observada,docs/evidencia_treinamento_aldeao_2026-10-17.md
 ABSOLUTO_SESSAO,0x18769018,Base candidata identificada pelo registrador EBX,ptr32,sessao_observada,docs/evidencia_treinamento_aldeao_2026-10-17.md
