@@ -59,3 +59,7 @@ Seis capturas completas (aldeoes IDs 2203/2201/2202, milicia 2508, lanceiro 2511
 ## Referencia externa de IDs do AoE2Control (DE)
 
 Ver [ids_aoe2control_hipoteses.md](ids_aoe2control_hipoteses.md). Enumeracoes da API DE: UnitClass.VILLAGER=904, BUILDING=903, INFANTRY=906, SPEARMAN=950 e UnitObjectType.VILLAGER_MALE=83. A investigacao HD considera 4/3/6/50 como possiveis representacoes internas **a validar**, e 74/93 como controles empiricos do HD. Nao ha transferencia demonstrada de offsets entre edicoes; valores sao apenas hipoteses numericas e nunca prova automatica de classe. Nenhum endereco novo identificado nesta revisao.
+
+## Referencia externa: identificadores do AoE2Control (DE)
+
+Documentadas em `docs/hipoteses_ids_aoe2control_2026-10-17.md` as hipoteses de classes 904/4 aldeao, 903/3 edificio, 906/6 infantaria, 950/50 lanceiro, e tipos 83/74/93. Esses numeros sao sugestoes para sondagem numerica com controles, e **nao** evidenciam offsets de memoria identicos entre DE e HD. O controle de classe continua pendente; nenhum endereco foi validado por correspondencia numerica isolada.
