@@ -72,3 +72,7 @@ A ResourceTable do jogador estava em `0x10164AF0`. Campos float32:
 Fases na ordem baseline_3, queue_1, queue_3, cancel_partial, cancel_all, complete_1, lose_1. Os demais candidatos `cumulative_compatible` incluem constantes-base distintas e varios caminhos diferentes para o **mesmo endereco** `0x18B93DC0` (por exemplo `local_player+0x18->ptr+0x08` e `local_player+0x20->ptr+0x148`), portanto nao sao descobertas independentes. A classificacao atual permite deslocamento aditivo do valor inicial: correspondencia completa de transicoes nao garante correspondencia da magnitude com numero de aldeoes.
 
 Necessario testar acoes de unidades militares e mortes de aldeoes em nova sessao para verificar especificidade de `+0x94`. O resultado do script nao valida automaticamente que cada estado do jogo foi cumprido. Nao promover candidatos a validados nem reaproveitar enderecos absolutos.
+
+## Instrumentacao de controle militar e aldeao para ResourceTable+0x94
+
+Foi implementado no AoE2HD.control o comando `--verify-villager-094`, que resolve ResourceTable a partir do jogador local e captura somente leitura dos campos float32 `+0x94`, `+0x2C`, `+0x4C` em cinco fases: baseline; milicia concluida; milicia perdida; aldeao concluido; aldeao perdido. Testa o delta relativo da hipotese `+0x94`: 0,0,0,+1,0. O comando produz CSV e informa divergencias, mas nao valida visualmente os eventos do jogo nem promove enderecos. Adicionados testes sinteticos; execucao contra a partida real pendente.
