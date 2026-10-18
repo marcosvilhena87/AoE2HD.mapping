@@ -27,3 +27,7 @@ Arquivo villager_collection_v3.csv: cinco registros. Referencias de identidade A
 ## Villager Collection Discovery v4 — candidato, sem execucao real
 
 Comando no AoE2HD.control: `--discover-villager-collection-v4`. A investigacao reutiliza os IDs e ponteiros atuais selecionados de A/B/C/D, exige controle sem selecao e examina descritores begin/end/capacity proximos das raizes ja conhecidas (prioriza World+0x88), vetores de ate 8192 bytes com strides 4/8/12/16/20/24/32/40/48/64/80/96/128, bem como sondagens de tabelas diretas indexadas por Object_ID (offsets ID*4, ID*8, ID*16). Saida inclui regioes cobertas, falhas de leitura e candidatos. Baseline historica: UnitIdentityDiscovery.h e entity_graph_discovery_v5.cpp, revisao 62c3a7e1. Nenhum endereco novo confirmado; World+0x88 permanece hipotese. Captura real v4 pendente.
+
+## Resultado observado da v4
+
+A captura de jogo registrou uma tabela candidata em World+0xE8. O ponteiro de tabela observado na sessao foi 0x13D60018. As entradas em tabela + ID * 4 apontaram para quatro objetos distintos: 2108 para 0x13EA6720, 2109 para 0x13EA85A0, 2110 para 0x13EA81D0 e 2417 para 0x13EAE6D8. Foram 84 sondagens e um candidato, com selecao vazia. Este resultado e uma hipotese forte, nao uma validacao entre reinicios. Necessita teste de novas unidades, mortes, IDs ausentes e reinicio do jogo.
