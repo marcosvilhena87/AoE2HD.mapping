@@ -1,0 +1,13 @@
+raiz,offset_ou_endereco,descricao,tipo,status,origem
+RVA,0x006F2C58,Owner global,ptr32,historico_validado,docs/memory-map.md
+RVA,0x005D329C,Vtable World,ptr32,historico_validado,docs/memory-map.md
+RVA,0x005DC8A0,Vtable Gaia,ptr32,historico_validado,docs/memory-map.md
+RVA,0x005DCAE4,Vtable HumanOrCoop,ptr32,historico_validado,docs/memory-map.md
+RVA,0x005DC618,Vtable Computer,ptr32,historico_validado,docs/memory-map.md
+Owner,0xC8,Ponteiro World,ptr32,historico_validado,docs/memory-map.md
+World,0x174,Índice jogador local,uint32,historico_validado,docs/memory-map.md
+World,0x184,Players begin,ptr32,historico_validado,docs/memory-map.md
+World,0x188,Players end,ptr32,historico_validado,docs/memory-map.md
+World,0x18C,Players capacity,ptr32,historico_validado,docs/memory-map.md
+World,0x88,Possível vetor de objetos/unidades,desconhecido,hipotese,README.md
+World,0x0E8,Tabela indexada por ID de objeto (entrada ID*4) validada funcionalmente em nova sessao,ptr32,validado,docs/evidencia_identidade_aldeoes_2026-10-17.md

@@ -1,0 +1,11 @@
+raiz,offset_ou_endereco,descricao,tipo,status,origem
+ResourceTable,0x00,Food,float32,historico_validado,docs/memory-map.md
+ResourceTable,0x04,Wood,float32,historico_validado,docs/memory-map.md
+ResourceTable,0x08,Stone,float32,historico_validado,docs/memory-map.md
+ResourceTable,0x0C,Gold,float32,historico_validado,docs/memory-map.md
+ResourceTable,0x010,Vagas populacionais disponiveis candidato,float32,hipotese,docs/evidencia_populacao_2026-10-17.md
+ResourceTable,0x02C,Populacao usada candidato A,float32,hipotese,docs/evidencia_populacao_2026-10-17.md
+ResourceTable,0x04C,Acumulado de unidades produzidas candidato (milicia e aldeao +1; mortes 0),float32,hipotese,docs/evidencia_populacao_2026-10-17.md
+ResourceTable,0x094,Contador de aldeoes vivos validado funcionalmente em duas sessoes apos reinicio,float32,validado,docs/evidencia_contador_aldeoes_2026-10-17.md
+WorldPlayer,0x36C,Contador de milicias vivas validado funcionalmente apos reinicio (milicia lanceiro aldeao); u16 e u32 coincidem,uint32,validado,docs/evidencia_contador_milicias_2026-10-17.md
+ResourceTable,0x0A0,Campo associado a milicias candidato (assinatura 1-2-1-3-2-2; semantica exata pendente),float32,hipotese,docs/evidencia_contador_milicias_2026-10-17.md

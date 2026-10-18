@@ -1,0 +1,4 @@
+raiz,offset_ou_endereco,descricao,tipo,status,origem
+Building,0x214,Ponteiro fila de produção,ptr32,experimental_implementado,ProductionQueueReader.h
+Building,0x218,Contagem de grupos high16,uint16,experimental_implementado,ProductionQueueReader.h
+Building,0x21C,Contagem de unidades low16,uint16,experimental_implementado,ProductionQueueReader.h

@@ -6,7 +6,8 @@ Armazena endereços confirmados historicamente, candidatos e hipóteses **mesmo 
 
 ## Catálogo
 
-- [dados/enderecos.csv](dados/enderecos.csv): 34 registros contextualizados, incluindo RVAs, offsets e endereços absolutos temporários.
+- [dados/enderecos.csv](dados/enderecos.csv): 64 registros contextualizados, incluindo RVAs, offsets e endereços absolutos temporários.
+- [docs/modulos/README.md](docs/modulos/README.md): índice de 7 módulos temáticos em `dados/modulos/`, com contagens e regras de sincronização.
 - [docs/criterios.md](docs/criterios.md): diferenças entre evidência, hipótese e confirmação.
 - [docs/mapa.md](docs/mapa.md): cadeias de memória conhecidas e campos experimentais.
 - [docs/proveniencia.md](docs/proveniencia.md): como recuperar todos os programas e experimentos antigos.
@@ -30,11 +31,11 @@ O projeto [AoE2HD.control](https://github.com/marcosvilhena87/AoE2HD.control) ut
 
 **Regra de desenvolvimento:** sempre que uma investigação ou teste do AoE2HDControl descobrir, revisar, refutar ou identificar um novo candidato de endereço, registrar a evidência aqui na mesma etapa de desenvolvimento, antes de considerar a integração concluída.
 
-- Inserir novos endereços em `dados/enderecos.csv`, incluindo `raiz`, endereço/offset, descrição, tipo, status e origem.
+- Inserir novos endereços no módulo pertinente de `dados/modulos/` e espelhar em `dados/enderecos.csv`, incluindo `raiz`, endereço/offset, descrição, tipo, status e origem.
 - Preservar candidatos não validados e endereços refutados; nunca promovê-los a validados apenas por valores plausíveis.
 - Documentar cadeias, dependências e limitações em `docs/mapa.md` e critérios/provas em `docs/criterios.md`, quando pertinentes.
 - Anotar versão do binário, passos de reprodução, cenários e evidências positivas/negativas; endereços absolutos de sessão não devem ser apresentados como estáveis.
 - Somente atualizar o catálogo espelhado no AoE2HD.control depois de atualizar este repositório, para evitar divergência.
-- Sem descobertas novas, não alterar artificialmente a contagem ou o status dos 34 registros existentes.
+- Sem descobertas novas, não alterar artificialmente a contagem ou o status dos 64 registros existentes.
 
 Esta regra é aplicada nas sessões de desenvolvimento em que houver acesso ao GitHub; não representa uma tarefa de monitoramento autônomo em segundo plano.

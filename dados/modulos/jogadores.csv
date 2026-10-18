@@ -1,0 +1,8 @@
+raiz,offset_ou_endereco,descricao,tipo,status,origem
+PlayerEntry,0x00,Object,ptr32,historico_validado,docs/memory-map.md
+PlayerEntry,0x04,ControlBlock,ptr32,historico_validado,docs/memory-map.md
+WorldPlayer,0x04,World back pointer,ptr32,historico_validado,docs/memory-map.md
+WorldPlayer,0x08,Discriminador (2 Gaia/1 local/3 CPU historicamente),uint32,semantica_parcial,docs/memory-map.md
+WorldPlayer,0x3C,Tabela recursos,ptr32,historico_validado,docs/memory-map.md
+LocalPlayer,0x15C,Ponteiro seleção A,ptr32,ancora_experimental,README.md
+LocalPlayer,0x160,Ponteiro seleção B,ptr32,ancora_experimental,README.md
