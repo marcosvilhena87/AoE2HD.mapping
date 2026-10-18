@@ -55,5 +55,5 @@ ABSOLUTO_SESSAO,0x143D8F80,Contador cumulativo de aldeoes candidato (nao cai apo
 ABSOLUTO_SESSAO,0x187B0214,Contador candidato vivos mais indicador de fila (+1 mesmo com varias unidades enfileiradas),uint32,sessao_observada,docs/evidencia_contador_aldeoes_2026-10-17.md
 ABSOLUTO_SESSAO,0x187B0DCC,Contador de aldeoes vivos candidato (aumenta na conclusao; diminui na morte),uint32,sessao_observada,docs/evidencia_contador_aldeoes_2026-10-17.md
 ResourceTable,0x094,Contador de aldeoes vivos validado funcionalmente em duas sessoes apos reinicio,float32,validado,docs/evidencia_contador_aldeoes_2026-10-17.md
-WorldPlayer,0x36C,Contador de milicias vivas candidato (assinatura 0-1-0-2-1-1); u16 e u32 no mesmo endereco,uint32,hipotese,docs/evidencia_contador_milicias_2026-10-17.md
+WorldPlayer,0x36C,Contador de milicias vivas validado funcionalmente apos reinicio (milicia lanceiro aldeao); u16 e u32 coincidem,uint32,validado,docs/evidencia_contador_milicias_2026-10-17.md
 ResourceTable,0x0A0,Campo associado a milicias candidato (assinatura 1-2-1-3-2-2; semantica exata pendente),float32,hipotese,docs/evidencia_contador_milicias_2026-10-17.md
