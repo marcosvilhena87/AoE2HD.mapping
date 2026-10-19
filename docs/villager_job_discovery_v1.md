@@ -77,3 +77,9 @@ Na transição mais recente idle → woodcutting (tipo 218 → 218):
 - `object+0x038`: `0x00000300 → 0x00010300`; `object+0x014`, `+0x048` e `class_definition+0x08C` também mudaram; `class_definition+0x03C/+0x040` variaram (candidatos a dados dinâmicos, não interpretar automaticamente como profissão).
 
 A sequência confirma que **existem mudanças correlacionadas com a ordem de coleta sem alteração de tipo Genie no segundo ciclo**, mas não valida semanticamente nenhum campo. Priorizar comparações reversíveis e repetidas de `+0x028/+0x030/+0x050/+0x054`, junto com controles parado, andando sem coletar, e coleta de outro recurso. Não confundir atualização de baseline com reversão de valores de memória.
+
+## Terceira transição observada — mineração (19/10/2026)
+
+Na mesma sessão `teste01`, aldeã individual ID 2197, classe 4 previamente confirmada, após atribuição de mineração de ouro (`phase=mining`), o capturador reportou **tipo Genie 581**, 128 DWORDs, 34 diferentes do último baseline idle, zero campos sem referência, `tipos_idle=[218,293]`, `tipo_alterado=1`. Histórico observado: idle 293 → woodcutting 218 → stop/idle 218 → woodcutting 218 → mineração de ouro 581.
+
+**Hipótese reforçada, não validada como regra geral:** tipo Genie pode refletir a função/variante atribuída e persistir quando se emite Parar. O valor 581 é candidato a variante na mineração de ouro, e não ainda prova de código exclusivo dessa tarefa. A comparação de 34 campos se refere ao último baseline idle do tipo 218; não é comparação direta com a última amostra woodcutting. Recomenda-se mandar Parar e testar permanência de 581, depois mineração de pedra, caminhada e retorno à madeira, capturando mesmo ID e sessão. Nenhum endereço novo validado.
