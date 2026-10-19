@@ -180,3 +180,7 @@ As duas sequências formam um percurso compatível com duas pernas aproximadamen
 ## Villager Coordinates v9.13 — monitor por ID
 
 No AoE2HD.control, `--monitor-villager-coordinates-v9-13` acompanha todos os aldeões tipo 83 por ID individual usando a tabela `World+0xE8`. Candidatos `Object+0x3C` float32 e `Object+0x40` float32 são exportados em toda amostra, com deltas por objeto e distância candidata. Detecta estabilidade, movimentação, aparecimento, ausência na varredura e troca de identidade; não mistura trajetórias de IDs distintos. Os rótulos espaciais X e Y permanecem **candidatos**, pois a v9.12 mostrou uma trajetória em L mas ainda não confirmou correspondência com eixos/tiles do mapa. Primeira validação da v9.13 pendente.
+
+### Resultado da captura v9.13
+
+A captura real dos três aldeões e a evidência dos offsets candidatos `Object+0x3C` e `Object+0x40` estão documentadas em [Coordenadas dos aldeões v9.13](coordenadas_aldeoes_v9_13_2026-10-18.md). Os offsets ainda não foram validados contra posições conhecidas no mapa.
