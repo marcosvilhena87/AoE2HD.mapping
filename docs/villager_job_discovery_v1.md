@@ -53,3 +53,13 @@ Alterações relevantes da última captura comparadas ao idle:
 Estas são **observações de valores em offsets já rastreados pelo capturador**, não validações semânticas de novos endereços. O campo de tipo variou de 293 para 218 na mesma identidade durante a tarefa de madeira. A referência idle e a captura posterior ocorreram em instantes diferentes, de modo que deslocamento, relógios e outras variáveis podem explicar parte das 38 diferenças.
 
 Próximos controles: obter captura de volta à inatividade do mesmo ID, repetir ida/volta para lenha; testar outras tarefas e outro aldeão. Preservar logs anteriores ao rodar novos experimentos.
+
+## Retorno ao estado idle: captura real de 19/10/2026
+
+Arquivo fornecido: `villager_jobs_v1(1).csv`, 512 linhas, quatro capturas de 128 campos (`idle` tipo 293; `woodcutting` tipo 218; `woodcutting` tipo 218; `idle` tipo 218), mesmo ID 2197 e sessão `teste01`. A quarta captura foi rotulada manualmente como parada. Em comparação ao primeiro idle, persistiram 34 diferenças (94 campos iguais); em relação ao woodcutting imediatamente anterior, 24 campos mudaram.
+
+Ponto crítico: **o tipo Genie não retornou a 293** quando o operador rotulou a unidade como idle; permaneceu 218. O `class_definition+0x094` também **permaneceu 1** (primeiro idle: 0; woodcutting: 1; segundo idle: 1). Logo, nem tipo 218 nem `+0x094=1` são indicadores confiáveis de *trabalho ativo neste momento* a partir desta amostra; podem representar variante persistente, modo/estado anterior ou outro significado ainda não identificado.
+
+Reversões parciais: `class_definition+0x028` passou de 713 durante woodcutting para `0xFFFFFFFF` no segundo idle; `+0x030` passou de 613 para `0xFFFFFFFF`. Entretanto, `+0x050` mudou de 710 para 713 e `+0x054` de 610 para 613 no segundo idle, em vez de retornar à referência inicial `0xFFFFFFFF`. `class_definition+0x038` permaneceu 15 (no idle inicial era `0xFFFFFFFF`). Interpretar como transição estrutural candidata, jamais código de profissão validado.
+
+Controle seguinte: confirmar visualmente que a unidade realmente está sem ordem/tarefa e registrar vários snapshots após Parar, antes e depois de nova ordem de corte, mantendo ID e sessão. Não presumir mudança imediata da definição de tipo ao parar.
