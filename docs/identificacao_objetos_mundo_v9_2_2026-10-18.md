@@ -188,3 +188,7 @@ A captura real dos três aldeões e a evidência dos offsets candidatos `Object+
 ## Town Center Coordinates v9.14 — candidatos do Centro da Cidade
 
 Novo comando do controlador `--map-town-center-coordinates-v9-14`. Descoberta por `World+0xE8`, tipo `[Object+0x0C]+0x10` igual a 109 (`town_center_dark`) e proprietário `Object+0x10` igual ao jogador local. Captura `Object+0x3C` e `Object+0x40`, `float32`, como coordenadas candidatas; ainda não foram validadas especificamente para edifícios. A coordenada pode indicar origem/âncora e não o centro da área ocupada. Tipos de TC alternativos podem existir, portanto ausência de tipo 109 não demonstra ausência de Centro da Cidade. Primeira captura real pendente.
+
+## Town Center Coordinates v9.14 — primeira captura real
+
+Captura do controlador com `--map-town-center-coordinates-v9-14`, arquivo `town_center_coordinates_v9_14.csv`: exatamente um Centro da Cidade candidato pertencente ao jogador local, sem erros. ID individual **1991**, Genie type **109** (`town_center_dark`), `Object+0x3C` float32 = **20.0** e `Object+0x40` float32 = **40.0**. O proprietário foi confirmado pelo filtro de jogador local. Ponteiros observados nesta sessão: objeto `0x1060E3B8`, proprietário `0x18FF2C1C`; não reutilizar como endereços fixos. A leitura é evidência inicial de posição de construção, mas ainda não estabelece se (20,40) designa centro geométrico, âncora ou canto da fundação. Estado: **candidato**, aguardando comparação com localização visual ou nova construção.
