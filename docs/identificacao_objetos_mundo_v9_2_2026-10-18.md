@@ -162,3 +162,7 @@ Foram registradas alteracoes adicionais sobrepostas: arvore ID 2118 tipo 351, 35
 ## Coordenadas de aldeoes e recursos — descoberta v9.12
 
 Foi implementado no controlador `--discover-world-positions-v9-12`, leitura experimental de float32 entre `Object+0x18` e `Object+0x70` (passo 4), com snapshots e deltas pelo mesmo ID individual. Tipos considerados: aldeao 83, arvore 351, arbusto candidato 59, ouro 66, pedra 102. **Ainda nao existe X ou Y validado**; sao apenas offsets candidatos que precisam de teste guiado com aldeao em deslocamento e recursos estacionarios. A captura nao pressupoe que esses offsets contenham posicao e nao promove nenhum deles a endereco validado. A identificacao de outros tipos de aldeao/recursos ainda deve ser ampliada a partir de dados reais.
+
+## Villager Coordinate Discovery v9.12 — candidatos a X/Y (sem offset confirmado)
+
+Foi criado `--discover-villager-coordinates-v9-12` no controlador: encontra automaticamente objetos de aldeoes tipo 83, verifica identidade `World+0xE8` / `Object+0x08` e compara em intervalos os campos brutos alinhados de `Object+0x14` ate `Object+0xBC` (janela default 192 bytes). Registro diferencial CSV inclui ID, ponteiro, offset e leituras `float32` e `int32` candidatas. Nenhum offset de posicao foi identificado/validado nesta etapa. Proximos controles: aldeao parado, movimento em um eixo e movimento no outro eixo, de preferencia cada um em captura separada; reconhecer movimento nao equivale automaticamente a coordenada.
