@@ -9,6 +9,8 @@ Armazena endereços confirmados historicamente, candidatos e hipóteses **mesmo 
 - [dados/enderecos.csv](dados/enderecos.csv): 64 registros contextualizados, incluindo RVAs, offsets e endereços absolutos temporários.
 - [docs/modulos/README.md](docs/modulos/README.md): índice de 7 módulos temáticos em `dados/modulos/`, com contagens e regras de sincronização.
 - [docs/criterios.md](docs/criterios.md): diferenças entre evidência, hipótese e confirmação.
+- [dados/genie_type_ids.csv](dados/genie_type_ids.csv): catálogo separado com 41 Genie Type IDs, nomes candidatos e origem experimental.
+- [docs/genie_type_ids.md](docs/genie_type_ids.md): mapeamento por sexo, unidades, edifícios e tipos desconhecidos.
 - [docs/mapa.md](docs/mapa.md): cadeias de memória conhecidas e campos experimentais.
 - [docs/proveniencia.md](docs/proveniencia.md): como recuperar todos os programas e experimentos antigos.
 
