@@ -184,3 +184,7 @@ No AoE2HD.control, `--monitor-villager-coordinates-v9-13` acompanha todos os ald
 ### Resultado da captura v9.13
 
 A captura real dos três aldeões e a evidência dos offsets candidatos `Object+0x3C` e `Object+0x40` estão documentadas em [Coordenadas dos aldeões v9.13](coordenadas_aldeoes_v9_13_2026-10-18.md). Os offsets ainda não foram validados contra posições conhecidas no mapa.
+
+## Town Center Coordinates v9.14 — candidatos do Centro da Cidade
+
+Novo comando do controlador `--map-town-center-coordinates-v9-14`. Descoberta por `World+0xE8`, tipo `[Object+0x0C]+0x10` igual a 109 (`town_center_dark`) e proprietário `Object+0x10` igual ao jogador local. Captura `Object+0x3C` e `Object+0x40`, `float32`, como coordenadas candidatas; ainda não foram validadas especificamente para edifícios. A coordenada pode indicar origem/âncora e não o centro da área ocupada. Tipos de TC alternativos podem existir, portanto ausência de tipo 109 não demonstra ausência de Centro da Cidade. Primeira captura real pendente.
