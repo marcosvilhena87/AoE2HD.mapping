@@ -138,3 +138,15 @@ Entrada: CSV `wood_berry_existence_v9_10.csv` enviado pelo operador. Uma varredu
 ## Resource Counters v9.11 — madeira, frutas, ouro e pedra
 
 Implementado modo de captura `--map-resource-counters-v9-11` no controlador. Hipotese de contador de recurso restante `Object+0x48` float32, rastreado por ID individual e tipo obtido em `[Object+0x0C]+0x10`: 351 arvore/madeira, 59 arbusto/frutas (identidade botanica candidata), 66 ouro, 102 pedra. O controlador registra valores brutos, alteracoes de valor e identidade em CSV; **nao valida o offset genericamente em todos os quatro tipos** nem assume que todo registro e coletavel. Necessarios controles de coleta isolada de cada familia, especialmente ouro e pedra; promover somente evidencias observadas. Nenhum novo endereco de memoria foi descoberto nesta etapa.
+
+## Resource Counters v9.11 — primeira coleta simultânea dos quatro recursos (18/10/2026)
+
+Fonte: arquivo `resource_counters_v9_11.csv` enviado pelo operador, 20 amostras. Foram identificados 2.038 IDs únicos na linha de base: 1.969 árvore tipo 351, 12 arbusto candidato tipo 59, 36 ouro tipo 66, 21 pedra tipo 102. Total de 44 eventos `changed`, sem `scan_error`, `appeared`, `missing_from_scan` ou `identity_changed` no CSV.
+
+Resultados do float32 candidato `Object+0x48`, por ID individual estável:
+- Árvore/madeira: objeto 2115 tipo 351; valor inicial 100.0, final 86.05509948730469, 13 reduções, delta acumulado -13.944902 (arredondamento por evento).
+- Arbusto/frutas: objeto 2017 tipo 59; inicial 125.0, final 115.00042724609376, 11 reduções, delta -9.999572.
+- Ouro: objeto 2029 tipo 66; inicial 800.0, final 788.8148803710938, 10 reduções, delta -11.185120.
+- Pedra: objeto 2059 tipo 102; inicial 350.0, final 339.998291015625, 10 reduções, delta -10.001709.
+
+As 44 alterações ocorreram exclusivamente nesses quatro objetos; nenhum aumento de recurso foi registrado para eles. A observação em ouro e pedra amplia significativamente o suporte funcional ao endereço relativo `Object+0x48` como contador da quantidade restante das fontes observadas. Entretanto, a captura não registra confirmação visual sincronizada de cada fonte nem demonstra cobertura de todas as variantes; manter `candidate` até controles de repetição com coleta isolada. Os valores absolutos de ponteiros são específicos da sessão, e os IDs individuais também.
