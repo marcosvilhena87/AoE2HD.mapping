@@ -91,3 +91,7 @@ Nova partida, aldeã local `object_id=2188` classe 4. Captura `idle` com tipo Ge
 Comparação com `teste01`: na partida anterior ID 2197 mudou 293 → 218 com 38/128 campos diferentes na primeira comparação válida. Portanto a **transição de tipo 293 → 218 associada à atribuição de corte de madeira foi reproduzida em duas partidas**, com IDs individuais diferentes. Ainda não comprova que 218 seja código universal de profissão, nem identifica por si só atividade instantânea. Captura bruta detalhada de teste02 não foi fornecida; não inferir offsets específicos entre os 35 alterados.
 
 Próximo controle: pressionar Parar e observar se o tipo 218 persiste, depois comparar ordem de caminhada e nova profissão (ouro/pedra), mantendo sessão teste02 e ID 2188.
+
+## teste02 — persistência após ordem Parar (19/10/2026)
+
+Aldeã local ID 2188: fase idle inicial tipo 293 (128 campos, sem baseline); fase woodcutting tipo 218 (35 diferenças contra idle original); após botão Parar, nova captura rotulada idle permaneceu tipo 218 (33 diferenças contra idle original, 0 sem baseline, tipos_idle=[293], tipo_alterado=1). A sequência 293 → 218 → 218 replica a persistência observada na partida teste01 ID 2197. Evidência de que a ordem Parar **não restaurou imediatamente** o tipo 293 nas duas partidas. Não prova a regra universal de mudança somente sob atribuição nova. Valores detalhados de offsets entre as 33 diferenças não foram fornecidos nesta rodada. Próximo controle: atribuir mineração de ouro e verificar repetição 218 → 581; depois Parar e verificar persistência.
