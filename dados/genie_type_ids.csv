@@ -1,0 +1,42 @@
+genie_type_id,nome_pt,sexo,status_evidencia,origem
+4,Arqueiro,nao_aplicavel,observado_controle_v8,v8
+12,Quartel,nao_aplicavel,validado_funcional_v8,v8
+48,desconhecido,indeterminado,tipo_observado_sem_rotulo,v9.1 class 10
+56,Pescador,masculino,rotulado_operador_uma_captura,v3(1)
+57,Pescador,feminino,rotulado_operador_uma_captura,v3(4)
+65,desconhecido,indeterminado,tipo_observado_sem_rotulo,v9.1 class 9
+68,Moinho,nao_aplicavel,validado_funcional_v8,v8
+70,Casa,nao_aplicavel,validado_funcional_v8,v8
+74,Milícia,nao_aplicavel,validado_funcional_v8,v8
+83,Aldeão,masculino,candidato_hud,v3 capturas
+87,desconhecido,indeterminado,tipo_observado_sem_rotulo,v9 Object 2308
+93,Lanceiro,nao_aplicavel,validado_funcional_v8,v8
+101,desconhecido,indeterminado,tipo_observado_sem_rotulo,v9 Object 2309
+104,desconhecido,indeterminado,tipo_observado_sem_rotulo,v9 Object 2315
+109,Centro da Cidade (Idade das Trevas),nao_aplicavel,validado_funcional_v8,v8
+118,Construtor,masculino,rotulado_operador_uma_captura,v3(2)
+120,Coletor,masculino,rotulado_operador_uma_partida,teste03
+122,Caçador,masculino,rotulado_operador_uma_captura,v3(1)
+123,Lenhador,masculino,rotulado_operador_uma_partida,teste03
+124,Mineiro de Pedra,masculino,rotulado_operador_uma_partida,teste03
+125,Monge,nao_aplicavel,observado_controle_v8,v8
+126,desconhecido,indeterminado,tipo_observado_sem_rotulo,v9.1 class 10
+212,Construtor,feminino,rotulado_operador_uma_captura,v3(4)
+214,Agricultor,feminino,rotulado_operador_uma_captura,v3(5)
+216,Caçador,feminino,rotulado_operador_uma_captura,v3(4)
+218,Lenhador,feminino,replicado_duas_partidas,v2 teste01 teste02
+220,Mineiro de Pedra,feminino,observado_uma_partida,v2 teste02 e v3(4)
+259,Agricultor,masculino,rotulado_operador_uma_captura,v3(3)
+285,desconhecido,indeterminado,tipo_observado_sem_rotulo,v9.1 class 42
+293,Aldeão,feminino,candidato_hud,v3 capturas
+354,Coletor,feminino,rotulado_operador_uma_captura,v3(4)
+448,Batedor,nao_aplicavel,validado_funcional_v8,v8
+562,Armazém de Madeira,nao_aplicavel,validado_funcional_v8,v8
+579,Garimpeiro,masculino,rotulado_operador_uma_partida,teste03
+581,Garimpeiro,feminino,replicado_duas_partidas,v2 teste01 teste02 e v3(5)
+590,Pastor,feminino,rotulado_operador_uma_captura,v3(5)
+592,Pastor,masculino,rotulado_operador_uma_captura,v3(2)
+594,"Ovelha (identificação por catálogo externo, pendente confirmar HD)",indeterminado,candidato_catalogo_externo,scanner v4.2 Objects 2245-2248
+618,desconhecido,indeterminado,tipo_observado_sem_rotulo,v9 Object 1992
+619,desconhecido,indeterminado,tipo_observado_sem_rotulo,v9 Object 1993
+620,desconhecido,indeterminado,tipo_observado_sem_rotulo,v9 Object 1994
