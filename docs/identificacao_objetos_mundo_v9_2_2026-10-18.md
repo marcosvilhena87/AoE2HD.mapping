@@ -166,3 +166,13 @@ Foi implementado no controlador `--discover-world-positions-v9-12`, leitura expe
 ## Villager Coordinate Discovery v9.12 — candidatos a X/Y (sem offset confirmado)
 
 Foi criado `--discover-villager-coordinates-v9-12` no controlador: encontra automaticamente objetos de aldeoes tipo 83, verifica identidade `World+0xE8` / `Object+0x08` e compara em intervalos os campos brutos alinhados de `Object+0x14` ate `Object+0xBC` (janela default 192 bytes). Registro diferencial CSV inclui ID, ponteiro, offset e leituras `float32` e `int32` candidatas. Nenhum offset de posicao foi identificado/validado nesta etapa. Proximos controles: aldeao parado, movimento em um eixo e movimento no outro eixo, de preferencia cada um em captura separada; reconhecer movimento nao equivale automaticamente a coordenada.
+
+## Villager Coordinate Discovery v9.12 — primeira captura real (18/10/2026)
+
+Fonte: arquivo enviado `villager_coordinate_candidates_v9_12.csv` (20 amostras, 249 linhas de mudanças; 3 aldeões tipo 83 identificados por amostra, somente ID individual **2001** alterou bytes). Amostras 1–3 e 5 sem alterações; 4 com uma; 6 com 21; 7–19 com 16 por amostra; 20 com 19. Não houve `scan_error` no CSV.
+
+**Candidatos fortes a componentes de posição `float32`**:
+- `Object+0x3C`: na amostra 6 ~15.37470, cresce até ~23.44337 na 13, depois quase constante e levemente decrescente até ~23.218 na 20.
+- `Object+0x40`: na amostra 6 ~41.47043, decresce levemente até ~41.015 na 13, depois decresce continuamente até ~32.052 na 20.
+
+As duas sequências formam um percurso compatível com duas pernas aproximadamente perpendiculares (uma componente domina 6–12, outra domina 14–20), forte evidencia temporal para campos de posição. **Ainda não foi confirmado experimentalmente qual é X/Y do mapa, nem a escala/unidade ou correspondencia com tiles**. Offsets `+0x9C/+0xA0/+0xA4` e `+0xB4/+0xB8/+0xBC` tambem variaram de modo correlacionado, possivelmente representacoes transformadas da posicao, sem interpretacao validada. Proximo controle: comparar posicoes de jogo conhecidas em eixos independentes, e testar parada e deslocamento de um segundo aldeao. Nenhum offset elevado a `validado` nesta etapa.
