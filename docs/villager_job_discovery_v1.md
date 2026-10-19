@@ -31,3 +31,8 @@ Outras fases: walking, carrying, depositing, building, farming, mining, repairin
 
 ## Próximo critério de validação
 Comparar várias transições do mesmo aldeão, controles parados, outros aldeões, reabertura da partida; distinguir ação/ordem/alvo de indicadores de movimento e relógios. Somente adicionar novos endereços ao catálogo após inferência fundamentada, sem substituir candidatos ou promover `+0x94` automaticamente.
+
+## Evidência da sessão teste01 — ID 2197
+O usuário registrou aldeã local com `object_id=2197`, classe 4, tipo Genie 293 quando parada (`idle`), e tipo Genie 218 quando cortando madeira (`woodcutting`). O mesmo ID foi informado nas duas capturas, cada uma com 128 campos. A versão inicial do comparador usava `type_id` na chave e, por isso, mostrou `sem_baseline=128` na segunda captura: **ausência de comparação, não ausência de mudanças**.
+
+O controlador foi corrigido para comparar por `session, object_id, region, offset`, mantendo `type_id` como atributo observado. Não se afirma que 218 seja um código universal de lenhadora: é **tipo experimental associado à atividade nesse teste**. Repetir idle → woodcutting → idle, com a mesma unidade, e replicar com outra unidade e sessão antes de promover a validação.
