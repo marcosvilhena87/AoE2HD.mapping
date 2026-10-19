@@ -63,3 +63,17 @@ Ponto crítico: **o tipo Genie não retornou a 293** quando o operador rotulou a
 Reversões parciais: `class_definition+0x028` passou de 713 durante woodcutting para `0xFFFFFFFF` no segundo idle; `+0x030` passou de 613 para `0xFFFFFFFF`. Entretanto, `+0x050` mudou de 710 para 713 e `+0x054` de 610 para 613 no segundo idle, em vez de retornar à referência inicial `0xFFFFFFFF`. `class_definition+0x038` permaneceu 15 (no idle inicial era `0xFFFFFFFF`). Interpretar como transição estrutural candidata, jamais código de profissão validado.
 
 Controle seguinte: confirmar visualmente que a unidade realmente está sem ordem/tarefa e registrar vários snapshots após Parar, antes e depois de nova ordem de corte, mantendo ID e sessão. Não presumir mudança imediata da definição de tipo ao parar.
+
+## Segunda rodada em teste01 — sexta captura (19/10/2026)
+
+CSV fornecido: `villager_jobs_v1(2).csv` com 768 linhas de dados, seis capturas de 128 campos cada, mesmo ID individual 2197. Ordem temporal UTC: 03:04:39 idle tipo 293; 03:06:08 woodcutting tipo 218 sem baseline na versão antiga; 03:09:22 woodcutting tipo 218 com 38 alterações versus idle original; 03:11:35 idle tipo 218 com 34 alterações versus idle original; 03:13:40 idle tipo 218 com **1 alteração** versus idle de 03:11:35; 03:14:03 woodcutting tipo 218 com **13 alterações** versus idle de 03:13:40.
+
+Importante: o algoritmo compara cada captura à **última fase idle no CSV** para a mesma sessão e mesmo object_id. Logo, 38, 34, 1 e 13 não compartilham sempre a mesma referência. A associação de phase a atividade é declaração do operador, não confirmação automática.
+
+Na transição mais recente idle → woodcutting (tipo 218 → 218):
+- `class_definition+0x028`: `0xFFFFFFFF → 713`; `+0x030`: `0xFFFFFFFF → 613`; `+0x034`: `0xFFFFFFFF → 2309`.
+- `class_definition+0x050`: `713 → 0xFFFFFFFF`; `+0x054`: `613 → 0xFFFFFFFF`; `+0x05C`: `0xFFFFFFFF → 15`.
+- `class_definition+0x094`: `1 → 2` (também 0 → 1 entre idle inicial e primeira atividade). Isto pode ser um contador/estado progressivo, **não comprova** código de trabalho.
+- `object+0x038`: `0x00000300 → 0x00010300`; `object+0x014`, `+0x048` e `class_definition+0x08C` também mudaram; `class_definition+0x03C/+0x040` variaram (candidatos a dados dinâmicos, não interpretar automaticamente como profissão).
+
+A sequência confirma que **existem mudanças correlacionadas com a ordem de coleta sem alteração de tipo Genie no segundo ciclo**, mas não valida semanticamente nenhum campo. Priorizar comparações reversíveis e repetidas de `+0x028/+0x030/+0x050/+0x054`, junto com controles parado, andando sem coletar, e coleta de outro recurso. Não confundir atualização de baseline com reversão de valores de memória.
