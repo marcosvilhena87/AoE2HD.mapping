@@ -48,3 +48,17 @@ Aldeões locais inicialmente encontrados: ID 2104 tipo 293, ID 2105 tipo 293 e I
 Falhas: IDs 2177, 2178, 2179 e 2180 geraram cada um `Object+0x78 nao e ponteiro plausivel` nas amostras 49..60 (4 x 12 = 48). Isto pode representar incompatibilidade de layout estrutural, não prova de corrupção. Melhoria recomendada: registrar `unsupported_layout` separadamente e agregar falhas repetidas por ID/causa, sem mascarar demais erros.
 
 O monitor associa tipos Genie a variantes da unidade, não a prova da tarefa que está ativa neste instante. Nenhum novo offset foi validado.
+
+## Identificação das quatro tarefas masculinas — teste03 (19/10/2026)
+
+O operador informou explicitamente a sequência de ordens do aldeão masculino de tipo inicial 83, Object ID 2106, já registrada no CSV: madeira → ouro → pedra → alimento em arbusto. Assim, as transições observadas em uma partida passam a ter os seguintes rótulos experimentais:
+
+| Tipo Genie | Atividade informada | Estado da evidência |
+|---|---|---|
+| 83 | aldeão masculino inicial | observado |
+| 123 | corte de madeira (masculino) | identificado pelo operador, uma partida |
+| 579 | mineração de ouro (masculino) | identificado pelo operador, uma partida |
+| 124 | mineração de pedra (masculino) | identificado pelo operador, uma partida |
+| 120 | coleta de comida em arbusto (masculino) | identificado pelo operador, uma partida |
+
+Sequência de tipos `83 → 123 → 579 → 124 → 120` nos eventos 7, 20, 33 e 57 da captura teste03. Esses rótulos são evidência contextual relatada pelo operador, não demonstram exclusividade desses tipos nem atividade instantânea, e requerem replicação em nova partida. Os offsets existentes permanecem com seus estados anteriores.
