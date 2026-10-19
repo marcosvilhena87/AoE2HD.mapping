@@ -1,0 +1,3 @@
+# Comparação de dois Centros da Cidade na mesma partida
+
+Captura v9.14: dois edifícios do tipo 109 pertencentes ao jogador local. O objeto de ID 2186 tem candidatos X=39 e Y=42. O objeto de ID 2500 tem X=43 e Y=46. Ambos usam o mesmo proprietário. O usuário informou que o segundo foi construído à direita do primeiro. A diferença observada é +4 para cada componente. Isso reforça os offsets relativos Object+0x3C e Object+0x40 como candidatos de posição para o tipo 109, mas não estabelece isoladamente a orientação dos eixos na projeção isométrica nem o ponto de referência geométrico da construção.
