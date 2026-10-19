@@ -38,3 +38,13 @@ A saída é sobrescrita quando o monitor é iniciado novamente: salvar cópias p
 ## Próximas validações
 
 Testar mudanças de função e ordens de Parar para aldeões de ambos os sexos; repetir pedra em outra partida; buscar variantes agricultura, construção, reparo e alimentação. Para inferir trabalho *ativo*, é necessário mapear ordem/estado independentemente do tipo Genie. Nenhum novo offset de memória foi validado nesta versão.
+
+## Captura real teste03 (19/10/2026)
+
+Arquivo fornecido `villager_jobs_v2.csv`: 55 registros de eventos ao longo de 60 amostras, sendo 3 `appeared`, 4 `type_changed`, 48 `read_error`; nenhum `scan_error` ou `missing_from_scan`.
+
+Aldeões locais inicialmente encontrados: ID 2104 tipo 293, ID 2105 tipo 293 e ID 2106 tipo 83, classe 4. Somente o ID individual 2106 (objeto 0x143BE7F0 nos eventos) mudou tipos: amostra 7, `83 → 123`; amostra 20, `123 → 579`; amostra 33, `579 → 124`; amostra 57, `124 → 120`. Os tipos 123, 579, 124 e 120 **não possuem função semântica validada ou declarada neste CSV**. Não inferir profissões sem correlacionar com ações/ordens do jogador.
+
+Falhas: IDs 2177, 2178, 2179 e 2180 geraram cada um `Object+0x78 nao e ponteiro plausivel` nas amostras 49..60 (4 x 12 = 48). Isto pode representar incompatibilidade de layout estrutural, não prova de corrupção. Melhoria recomendada: registrar `unsupported_layout` separadamente e agregar falhas repetidas por ID/causa, sem mascarar demais erros.
+
+O monitor associa tipos Genie a variantes da unidade, não a prova da tarefa que está ativa neste instante. Nenhum novo offset foi validado.
