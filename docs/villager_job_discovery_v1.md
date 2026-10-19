@@ -83,3 +83,11 @@ A sequência confirma que **existem mudanças correlacionadas com a ordem de col
 Na mesma sessão `teste01`, aldeã individual ID 2197, classe 4 previamente confirmada, após atribuição de mineração de ouro (`phase=mining`), o capturador reportou **tipo Genie 581**, 128 DWORDs, 34 diferentes do último baseline idle, zero campos sem referência, `tipos_idle=[218,293]`, `tipo_alterado=1`. Histórico observado: idle 293 → woodcutting 218 → stop/idle 218 → woodcutting 218 → mineração de ouro 581.
 
 **Hipótese reforçada, não validada como regra geral:** tipo Genie pode refletir a função/variante atribuída e persistir quando se emite Parar. O valor 581 é candidato a variante na mineração de ouro, e não ainda prova de código exclusivo dessa tarefa. A comparação de 34 campos se refere ao último baseline idle do tipo 218; não é comparação direta com a última amostra woodcutting. Recomenda-se mandar Parar e testar permanência de 581, depois mineração de pedra, caminhada e retorno à madeira, capturando mesmo ID e sessão. Nenhum endereço novo validado.
+
+## Replicação entre partidas — teste02 (19/10/2026)
+
+Nova partida, aldeã local `object_id=2188` classe 4. Captura `idle` com tipo Genie 293 (128 campos, baseline inaugural); após ordem de cortar madeira, captura `woodcutting` apresentou tipo Genie 218, **35/128 campos diferentes** da referência idle, nenhum sem baseline, `tipos_idle=[293]` e `tipo_alterado=1`.
+
+Comparação com `teste01`: na partida anterior ID 2197 mudou 293 → 218 com 38/128 campos diferentes na primeira comparação válida. Portanto a **transição de tipo 293 → 218 associada à atribuição de corte de madeira foi reproduzida em duas partidas**, com IDs individuais diferentes. Ainda não comprova que 218 seja código universal de profissão, nem identifica por si só atividade instantânea. Captura bruta detalhada de teste02 não foi fornecida; não inferir offsets específicos entre os 35 alterados.
+
+Próximo controle: pressionar Parar e observar se o tipo 218 persiste, depois comparar ordem de caminhada e nova profissão (ouro/pedra), mantendo sessão teste02 e ID 2188.
