@@ -36,3 +36,20 @@ Comparar várias transições do mesmo aldeão, controles parados, outros aldeõ
 O usuário registrou aldeã local com `object_id=2197`, classe 4, tipo Genie 293 quando parada (`idle`), e tipo Genie 218 quando cortando madeira (`woodcutting`). O mesmo ID foi informado nas duas capturas, cada uma com 128 campos. A versão inicial do comparador usava `type_id` na chave e, por isso, mostrou `sem_baseline=128` na segunda captura: **ausência de comparação, não ausência de mudanças**.
 
 O controlador foi corrigido para comparar por `session, object_id, region, offset`, mantendo `type_id` como atributo observado. Não se afirma que 218 seja um código universal de lenhadora: é **tipo experimental associado à atividade nesse teste**. Repetir idle → woodcutting → idle, com a mesma unidade, e replicar com outra unidade e sessão antes de promover a validação.
+
+## Captura real teste01 — resultados analisados (19/10/2026)
+
+CSV `villager_jobs_v1.csv` fornecido pelo operador com 384 linhas: uma captura idle (128 campos, tipo 293), uma captura woodcutting pré-correção (128 campos, sem baseline por chave incluindo tipo) e uma captura woodcutting após correção (128 campos, tipo 218, 38 alterações e 90 campos inalterados). Mesmo `Object_ID=2197`, proprietário local e classe 4 aceita pelo capturador. Não interpretar a captura anterior à correção como 128 campos iguais.
+
+Alterações relevantes da última captura comparadas ao idle:
+- `class_definition+0x094` DWORD: `0x00000000 -> 0x00000001` (candidato a estado, não profissão validada).
+- `object+0x07C` DWORD: `0xFFFFFFFF -> 0x00000002` (significado desconhecido).
+- `class_definition+0x028`: `0xFFFFFFFF -> 713`.
+- `class_definition+0x030`: `0xFFFFFFFF -> 613`.
+- `class_definition+0x038`: `0xFFFFFFFF -> 15`.
+- `class_definition+0x050`: `0xFFFFFFFF -> 710`.
+- `class_definition+0x054`: `0xFFFFFFFF -> 610`.
+
+Estas são **observações de valores em offsets já rastreados pelo capturador**, não validações semânticas de novos endereços. O campo de tipo variou de 293 para 218 na mesma identidade durante a tarefa de madeira. A referência idle e a captura posterior ocorreram em instantes diferentes, de modo que deslocamento, relógios e outras variáveis podem explicar parte das 38 diferenças.
+
+Próximos controles: obter captura de volta à inatividade do mesmo ID, repetir ida/volta para lenha; testar outras tarefas e outro aldeão. Preservar logs anteriores ao rodar novos experimentos.
