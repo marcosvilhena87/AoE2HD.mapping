@@ -87,3 +87,9 @@ Uma correspondência de queda da carga e aumento do estoque do jogador ocorreu n
 | **Total** | — | **9** | **90.0** |
 
 A repetição em quatro recursos sustenta fortemente `Object+0x48` como campo de carga atual em aldeões dessa configuração de partida e **10.0** como limite observado. Não demonstra capacidade máxima universal ou invariância por tecnologias/unidades, nem isola causalmente cada depósito de outros atores. Próximos controles: nova partida, múltiplas unidades, tecnologias e fontes/estoques simultâneos; manter `hipotese` no catálogo até esses controles.
+
+## Validation v3 — protocolo tecnológico (implementado, aguardando captura)
+
+O `AoE2HD.control` possui `--validate-villager-carry-capacity-v3`, que reaproveita a captura sincronizada v2 e anota rótulo **manual** de fase tecnológica (`none`, `wheelbarrow`, `hand_cart`, `heavy_plow` ou `other`), civilização, recurso, sessão e repetição. `--compare-villager-carry-v3` consolida CSVs e compara máximos observados do **mesmo recurso e civilização**, com diferenças nominais; não comprova tecnologia na memória e não confere capacidade máxima por um pico isolado.
+
+Verificações futuras: linha de base e após Wheelbarrow/Hand Cart em ciclos completos e consecutivos, efeito de Heavy Plow exclusivamente sob condição pertinente, controle de civilizações e outras fontes de recursos, replicação em sessões novas. Não há novos endereços de memória identificados pelo v3; `Object+0x48` permanece `hipotese` até evidência independente. Resultados reais v3 ainda não apresentados.
