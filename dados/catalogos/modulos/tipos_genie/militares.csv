@@ -1,0 +1,6 @@
+genie_type_id,nome_pt,sexo,status_evidencia,origem
+4,Arqueiro,nao_aplicavel,observado_controle_v8,v8
+74,Milícia,nao_aplicavel,validado_funcional_v8,v8
+93,Lanceiro,nao_aplicavel,validado_funcional_v8,v8
+125,Monge,nao_aplicavel,observado_controle_v8,v8
+448,Batedor,nao_aplicavel,validado_funcional_v8,v8

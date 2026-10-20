@@ -4,6 +4,7 @@ import csv
 from collections import Counter
 from pathlib import Path
 from validar_catalogo import validate as validate_memory
+from validar_modulos_catalogos import validate as validate_modules
 
 BASE = Path(__file__).resolve().parents[1]
 
@@ -19,6 +20,7 @@ def read(path, fields, optional=frozenset()):
 
 def validate(root=BASE):
     errors = validate_memory(root)
+    errors.extend(validate_modules(root))
     folder = root / "dados" / "catalogos"
     pairs = [
         (root/"dados/genie_type_ids.csv",folder/"tipos_genie.csv",

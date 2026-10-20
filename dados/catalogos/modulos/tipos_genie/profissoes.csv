@@ -1,0 +1,19 @@
+genie_type_id,nome_pt,sexo,status_evidencia,origem
+56,Pescador,masculino,rotulado_operador_uma_captura,v3(1)
+57,Pescador,feminino,rotulado_operador_uma_captura,v3(4)
+118,Construtor,masculino,rotulado_operador_uma_captura,v3(2)
+120,Coletor,masculino,rotulado_operador_uma_partida,teste03
+122,Caçador,masculino,rotulado_operador_uma_captura,v3(1)
+123,Lenhador,masculino,rotulado_operador_uma_partida,teste03
+124,Mineiro de Pedra,masculino,rotulado_operador_uma_partida,teste03
+212,Construtor,feminino,rotulado_operador_uma_captura,v3(4)
+214,Agricultor,feminino,rotulado_operador_uma_captura,v3(5)
+216,Caçador,feminino,rotulado_operador_uma_captura,v3(4)
+218,Lenhador,feminino,replicado_duas_partidas,v2 teste01 teste02
+220,Mineiro de Pedra,feminino,observado_uma_partida,v2 teste02 e v3(4)
+259,Agricultor,masculino,rotulado_operador_uma_captura,v3(3)
+354,Coletor,feminino,rotulado_operador_uma_captura,v3(4)
+579,Garimpeiro,masculino,rotulado_operador_uma_partida,teste03
+581,Garimpeiro,feminino,replicado_duas_partidas,v2 teste01 teste02 e v3(5)
+590,Pastor,feminino,rotulado_operador_uma_captura,v3(5)
+592,Pastor,masculino,rotulado_operador_uma_captura,v3(2)

@@ -4,6 +4,22 @@
 
 Armazena endereços confirmados historicamente, candidatos e hipóteses **mesmo sem validação**. Não hospeda mais scanners, bots, executáveis, projetos CMake nem testes.
 
+## Catálogos modulares
+
+Os catálogos existentes em `dados/catalogos/` permanecem canônicos.
+Seus módulos temáticos em `dados/catalogos/modulos/` agrupam tipos Genie
+(aldeões, profissões, construções, militares, recursos naturais e desconhecidos),
+classes de objetos (conhecidas e desconhecidas) e identidades individuais
+(por sessão). Os sete módulos de endereços em `dados/modulos/` são mantidos.
+
+Todos os registros, origens e estados de evidência são preservados.
+`dados/genie_type_ids.csv` e `dados/enderecos.csv` mantêm a compatibilidade
+com consumidores existentes, incluindo o AoE2HD.control.
+
+Atualize módulo, catálogo canônico e espelho legado aplicável na mesma mudança.
+Valide a integridade com `python scripts/validar_catalogos.py`;
+ausências, divergências e duplicações provocam falha na validação.
+
 ## Catálogos por domínio
 
 - [Tipos Genie](dados/catalogos/tipos_genie.csv): 41 identificadores e evidências; espelho do caminho compatível `dados/genie_type_ids.csv`.

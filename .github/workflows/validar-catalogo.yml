@@ -10,7 +10,7 @@ on:
   pull_request:
     paths:
       - "dados/**"
-      - "scripts/validar_catalogo.py"
+      - "scripts/**"
       - "tests/**"
       - ".github/workflows/validar-catalogo.yml"
   workflow_dispatch:
@@ -33,5 +33,7 @@ jobs:
         run: python -m unittest discover -s tests -v
       - name: Validar integridade do catálogo real
         run: python scripts/validar_catalogo.py
+      - name: Validar módulos temáticos
+        run: python scripts/validar_modulos_catalogos.py
       - name: Validar os quatro catalogos
         run: python scripts/validar_catalogos.py
