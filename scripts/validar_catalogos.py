@@ -3,17 +3,17 @@ from __future__ import annotations
 import csv
 from collections import Counter
 from pathlib import Path
-from .validar_catalogo import validate as validate_memory
+from validar_catalogo import validate as validate_memory
 
 BASE = Path(__file__).resolve().parents[1]
 
-def read(path, fields):
+def read(path, fields, optional=frozenset()):
     with path.open(encoding="utf-8-sig", newline="") as f:
         reader = csv.DictReader(f)
         if tuple(reader.fieldnames or ()) != fields:
             raise ValueError(f"Schema incorreto: {path}")
         rows = list(reader)
-    if not rows or any(any(not (row.get(k) or "").strip() for k in fields) for row in rows):
+    if not rows or any(any(not (row.get(k) or "").strip() for k in fields if k not in optional) for row in rows):
         raise ValueError(f"Catalogo vazio ou incompleto: {path}")
     return rows
 
@@ -43,7 +43,7 @@ def validate(root=BASE):
         if len({int(r["class_id"]) for r in classes})!=len(classes):
             errors.append("Classes duplicadas")
         identities=read(folder/"identidades_individuais.csv",
-                        ("sessao","object_id","genie_type_id","proprietario_escopo","status_evidencia","origem","observacao"))
+                        ("sessao","object_id","genie_type_id","proprietario_escopo","status_evidencia","origem","observacao"), optional={"genie_type_id"})
         keys={(r["sessao"],r["object_id"]) for r in identities}
         if len(keys)!=len(identities):
             errors.append("Object ID duplicado na mesma sessao")
