@@ -54,3 +54,18 @@ Captura fornecida pelo operador: `session=deposito01`, `resource=food`, 180/180 
 | 178 | 10.0 → 0.0 | 220.0 → 230.0 | exata |
 
 Estoque total de alimentos cresceu de 200 para 230 (+30), em três correspondências. Igual ao experimento v2 com madeira, o maior valor de carga observado foi 10.0, sem outras quedas de carga. Indício forte de `Object+0x48` como carga corrente do aldeão também para alimento. Não prova capacidade máxima universal nem causalidade exclusiva do aldeão. Permanecem pendentes ouro, pedra, replicação em nova partida e controles de tecnologias e outros trabalhadores; campo continua com status `hipotese`.
+
+## Validação experimental v2 — `carry_gold_v2.csv` (ouro)
+
+Arquivo fornecido pelo operador: `session=deposito01`, `resource=gold`, 180 amostras, 180 `read_status=ok`, sem erros. Objeto individual `2174`, Genie Type ID `579` (garimpeiro), ponteiro `0x14074FC0` estável. O arquivo v2 não inclui campo `class_id`.
+
+Foram encontrados **dois eventos correlacionados** (`matched_deposit_candidate=1`, `match_reason=matched_single_sample`):
+
+| Amostra | Carga Object+0x48 | Estoque ResourceTable+0x0C | Delta de carga/estoque |
+|---:|---|---|---|
+| 68 | 10 → 0 | 100 → 110 | -10 / +10 |
+| 139 | 10 → 0 | 110 → 120 | -10 / +10 |
+
+Picos de 10.0 nas amostras 49–67 e 120–138. Ao final (amostra 180), terceiro ciclo com carga ~6.72943; estoque inicial 100.0 e final 120.0 (+20), sem outras quedas detectadas. A medição fortalece `Object+0x48` como candidato a carga transportada e **10.0 como limite observado de ouro nesta configuração**. Não confundir com capacidade máxima geral ou depósito causalmente atribuído ao único aldeão sem controles de outros produtores/consumidores.
+
+Quadro acumulado de evidências v2: madeira 3 eventos de -10/+10; alimento 3; ouro 2; pedra ainda pendente. Preservar status `hipotese` para `Object+0x48`; `capacity_validated=no`.
