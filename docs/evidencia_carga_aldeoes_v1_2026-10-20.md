@@ -20,3 +20,9 @@ Monitor v1 do `AoE2HD.control`, fase manual `other`, recurso rotulado `wood`. **
 O candidato `Object+0x48` `float32` atingiu **10.0** nas amostras **43–44, 90–95, 133–138 e 177–180**. Ocorreram três reduções abruptas de **10.0 para 0.0** nas amostras **45, 96 e 139**, todas sinalizadas por `peak_candidate=1` e `reset_candidate=1`. A quarta sequência terminou em 10.0 antes do fim da observação. No início da captura, o valor já era aproximadamente 0.39897, portanto o primeiro ciclo começou parcialmente em andamento.
 
 **Conclusão limitada:** há evidência temporal forte de acúmulo de carga até limite observado de 10.0 e descarregamentos candidatos repetidos para esse aldeão ao coletar madeira. A capacidade máxima universal ou formal do jogo NÃO está validada; uma queda não confirma depósito sem verificação simultânea do estoque do jogador. `Object+0x48` permanece **hipotese** até controles com madeira do jogador, fonte, vários aldeões, reinício e tecnologias. Não interpretar `max_observed_in_run` isoladamente como parâmetro de capacidade.
+
+## Protocolo de validação v2 — carga individual versus estoque do jogador
+
+Disponibilizado no `AoE2HD.control`: `--validate-villager-carry-capacity-v2`. O experimento sincroniza leituras do candidato `Object+0x48` (float32) de um aldeão local de classe 4 com `ResourceTable+0x00` alimento, `+0x04` madeira, `+0x08` pedra ou `+0x0C` ouro. Uma leitura de estoque antes e depois da carga detecta alterações durante a amostra.
+
+Um evento é marcado `matched_deposit_candidate` apenas quando a queda da carga e o aumento do estoque, no mesmo intervalo, são numericamente compatíveis dentro da tolerância. Sem isolamento do aldeão e sem controles de outras fontes/consumos, a correspondência **não comprova causalidade**. O máximo observado não é parâmetro de capacidade universal; status de `Object+0x48` continua `hipotese`, não `validado`. Capturas reais v2 ainda pendentes.
