@@ -54,13 +54,14 @@ def validate(root: Path) -> list[str]:
         except (ValueError, OSError, csv.Error) as exc:
             errors.append(str(exc))
     if errors:
-        return errors
+        # Prosseguir com os módulos legíveis para também apontar registros ausentes.
+        pass
 
     for label, records in (("consolidado", consolidated), ("módulos", module_rows)):
         duplicates = Counter(records)
         for row, count in sorted(duplicates.items()):
             if count > 1:
-                errors.append(f"Registro duplicado no {label} ({count} ocorrências): {format_record(row)}")
+                errors.append(f"Registro duplicado {'nos' if label == 'módulos' else 'no'} {label} ({count} ocorrências): {format_record(row)}")
 
         identities: dict[tuple[str, str], set[tuple[str, ...]]] = {}
         for row in records:
