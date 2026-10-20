@@ -30,3 +30,19 @@ Próximos controles: fases `gold`, `stone`, `berries`, `build`, interrupção/ca
 Arquivo fornecido pelo operador: `activity_gold.csv`, sessão `teste01`, 30 amostras por aldeão, 90 leituras válidas. Object IDs `2172`, `2173`, `2174`, classe `4`, mesmos ponteiros individuais durante a coleta; tipos Genie `581,581,579` (garimpeiros). O campo `Object78Target+0x94` ficou em `3` nas amostras 1–16 e passou a `4` nas amostras 17–30, **simultaneamente para todos os três IDs**: 48 leituras com 3 e 42 com 4. Movimento entre 29 intervalos: `9,17,11` por aldeão. Outros objetos `2245–2248`: 120 erros de leitura de `Object+0x78`.
 
 **Ressalva crítica:** a sequência conjunta `0` (idle), `1` (wood), `2` (moving), `3/4` (gold) e especialmente a transição sincronizada `3→4` indicam que o campo pode ser contador global/compartilhado (ou da definição), não ordem ou atividade específica de cada objeto. As fases foram executadas sequencialmente e não isolam tempo global versus atividade. Não mapear valores 0–4 para profissões nem promover o campo. Controle prioritário: observar simultaneamente aldeões diferentes em tarefas distintas e comparar os valores/pointers `Object+0x78`, a estrutura alvo e `+0x94` por objeto, além de controles sem novas ordens e após reinício.
+
+## Teste simultâneo de atividades distintas — activity_other.csv
+
+Captura da sessão `teste01` com 30 amostras simultâneas e 3 aldeões locais identificados (90 leituras válidas). Os valores `Object78Target+0x94` permaneceram constantes em cada indivíduo nas 30 amostras:
+
+| object_id | genie_type_id | rótulo de variante | +0x94 | diferenças de posição entre 29 intervalos |
+| --- | --- | --- | --- | --- |
+| 2172 | 218 | Lenhador | 7 | 9 |
+| 2173 | 581 | Garimpeiro | 6 | 2 |
+| 2174 | 83 | Aldeão | 5 | 0 |
+
+Todos classe 4; ponteiros de objetos estáveis. Outros Object IDs `2245–2248` produziram 120 erros de ponteiro, não classificados como aldeões.
+
+**Revisão da interpretação:** a presença simultânea de valores 7, 6 e 5 contradiz a hipótese simplista de um *único valor global idêntico* para todos os objetos em cada instante. Entretanto, a sequência observada nas capturas anteriores (0,1,2,3→4) ainda sugere uma possível variável de contador, geração, estrutura de definição compartilhada ou outro mecanismo sem relação causal direta com ordem ativa. Os rótulos de trabalho derivam do Genie Type ID, e não de ordem/target comprovados; o valor não deve ser mapeado para atividade, sequer provisoriamente como enumeração de ordens, sem novos controles.
+
+**Próximas provas:** guardar o ponteiro completo `Object+0x78` por aldeão, comparar igualdade/divergência de definição, monitorar valor bruto durante transições controladas de UM aldeão enquanto outros ficam imóveis, repetir comandos idênticos e inverter a ordem das fases. Repetir em nova sessão após reiniciar o jogo. Estado segue `hipotese`.
