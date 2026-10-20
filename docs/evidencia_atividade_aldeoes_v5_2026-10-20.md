@@ -46,3 +46,17 @@ Todos classe 4; ponteiros de objetos estáveis. Outros Object IDs `2245–2248` 
 **Revisão da interpretação:** a presença simultânea de valores 7, 6 e 5 contradiz a hipótese simplista de um *único valor global idêntico* para todos os objetos em cada instante. Entretanto, a sequência observada nas capturas anteriores (0,1,2,3→4) ainda sugere uma possível variável de contador, geração, estrutura de definição compartilhada ou outro mecanismo sem relação causal direta com ordem ativa. Os rótulos de trabalho derivam do Genie Type ID, e não de ordem/target comprovados; o valor não deve ser mapeado para atividade, sequer provisoriamente como enumeração de ordens, sem novos controles.
 
 **Próximas provas:** guardar o ponteiro completo `Object+0x78` por aldeão, comparar igualdade/divergência de definição, monitorar valor bruto durante transições controladas de UM aldeão enquanto outros ficam imóveis, repetir comandos idênticos e inverter a ordem das fases. Repetir em nova sessão após reiniciar o jogo. Estado segue `hipotese`.
+
+## Teste controlado v5.1 — activity_v5_1_wood.csv
+
+Captura fornecida pelo operador: sessão `teste01`, 60 amostras (180/180 leituras `ok`). Na própria captura os papéis registrados são **2174 foco**, 2173 e 2172 controles — diferente do planejamento anterior de focar 2172. Os três objetos têm ponteiros de definição distintos e estáveis *dentro desta captura*:
+
+| Object ID | Papel | Object+0x78 alvo (sessão) | +0x94 | Observação |
+|---|---|---|---|---|
+| 2174 | focus | 0x143FBD98 | 6 (amostras 1–8) → 7 (9–60) | uma mudança individual |
+| 2173 | control | 0x143FBF50 | 7 constante | controle sem mudança |
+| 2172 | control | 0x143FBA28 | 8 constante | controle sem mudança |
+
+Os valores `delta_94` vieram vazios mesmo após a primeira amostra; é necessário revisar a comparação temporal da instrumentação antes de usar indicadores automáticos. `shared_definition=0` para todos.
+
+**Interpretação limitada:** a transição individual é compatível com mudança de estado associada à unidade foco, mas também pode ser um contador individual/evento; não comprova que 7 signifique cortar madeira. Os endereços de definição informados na captura idle anterior eram outros, de modo que não se deve assumir estabilidade *entre arquivos* sem conferir a identidade e a sessão de memória. Confirmar que a unidade 2174 recebeu a ordem pretendida; reproduzir a transição com outra unidade e ordem invertida após reinício. O catálogo permanece com status `hipotese`.
