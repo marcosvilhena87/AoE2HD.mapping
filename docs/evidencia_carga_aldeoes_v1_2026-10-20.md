@@ -93,3 +93,16 @@ A repetição em quatro recursos sustenta fortemente `Object+0x48` como campo de
 O `AoE2HD.control` possui `--validate-villager-carry-capacity-v3`, que reaproveita a captura sincronizada v2 e anota rótulo **manual** de fase tecnológica (`none`, `wheelbarrow`, `hand_cart`, `heavy_plow` ou `other`), civilização, recurso, sessão e repetição. `--compare-villager-carry-v3` consolida CSVs e compara máximos observados do **mesmo recurso e civilização**, com diferenças nominais; não comprova tecnologia na memória e não confere capacidade máxima por um pico isolado.
 
 Verificações futuras: linha de base e após Wheelbarrow/Hand Cart em ciclos completos e consecutivos, efeito de Heavy Plow exclusivamente sob condição pertinente, controle de civilizações e outras fontes de recursos, replicação em sessões novas. Não há novos endereços de memória identificados pelo v3; `Object+0x48` permanece `hipotese` até evidência independente. Resultados reais v3 ainda não apresentados.
+
+## V3 — linha de base declarada sem tecnologia: `carry_wood_none_v3.csv`
+
+Captura fornecida pelo operador; `session=pesquisa01`, `trial_id=antes`, `technology_label=none`, `civilization_label=bretoes`, `resource=wood`. Total 180/180 leituras `ok`, zero falhas. Object ID `2174`, ponteiro estável `0x15D1C0A0`. Variantes Genie `120` (7 amostras) e `123` (173 amostras). Máximo de `carried_48` = **10.0**.
+
+| Amostra | Δ carga Object+0x48 | Δ estoque ResourceTable+0x04 | Estoque após | Classificação |
+|---:|---:|---:|---:|---|
+| 48 | -10.0 | +10.0 | 9910.0 | matched_single_sample |
+| 84 | -10.0 | +10.0 | 9920.0 | matched_single_sample |
+| 120 | -10.0 | +10.0 | 9930.0 | matched_single_sample |
+| 156 | -10.0 | +10.0 | 9940.0 | matched_single_sample |
+
+Estoque de madeira inicial **9900.0**, final **9940.0**, variação total +40.0. A linha de base é consistente com o limite observado 10 para madeira sem melhorias *declaradas*. O nome da tecnologia é metadado manual, não confirmação de pesquisas pela memória. Este resultado não valida por si só capacidade máxima como atributo estático nem os efeitos de Wheelbarrow / Hand Cart; tais capturas ainda são necessárias. `Object+0x48` permanece hipótese.
