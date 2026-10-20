@@ -43,7 +43,6 @@ O GitHub Actions também executa essa verificação. O repositório `AoE2HD.cont
 - [dados/genie_type_ids.csv](dados/genie_type_ids.csv): catálogo separado com 41 Genie Type IDs, nomes candidatos e origem experimental.
 - [docs/genie_type_ids.md](docs/genie_type_ids.md): mapeamento por sexo, unidades, edifícios e tipos desconhecidos.
 - [docs/mapa.md](docs/mapa.md): cadeias de memória conhecidas e campos experimentais.
-- [docs/proveniencia.md](docs/proveniencia.md): como recuperar todos os programas e experimentos antigos.
 
 ## Regras de atualização
 
