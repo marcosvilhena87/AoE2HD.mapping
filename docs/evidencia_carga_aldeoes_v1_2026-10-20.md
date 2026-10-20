@@ -26,3 +26,19 @@ O candidato `Object+0x48` `float32` atingiu **10.0** nas amostras **43–44, 90�
 Disponibilizado no `AoE2HD.control`: `--validate-villager-carry-capacity-v2`. O experimento sincroniza leituras do candidato `Object+0x48` (float32) de um aldeão local de classe 4 com `ResourceTable+0x00` alimento, `+0x04` madeira, `+0x08` pedra ou `+0x0C` ouro. Uma leitura de estoque antes e depois da carga detecta alterações durante a amostra.
 
 Um evento é marcado `matched_deposit_candidate` apenas quando a queda da carga e o aumento do estoque, no mesmo intervalo, são numericamente compatíveis dentro da tolerância. Sem isolamento do aldeão e sem controles de outras fontes/consumos, a correspondência **não comprova causalidade**. O máximo observado não é parâmetro de capacidade universal; status de `Object+0x48` continua `hipotese`, não `validado`. Capturas reais v2 ainda pendentes.
+
+## Validação experimental v2 — `carry_wood_v2.csv` (captura real)
+
+Fonte: arquivo fornecido pelo operador, sessão `deposito01`, recurso `wood`; 180 amostras, 180 leituras `ok`, zero erros, aldeão ID individual `2174`, Genie Type ID `123`, ponteiro `0x14074FC0` constante. `capacity_validated=no` no relatório.
+
+Monitorados em conjunto `Object+0x48` (float32, carga candidata) e `ResourceTable+0x04` (estoque de madeira do jogador local). Resultados:
+
+| Amostra | Delta Object+0x48 | Delta ResourceTable+0x04 | Classificação v2 |
+|---:|---:|---:|---|
+| 51 | -10.0 | +10.0 | `matched_single_sample` |
+| 94 | -10.0 | +10.0 | `matched_single_sample` |
+| 138 | -10.0 | +10.0 | `matched_single_sample` |
+
+Estoque inicial `314.994720`, final `344.994720`: aumento acumulado **+30.0**, correspondente às três reduções individuais de carga. Em cada um dos três casos, carga caiu de 10.0 para 0.0. Quatro sequências de carga chegaram a 10.0 (amostras 45–50, 88–93, 131–137 e 175–180); a última terminou sem novo depósito capturado. O relatório contém exatamente três `matched_deposit_candidate=1` e zero outras quedas de carga. Foram 180/180 leituras estáveis.
+
+**Interpretação:** evidência funcional e temporal forte de `Object+0x48` como quantidade carregada por esse aldeão durante madeira, com limite observado repetido de 10.0; eventos são *depósitos candidatos numericamente correlacionados*, não comprovação de causa exclusiva. Sem controle integral de outros trabalhadores e intervenções no estoque, não declarar causalidade provada. Não confundir quantidade observada com capacidade máxima universal, bônus e melhorias ainda não testados. Manter o offset `Object+0x48` com status `hipotese` no catálogo enquanto forem pendentes controles negativos, replicação em nova partida e outros recursos.
