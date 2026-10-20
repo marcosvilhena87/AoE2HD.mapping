@@ -106,3 +106,17 @@ Captura fornecida pelo operador; `session=pesquisa01`, `trial_id=antes`, `techno
 | 156 | -10.0 | +10.0 | 9940.0 | matched_single_sample |
 
 Estoque de madeira inicial **9900.0**, final **9940.0**, variação total +40.0. A linha de base é consistente com o limite observado 10 para madeira sem melhorias *declaradas*. O nome da tecnologia é metadado manual, não confirmação de pesquisas pela memória. Este resultado não valida por si só capacidade máxima como atributo estático nem os efeitos de Wheelbarrow / Hand Cart; tais capturas ainda são necessárias. `Object+0x48` permanece hipótese.
+
+## V3 — após Wheelbarrow: `carry_wood_wheelbarrow_v3.csv`
+
+Captura real do operador `session=pesquisa01`, `trial_id=apos_wheelbarrow`, `technology_label=wheelbarrow` (declaração manual), `civilization_label=bretoes`, `resource=wood`. Total de **180/180** leituras `ok`, zero erros. Unidade individual `2174`, variante Genie `123`, ponteiro `0x15D1C0A0` estável. O candidato `Object+0x48` chegou a **13.0**, nas amostras 53–55, 99–100, 143–145, antes de três quedas completas:
+
+| Amostra | Delta carga Object+0x48 | Delta estoque ResourceTable+0x04 | Estoque depois |
+|---:|---:|---:|---:|
+| 56 | -13.0 | +13.0 | 19913.458984 |
+| 101 | -13.0 | +13.0 | 19926.458984 |
+| 146 | -13.0 | +13.0 | 19939.458984 |
+
+Todas sinalizadas `matched_deposit_candidate=1` / `matched_single_sample`; estoque de 19900.458984 até 19939.458984, delta total **+39.0**. Amostra 180 encerrou em 10.395076 unidades de carga, quarto ciclo sem depósito capturado.
+
+**Comparação com v3 `none` da mesma civilização e mesmo recurso:** limite observado 10.0 → 13.0, diferença **+3.0 (+30%)**, com 4 eventos anteriores de -10/+10 e 3 eventos posteriores de -13/+13. Interpretação: forte evidência de efeito de Wheelbarrow sobre a carga atual e o limite observado nesta configuração, embora o rótulo de tecnologia seja manual e o endereço do estado de pesquisa não tenha sido identificado. `capacity_validated=no` no relatório; capacidade interna universal permanece não mapeada, e o campo `Object+0x48` mantém seu status cadastral de hipótese até controles independentes.
