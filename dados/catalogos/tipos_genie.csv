@@ -30,6 +30,7 @@ genie_type_id,nome_pt,sexo,status_evidencia,origem
 285,desconhecido,indeterminado,tipo_observado_sem_rotulo,v9.1 class 42
 293,Aldeão,feminino,candidato_hud,v3 capturas
 354,Coletor,feminino,rotulado_operador_uma_captura,v3(4)
+413,Pinheiro com Neve,nao_aplicavel,observado_hud_coleta_uma_sessao,tree_type_confirmation_v1_2 Object 2131
 448,Batedor,nao_aplicavel,validado_funcional_v8,v8
 562,Armazém de Madeira,nao_aplicavel,validado_funcional_v8,v8
 579,Garimpeiro,masculino,rotulado_operador_uma_partida,teste03
