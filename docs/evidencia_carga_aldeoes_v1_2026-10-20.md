@@ -42,3 +42,15 @@ Monitorados em conjunto `Object+0x48` (float32, carga candidata) e `ResourceTabl
 Estoque inicial `314.994720`, final `344.994720`: aumento acumulado **+30.0**, correspondente às três reduções individuais de carga. Em cada um dos três casos, carga caiu de 10.0 para 0.0. Quatro sequências de carga chegaram a 10.0 (amostras 45–50, 88–93, 131–137 e 175–180); a última terminou sem novo depósito capturado. O relatório contém exatamente três `matched_deposit_candidate=1` e zero outras quedas de carga. Foram 180/180 leituras estáveis.
 
 **Interpretação:** evidência funcional e temporal forte de `Object+0x48` como quantidade carregada por esse aldeão durante madeira, com limite observado repetido de 10.0; eventos são *depósitos candidatos numericamente correlacionados*, não comprovação de causa exclusiva. Sem controle integral de outros trabalhadores e intervenções no estoque, não declarar causalidade provada. Não confundir quantidade observada com capacidade máxima universal, bônus e melhorias ainda não testados. Manter o offset `Object+0x48` com status `hipotese` no catálogo enquanto forem pendentes controles negativos, replicação em nova partida e outros recursos.
+
+## Validação experimental v2 — `carry_food_v2.csv` (alimentos)
+
+Captura fornecida pelo operador: `session=deposito01`, `resource=food`, 180/180 leituras `ok`, nenhum erro. Aldeão `object_id=2174`, `genie_type_id=120` (coletor), ponteiro estável `0x14074FC0`. A quantidade candidata `Object+0x48` atingiu **10.0** e três transições tiveram `delta_carried=-10.0`, `delta_stock=+10.0`, `matched_deposit_candidate=1`, `match_reason=matched_single_sample`:
+
+| Amostra | Carga anterior → atual | Estoque antes → depois | Correspondência |
+|---:|---|---|---|
+| 57 | 10.0 → 0.0 | 200.0 → 210.0 | exata |
+| 117 | 10.0 → 0.0 | 210.0 → 220.0 | exata |
+| 178 | 10.0 → 0.0 | 220.0 → 230.0 | exata |
+
+Estoque total de alimentos cresceu de 200 para 230 (+30), em três correspondências. Igual ao experimento v2 com madeira, o maior valor de carga observado foi 10.0, sem outras quedas de carga. Indício forte de `Object+0x48` como carga corrente do aldeão também para alimento. Não prova capacidade máxima universal nem causalidade exclusiva do aldeão. Permanecem pendentes ouro, pedra, replicação em nova partida e controles de tecnologias e outros trabalhadores; campo continua com status `hipotese`.
