@@ -69,3 +69,7 @@ python scripts/validar_catalogo.py
 ```
 
 O validador compara todas as seis colunas de cada registro como **multiconjunto**, sem depender da ordem dos arquivos. Detecta ausência em qualquer direção, duplicação integral, conflito de registros com a mesma combinação de raiz e endereço, problemas de cabeçalho, campos vazios e falta de módulos. Se houver divergência, o comando retorna código 1 e o workflow falha. Não corrige nem promove endereços automaticamente.
+
+## Evidências recentes de coleta por proximidade
+
+- [Experimento de coleta próxima ao Centro da Cidade (20/10/2026)](docs/evidencia_coleta_proxima_tc_2026-10-20.md): Object IDs de sessão, coordenadas X/Y candidatas, estoque candidato em `Object+0x48`, ranking do TC, validação de âncoras e limitações. Não acrescenta endereços absolutos estáveis nem altera os status dos catálogos.
