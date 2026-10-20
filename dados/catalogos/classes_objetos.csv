@@ -1,0 +1,10 @@
+class_id,nome_pt,status_evidencia,origem,observacao
+0,Arqueiro,observado_controle_v8,docs/validacao_tipos_unidades_v8_2026-10-18.md,Classe 0 do arqueiro observado
+3,Construção,validado_funcional,docs/evidencia_identidade_aldeoes_2026-10-17.md,Observada em construções
+4,Aldeão,validado_funcional,docs/evidencia_identidade_aldeoes_2026-10-17.md,Classe e não profissão instantânea
+6,Infantaria,validado_funcional,docs/evidencia_identidade_aldeoes_2026-10-17.md,Observada em milícia e lanceiro
+9,Desconhecida,observado_sem_rotulo,docs/validacao_tipos_unidades_v8_2026-10-18.md,Observada em objetos de proprietário não local na v9.1
+10,Desconhecida,observado_sem_rotulo,docs/validacao_tipos_unidades_v8_2026-10-18.md,Observada em objetos de proprietário não local na v9.1
+18,Monge,observado_controle_v8,docs/validacao_tipos_unidades_v8_2026-10-18.md,Classe do monge observada
+42,Desconhecida,observado_sem_rotulo,docs/validacao_tipos_unidades_v8_2026-10-18.md,Observada em objetos de proprietário não local na v9.1
+47,Cavalaria,observado_controle_v8,docs/validacao_tipos_unidades_v8_2026-10-18.md,Classe do batedor observado
