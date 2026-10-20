@@ -1,8 +1,23 @@
-# AoE2HD.memory_map
+# AoE2HD.mapping
 
-**Repositório exclusivo de registro de endereços de memória** para Age of Empires II HD (`AoK HD.exe 5.8.INT`, x86).
+**Repositório de mapeamento de endereços de memória e identificadores de objetos** para Age of Empires II HD (`AoK HD.exe 5.8.INT`, x86).
 
 Armazena endereços confirmados historicamente, candidatos e hipóteses **mesmo sem validação**. Não hospeda mais scanners, bots, executáveis, projetos CMake nem testes.
+
+## Catálogos por domínio
+
+- [Tipos Genie](dados/catalogos/tipos_genie.csv): 41 identificadores e evidências; espelho do caminho compatível `dados/genie_type_ids.csv`.
+- [Classes de objetos](dados/catalogos/classes_objetos.csv): classes internas observadas e status semântico.
+- [Identidades individuais](dados/catalogos/identidades_individuais.csv): Object IDs vinculados à sessão de observação; não representam IDs de tipo estáveis.
+- [Estruturas de memória](dados/catalogos/estruturas_memoria.csv): espelho integral de `dados/enderecos.csv`, preservando os 64 registros e os módulos históricos.
+
+Para testar a integridade e a sincronização dos arquivos:
+
+```bash
+python scripts/validar_catalogos.py
+```
+
+O GitHub Actions também executa essa verificação. O repositório `AoE2HD.control` continua consumindo `dados/genie_type_ids.csv` para manter compatibilidade. Os arquivos históricos e seus status não foram substituídos.
 
 ## Catálogo
 
