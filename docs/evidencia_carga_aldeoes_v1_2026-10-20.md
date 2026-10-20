@@ -69,3 +69,21 @@ Foram encontrados **dois eventos correlacionados** (`matched_deposit_candidate=1
 Picos de 10.0 nas amostras 49–67 e 120–138. Ao final (amostra 180), terceiro ciclo com carga ~6.72943; estoque inicial 100.0 e final 120.0 (+20), sem outras quedas detectadas. A medição fortalece `Object+0x48` como candidato a carga transportada e **10.0 como limite observado de ouro nesta configuração**. Não confundir com capacidade máxima geral ou depósito causalmente atribuído ao único aldeão sem controles de outros produtores/consumidores.
 
 Quadro acumulado de evidências v2: madeira 3 eventos de -10/+10; alimento 3; ouro 2; pedra ainda pendente. Preservar status `hipotese` para `Object+0x48`; `capacity_validated=no`.
+
+## Validação experimental v2 — `carry_stone_v2.csv` (pedra)
+
+Arquivo do operador: `session=deposito01`, `resource=stone`, 180/180 amostras `read_status=ok`, nenhuma falha. Object ID `2174`, ponteiro `0x14074FC0`, variante Genie `124` (mineiro de pedra); `capacity_validated=no`.
+
+Uma correspondência de queda da carga e aumento do estoque do jogador ocorreu na **amostra 93**, com `Object+0x48` **10.0→0.0** (`delta_carried=-10.0`) e `ResourceTable+0x08` **200.0→210.0** (`delta_stock=+10.0`), `matched_deposit_candidate=1`, `match_reason=matched_single_sample`. A carga chegou a 10.0 nas amostras **65–92** e **154–180**. A segunda sequência terminou sem queda observada; início com carga 0, primeira carga positiva na amostra 32. Estoque só mudou uma vez (+10), nenhuma outra queda de carga.
+
+### Consolidação v2, quatro recursos (capturas do operador)
+
+| Recurso | Limite observado `Object+0x48` | Depósitos candidatos de -10/+10 | Soma candidata |
+|---|---:|---:|---:|
+| Madeira | 10.0 | 3 | 30.0 |
+| Alimento | 10.0 | 3 | 30.0 |
+| Ouro | 10.0 | 2 | 20.0 |
+| Pedra | 10.0 | 1 | 10.0 |
+| **Total** | — | **9** | **90.0** |
+
+A repetição em quatro recursos sustenta fortemente `Object+0x48` como campo de carga atual em aldeões dessa configuração de partida e **10.0** como limite observado. Não demonstra capacidade máxima universal ou invariância por tecnologias/unidades, nem isola causalmente cada depósito de outros atores. Próximos controles: nova partida, múltiplas unidades, tecnologias e fontes/estoques simultâneos; manter `hipotese` no catálogo até esses controles.
