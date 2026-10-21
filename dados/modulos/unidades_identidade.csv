@@ -12,3 +12,4 @@ ObjectTypeTarget,0x10,ID especifico de unidade/construcao (uint16); corroborado 
 ObjectTypeTarget,0x12,Campo vizinho nao equivale sempre ao ID do tipo (casa 464 vs 70 TC 141 vs 109); semantica desconhecida,uint16,hipotese,docs/validacao_tipos_unidades_v8_2026-10-18.md
 ObjectTypeTarget,0x14,Campo vizinho coincide com ID do tipo nos 12 controles v8 mas equivalencia semantica ainda nao demonstrada,uint16,candidato_experimental,docs/validacao_tipos_unidades_v8_2026-10-18.md
 Object,0x048,Quantidade de recurso ou carga corrente candidata em objetos e aldeoes; capacidade maxima nao identificada,float32,hipotese,docs/evidencia_carga_aldeoes_v1_2026-10-20.md
+Object,0x38,Bit 0x00010000 associado a selecao em unidades moveis e construcoes; demais bits indeterminados,uint32,validado_experimentalmente,docs/evidencia_selecao_v2_6_2026-10-21.md
