@@ -6,6 +6,7 @@ Versão-alvo: `AoK HD.exe 5.8.INT` (PE32/x86). Offsets não devem ser transferid
 - **semantica_parcial** — valores observados; sua interpretação não foi completamente determinada.
 - **ancora_experimental** — referência utilizada para correlacionar seleção e objetos; não constitui coleção.
 - **experimental_implementado** — há leitor/algoritmo histórico, mas isso não é prova semântica independente.
+- **validado_experimentalmente** — comportamento reproduzido em capturas identificadas, ainda sem validação independente ou confirmação definitiva da semântica e dos limites de estrutura.
 - **hipotese** — candidato que exige repetição, controles negativos e validação por ação observável.
 - **sessao_observada** — endereço absoluto de uma execução. Não reutilizar após reiniciar.
 
