@@ -6,3 +6,6 @@ WorldPlayer,0x08,Discriminador (2 Gaia/1 local/3 CPU historicamente),uint32,sema
 WorldPlayer,0x3C,Tabela recursos,ptr32,historico_validado,docs/memory-map.md
 LocalPlayer,0x15C,Ponteiro seleção A,ptr32,ancora_experimental,README.md
 LocalPlayer,0x160,Ponteiro seleção B,ptr32,ancora_experimental,README.md
+LocalPlayer,0x164,Segunda entrada da sequencia selecionada de ptr32; observada em grupos moveis e construcoes,ptr32,validado_experimentalmente,docs/evidencia_selecao_v2_6_2026-10-21.md
+LocalPlayer,0x24C,Entrada 60 da sequencia contigua de selecao movel; nao prova limite fisico,ptr32,validado_experimentalmente,docs/evidencia_selecao_v2_6_2026-10-21.md
+LocalPlayer,0x254,Contador candidato de objetos selecionados; 0 15 e 60 reproduzidos na v2.6; sem confirmacao independente,uint32,validado_experimentalmente,docs/evidencia_selecao_v2_6_2026-10-21.md
