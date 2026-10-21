@@ -7,12 +7,12 @@ Fonte temática dos registros, sem modificar seus estados originais. O catálogo
 | [Núcleo e estruturas globais](../../dados/modulos/nucleo.csv) | 12 | RVAs e cadeia Owner → World; campos estruturais do mundo. |
 | [Jogadores e seleção](../../dados/modulos/jogadores.csv) | 10 | Entradas do vetor de jogadores, identidade e seleção local. |
 | [Recursos, população e contadores](../../dados/modulos/recursos_populacao.csv) | 10 | Recursos econômicos, contadores de unidades e população, inclusive candidatos. |
-| [Unidades, classes e tipos](../../dados/modulos/unidades_identidade.csv) | 13 | Identidade de objetos, tipos específicos, classes internas e estruturas candidatas. |
+| [Unidades, classes e tipos](../../dados/modulos/unidades_identidade.csv) | 14 | Identidade de objetos, tipos específicos, classes internas e estruturas candidatas. |
 | [Construções e fila de produção](../../dados/modulos/construcoes_producao.csv) | 3 | Campos da fila de produção vinculados a construções. |
 | [Treinamento e progresso](../../dados/modulos/treinamento.csv) | 7 | Candidatos estruturais de treinamento; não implica cadeia já validada. |
 | [Endereços absolutos temporários](../../dados/modulos/sessoes_temporarias.csv) | 13 | Capturas absolutas específicas de execução; nunca assumir estabilidade entre sessões. |
 
-**Total:** 68 registros. O cabeçalho CSV permanece `raiz,offset_ou_endereco,descricao,tipo,status,origem`.
+**Total:** 69 registros. O cabeçalho CSV permanece `raiz,offset_ou_endereco,descricao,tipo,status,origem`.
 
 ## Regras de manutenção
 
