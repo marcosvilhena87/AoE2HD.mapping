@@ -37,7 +37,7 @@ O GitHub Actions também executa essa verificação. O repositório `AoE2HD.cont
 
 ## Catálogo
 
-- [dados/enderecos.csv](dados/enderecos.csv): 68 registros contextualizados, incluindo RVAs, offsets e endereços absolutos temporários.
+- [dados/enderecos.csv](dados/enderecos.csv): 69 registros contextualizados, incluindo RVAs, offsets e endereços absolutos temporários.
 - [docs/modulos/README.md](docs/modulos/README.md): índice de 7 módulos temáticos em `dados/modulos/`, com contagens e regras de sincronização.
 - [docs/criterios.md](docs/criterios.md): diferenças entre evidência, hipótese e confirmação.
 - [dados/genie_type_ids.csv](dados/genie_type_ids.csv): catálogo separado com 41 Genie Type IDs, nomes candidatos e origem experimental.
@@ -91,4 +91,4 @@ O validador compara todas as seis colunas de cada registro como **multiconjunto*
 
 ## Evidência de seleção v2.6 (21/10/2026)
 
-[Validação experimental da seleção](docs/evidencia_selecao_v2_6_2026-10-21.md): sequência `LocalPlayer+0x160` e contagem candidata em `LocalPlayer+0x254`, com 0/15/60 objetos verificados. Os campos acrescentados têm estado `validado_experimentalmente`, **não** layout definitivamente estabelecido. Total atual: **68 registros**.
+[Validação experimental da seleção](docs/evidencia_selecao_v2_6_2026-10-21.md): sequência `LocalPlayer+0x160` e contagem candidata em `LocalPlayer+0x254`, com 0/15/60 objetos verificados. Os campos acrescentados têm estado `validado_experimentalmente`, **não** layout definitivamente estabelecido. Total atual: **69 registros**.
