@@ -25,7 +25,7 @@ ausências, divergências e duplicações provocam falha na validação.
 - [Tipos Genie](dados/catalogos/tipos_genie.csv): 41 identificadores e evidências; espelho do caminho compatível `dados/genie_type_ids.csv`.
 - [Classes de objetos](dados/catalogos/classes_objetos.csv): classes internas observadas e status semântico.
 - [Identidades individuais](dados/catalogos/identidades_individuais.csv): Object IDs vinculados à sessão de observação; não representam IDs de tipo estáveis.
-- [Estruturas de memória](dados/catalogos/estruturas_memoria.csv): espelho integral de `dados/enderecos.csv`, preservando os 64 registros e os módulos históricos.
+- [Estruturas de memória](dados/catalogos/estruturas_memoria.csv): espelho integral de `dados/enderecos.csv`, preservando os registros históricos e os módulos históricos.
 
 Para testar a integridade e a sincronização dos arquivos:
 
@@ -37,7 +37,7 @@ O GitHub Actions também executa essa verificação. O repositório `AoE2HD.cont
 
 ## Catálogo
 
-- [dados/enderecos.csv](dados/enderecos.csv): 64 registros contextualizados, incluindo RVAs, offsets e endereços absolutos temporários.
+- [dados/enderecos.csv](dados/enderecos.csv): 68 registros contextualizados, incluindo RVAs, offsets e endereços absolutos temporários.
 - [docs/modulos/README.md](docs/modulos/README.md): índice de 7 módulos temáticos em `dados/modulos/`, com contagens e regras de sincronização.
 - [docs/criterios.md](docs/criterios.md): diferenças entre evidência, hipótese e confirmação.
 - [dados/genie_type_ids.csv](dados/genie_type_ids.csv): catálogo separado com 41 Genie Type IDs, nomes candidatos e origem experimental.
@@ -68,7 +68,7 @@ O projeto [AoE2HD.control](https://github.com/marcosvilhena87/AoE2HD.control) ut
 - Documentar cadeias, dependências e limitações em `docs/mapa.md` e critérios/provas em `docs/criterios.md`, quando pertinentes.
 - Anotar versão do binário, passos de reprodução, cenários e evidências positivas/negativas; endereços absolutos de sessão não devem ser apresentados como estáveis.
 - Somente atualizar o catálogo espelhado no AoE2HD.control depois de atualizar este repositório, para evitar divergência.
-- Sem descobertas novas, não alterar artificialmente a contagem ou o status dos 64 registros existentes.
+- Sem descobertas novas, não alterar artificialmente a contagem ou o status dos registros existentes.
 
 Esta regra é aplicada nas sessões de desenvolvimento em que houver acesso ao GitHub; não representa uma tarefa de monitoramento autônomo em segundo plano.
 
@@ -88,3 +88,7 @@ O validador compara todas as seis colunas de cada registro como **multiconjunto*
 ## Evidências recentes de coleta por proximidade
 
 - [Experimento de coleta próxima ao Centro da Cidade (20/10/2026)](docs/evidencia_coleta_proxima_tc_2026-10-20.md): Object IDs de sessão, coordenadas X/Y candidatas, estoque candidato em `Object+0x48`, ranking do TC, validação de âncoras e limitações. Não acrescenta endereços absolutos estáveis nem altera os status dos catálogos.
+
+## Evidência de seleção v2.6 (21/10/2026)
+
+[Validação experimental da seleção](docs/evidencia_selecao_v2_6_2026-10-21.md): sequência `LocalPlayer+0x160` e contagem candidata em `LocalPlayer+0x254`, com 0/15/60 objetos verificados. Os campos acrescentados têm estado `validado_experimentalmente`, **não** layout definitivamente estabelecido. Total atual: **68 registros**.
